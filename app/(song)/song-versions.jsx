@@ -56,30 +56,29 @@ const SongVersions = () => {
         },
     ];
 
-    const song = 
-        {
-            name: "Afterglow",
-            author: "Ed Sheeran"
-        }
+    const song =
+    {
+        name: "Afterglow",
+        author: "Ed Sheeran"
+    }
 
     const separator = () => {
         return <View style={styles.separator} />;
     };
 
     const versionListItem = ({ item }) => {
-        return <VersionListItem
-            item={item}
-            handlePress={() => { router.navigate('/display') }}
-        />
+        return (
+            <VersionListItem
+                item={item}
+                handlePress={() => { router.navigate('/display') }}
+            />)
     };
 
     return (
         <SafeAreaView
             style={styles.container}
         >
-            <Header
-                song={song}
-            />
+            <Header song={song} />
             <FlashList
                 data={data}
                 renderItem={versionListItem}

@@ -104,4 +104,17 @@ export const styles = StyleSheet.create({
         //borderWidth: 1, 
         justifyContent: "center"
     },
+    header: { 
+        flexDirection: 'row', 
+        height: 60, 
+        marginTop: 5,
+        position: 'absolute' 
+    },
+    backButton: { 
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+    },
+    headerTitleContainer: { flex: 8, justifyContent: 'center', alignItems: 'center' },
+    headerMainTitle: { fontWeight: 'bold', fontSize: 20 }
 })
