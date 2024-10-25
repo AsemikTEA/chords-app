@@ -1,23 +1,77 @@
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
-import Header from '../../components/Header';
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
+import teoria from 'teoria';
+import Interval from 'teoria/lib/interval';
+import { useUserStore, useSongStore } from '../state/store';
 
 const DisplaySong = () => {
+
+  // const [ parsedSongData, setParsedSongData ] = useState([]);
+  const [ transposeNumber, setTransposeNumber ] = useState(0);
+
+  const songData = useSongStore((state) => state.songData);
+  const setSongData = useSongStore((state) => state.setSongData);
+
+  useEffect(() => {
+    const data = splitSongToBlocks(song.content);
+    console.log(data);
+    setSongData(data);
+  }, []);
+
+  useEffect(() => {
+    transposeChord(parsedSongData, transposeNumber);
+  }, [transposeNumber]);
 
   const song = {
     name: 'Afterglow',
     author: 'Ed Sheeran',
-    content: "{start_of_verse: label='Verse 1'} I[A] found a love,[A] for me Darli[A]ng, just dive ri[A]ght in and follow [A]my lead. Well, I fo[A]und a girl, beau[A]tiful and sweet[A] Oh, I neve[A]r knew you were[A] the someone waiti[A]ng for me{end_of_verse}{start_of_prechorus}Ca[A]se we were just kids whe[A]n we fell in love Not know[A]ing what it was[A]I will not g[A]ive you up this time Bu[A]t darling, just kiss me slow[A] [A]Your he[A]art is all I own[A] And in you[A]r eyes, you're holdi[A]ng mine{end_of_prechorus}{start_of_chorus}Baby,[A] I'm dancing in[A] the dark[A] With you between my arms. Bare[A]foot on the gr[A]ass. Liste[A]ning to our[A] favourite song[A]. When y[A]ou said you looked a mess[A] I whispered underneath my breath[A] But you heard i[A]t Darling[A], you look [A]perfect tonight[A]{end_of_chorus}"
+    content: "{start_of_verse: label='Verse 1'} I[A] found a love,[A] for me Darli[A]ng, just dive ri[A]ght in and follow [A]my lead. Well, I fo[A]und a girl, beau[A]tiful and sweet[A] Oh, I neve[A]r knew you were[A] the someone waiti[A]ng for me{end_of_verse}{start_of_prechorus}Ca[A]se we were just kids whe[A]n we fell in love Not know[A]ing what it was[A]I will not g[A]ive you up this time Bu[A]t darling, just kiss me slow[A] [A]Your he[A]art is all I own[A] And in you[A]r eyes, you're holdi[A]ng mine{end_of_prechorus}{start_of_chorus}Baby,[A] I'm dancing in[A] the dark[A] With you between my arms. Bare[A]foot on the gr[A]ass. Liste[A]ning to our[A] favourite song[A]. When y[A]ou said you looked a mess[A] I whispered underneath my breath[A] But you heard i[A]t Darling[A], you look [A]perfect tonight[A]{end_of_chorus}{start_of_verse: label='a'} I[A] found a love,[A] for me Darli[A]ng, just dive ri[A]ght in and follow [A]my lead. Well, I fo[A]und a girl, beau[A]tiful and sweet[A] Oh, I neve[A]r knew you were[A] the someone waiti[A]ng for me{end_of_verse}{start_of_chorus}Baby,[A] I'm dancing in[A] the dark[A] With you between my arms. Bare[A]foot on the gr[A]ass. Liste[A]ning to our[A] favourite song[A]. When y[A]ou said you looked a mess[A] I whispered underneath my breath[A] But you heard i[A]t Darling[A], you look [A]perfect tonight[A]{end_of_chorus}"
+  }
+
+  const displayOnlyChords = false;
+  //let transposeNumber = 0;
+
+  const intervals = new Map([
+    [1, 'm2'], [-1, 'm-2'],
+    [2, 'M2'], [-2, 'M-2'],
+    [3, 'm3'], [-3, 'm-3'],
+    [4, 'M3'], [-4, 'M-3'],
+    [5, 'P4'], [-5, 'P-4'],
+    [6, 'A4'], [-6, 'A-4'],
+    [7, 'P5'], [-7, 'P-5'],
+    [8, 'm6'], [-8, 'm-6'],
+    [9, 'M6'], [-9, 'M-6'],
+    [10, 'm7'], [-10, 'm-7'],
+    [11, 'M7'], [-11, 'M-7'],
+    [0, 'P1'],
+  ]);
+
+  const getIntervalCoord = (transposeNumber) => {
+    const interval = intervals.get(transposeNumber);
+    const intervalCoord = Interval.toCoord(interval);
+    return intervalCoord;
+  }
+
+  const transposeChord = (data, transposeNumber) => {
+    for (block of data) {
+      block.content.forEach(element => {
+        if (element.type === 'chord') {
+          element.transposeValue = element.value.interval(getIntervalCoord(transposeNumber)).name;
+        };
+      });
+      //console.log(block.content);
+    }
+    //console.log(data[0].content);
+    //setParsedSongData(data);
+    //console.log(parsedSongData);
   }
 
   const splitSongToBlocks = (lyrics) => {
     const regex =
       /\{(start_of_(verse|chorus|prechorus)(:\s*label='[^']*')?|end_of_(verse|chorus|prechorus))\}/g;
     const regex2 = /start_of/g;
-    const regex3 = /end_of/g;
-    const regex5 = /label='([^']*)'/g;
 
     let currentText = [];
     let regexMatchArray;
@@ -32,11 +86,6 @@ const DisplaySong = () => {
         console.log('block name: ' + blockName);
       }
 
-      if (regexMatchArray[3]) {
-        blockLabel = regex5.exec(regexMatchArray[3])[1];
-        console.log('block label: ' + blockLabel);
-      }
-
       const firstBlockIndex = regexMatchArray.index;
       console.log(firstBlockIndex);
 
@@ -46,25 +95,24 @@ const DisplaySong = () => {
         if (text) {
           currentText.push({
             block: blockName,
-            label: blockLabel,
             content: text,
           });
         }
       };
 
       currentIndex = regex.lastIndex;
-      if (regex3.test(regexMatchArray[1])) {
-        blockLabel = null;
-      };
-      console.log(currentText);
+
+      //console.log(currentText);
     }
 
     for (block of currentText) {
       const parsedSongData = parseChordsAndLyrics(block.content);
       block.content = parsedSongData;
-      console.log(block);
+      //console.log(block.content);
     }
 
+    // console.log(currentText);
+    // setParsedSongData(parsedSongData => ({...parsedSongData, ...currentText}));
     return currentText;
   }
 
@@ -76,7 +124,7 @@ const DisplaySong = () => {
 
     // loop through every character in provided text
     while ((regexMatchArray = regexChords.exec(songContent)) !== null) {
-      const chord = regexMatchArray[1]; // matchArray:[Am],Am,m - match have this structure
+      const chord = teoria.chord(regexMatchArray[1]); // matchArray:[Am],Am,m - match have this structure
       const chordIndex = regexMatchArray.index; // regex match object contains index where match was found https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec#return_value
       //console.log('chord: ' + chord)
       //console.log('chordIndex: ' + chordIndex)
@@ -85,15 +133,19 @@ const DisplaySong = () => {
       if (chordIndex > currentIndex) {
         const lyricsPart = songContent.substring(currentIndex, chordIndex);
 
-        if (lyricsPart) {
-          const words = lyricsPart.split(/(\s+)/); // split text with whitespaces
-          chordsAndLyrics.push(...words.map(word => ({
-            type: 'lyrics',
-            value: word,
-          })));
-          // console.log(words);
-          // console.log(chordsAndLyrics);
-        };
+        chordsAndLyrics.push({
+          type: 'lyrics',
+          value: lyricsPart 
+        });
+        // if (lyricsPart) {
+        //   const words = lyricsPart.split(/(\s+)/); // split text with whitespaces
+        //   chordsAndLyrics.push(...words.map(word => ({
+        //     type: 'lyrics',
+        //     value: word,
+        //   })));
+        //   // console.log(words);
+        //   // console.log(chordsAndLyrics);
+        // };
       };
 
       // adds found chord
@@ -110,79 +162,130 @@ const DisplaySong = () => {
     if (currentIndex < songContent.length) {
       const remainingLyrics = songContent.substring(currentIndex);
 
-      if (remainingLyrics) {
-        const words = remainingLyrics.split(/(\s+)/);
+      chordsAndLyrics.push({
+        type: 'lyrics',
+        value: remainingLyrics 
+      });
+      // if (remainingLyrics) {
+      //   const words = remainingLyrics.split(/(\s+)/);
 
-        chordsAndLyrics.push(...words.map(word => ({
-          type: 'lyrics',
-          value: word,
-        })));
-      };
+      //   chordsAndLyrics.push(...words.map(word => ({
+      //     type: 'lyrics',
+      //     value: word,
+      //   })));
+      // };
     };
 
     return chordsAndLyrics;
   };
 
-  const array = [];
+  let parsedSongData;
+  //console.log(songData);
+  
 
   const SongView = ({ songContent }) => {
-    const parsedSongData = splitSongToBlocks(songContent);
-    const array = [];
+    parsedSongData = splitSongToBlocks(songContent);
+    let array;
 
-    for (block of parsedSongData) {
-      let blockName;
+    if (displayOnlyChords) {
+      array = [];
 
-      if (block.label !== null) {
-        blockName = block.label;
-      } else {
-        blockName = block.block;
-      };
+      for (block of songData) {
+        const blockName = block.block
 
-      array.push(
-        <View style={styles.container}>
-          <View style={{ borderWidth: 1, marginTop: 10, marginBottom: 5}}>
-            <Text style={{fontSize: 17, fontWeight: 'bold'}}>{blockName}</Text>
+        array.push(
+          <View style={styles.container}>
+            <View style={{ marginTop: 2, flexDirection: 'row' }}>
+              <Text style={{ fontSize: 17, fontWeight: 'bold', marginRight: 8 }}>{blockName}:</Text>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                {block.content.map((item) => {
+                  if (item.type === 'chord') {
+                    return (
+                      <Pressable style={{ marginRight: 7 }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item.value.name}</Text>
+                      </Pressable>
+                    );
+                  };
+                })}
+              </View>
+            </View>
           </View>
-          <View style={styles2.lyricLine}>
-            {block.content.map((item) => {
-              if (item.type === 'chord') {
-                return (
-                  <Pressable style={styles2.relativeContainer}>
-                    <Text style={styles2.chord}>{item.value}</Text>
-                  </Pressable>
-                );
-              } else if (item.type === 'lyrics' && /^\s*[A-Z]/.test(item.value)) {
-                return (
-                  <View style={styles2.relativeContainer}>
-                    <Text style={styles2.lyrics}>{item.value}</Text>
-                  </View>
-                );
-              } else if (item.type === 'lyrics') {
-                return (
-                  <View style={styles2.relativeContainer}>
-                    <Text style={styles2.lyrics}>{item.value}</Text>
-                  </View>
-                );
-              }
-            })}
+        )
+      }
+    } else {
+      array = [];
+
+      for (block of songData) {
+        const blockName = block.block
+
+        array.push(
+          <View style={styles.container}>
+            <View style={{ borderWidth: 1, marginTop: 10, marginBottom: 5 }}>
+              <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{blockName}</Text>
+            </View>
+            <View style={styles2.lyricLine}>
+              {block.content.map((item) => {
+                if (item.type === 'chord') {
+                  return (
+                    <Pressable style={styles2.relativeContainer}>
+                      <Text style={styles2.chord}>{item.value.name}</Text>
+                    </Pressable>
+                  );
+                } else if (item.type === 'lyrics') {
+                  return (
+                    <View style={styles2.relativeContainer}>
+                      <Text style={styles2.lyrics}>{item.value}</Text>
+                    </View>
+                  );
+                }
+              })}
+            </View>
           </View>
-        </View>
-      )
+        )
+      }
     }
-
+    
+    //console.log(parsedSongData);
     return array;
   }
 
   return (
     <SafeAreaView
       style={styles.container}
+      edges={['bottom', 'left', 'right']}
     >
       <ScrollView>
-        <Header song={song} />
         <View style={styles2.container}>
           <SongView songContent={song.content} />
         </View>
       </ScrollView>
+      <View style={{ borderWidth: 1, height: 50 }}>
+        <View style={{ flexDirection: 'row' }}>
+          <Pressable
+            style={{ borderWidth: 1, flex: 1, }}
+            onPress={() => {
+              setTransposeNumber(transposeNumber + 1); 
+              console.log(transposeNumber);
+              transposeChord(parsedSongData, transposeNumber);
+            }}
+          >
+            <Text>Nahoru</Text>
+          </Pressable>
+          <View>
+            <Text>{transposeNumber}</Text>
+          </View>
+          <Pressable
+            style={{ borderWidth: 1, flex: 1, }}
+            onPress={() => {
+              setTransposeNumber(transposeNumber - 1);
+              console.log(transposeNumber);
+              transposeChord(parsedSongData, transposeNumber);
+            }}
+          >
+            <Text>Dolu</Text>
+          </Pressable>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
