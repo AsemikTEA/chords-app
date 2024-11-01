@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
+        //borderWidth:3
     },
     signContainer: {
         margin: 20
@@ -79,7 +80,7 @@ export const styles = StyleSheet.create({
         height: 50,
         paddingLeft: 10,
         paddingRight: 10,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     versionListItemName: {
         //borderWidth: 1, 
@@ -106,9 +107,10 @@ export const styles = StyleSheet.create({
     },
     header: { 
         flexDirection: 'row', 
-        height: 60, 
+        height: 80, 
         marginTop: 5,
-        position: 'absolute' 
+        //borderWidth: 2,
+        marginTop: 30
     },
     backButton: { 
         flex: 1, 
