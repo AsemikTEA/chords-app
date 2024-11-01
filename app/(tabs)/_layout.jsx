@@ -65,7 +65,7 @@ const TabsLayout = () => {
           name='account'
           options={{
             title: 'Account',
-            // headerShown: false,
+            headerShown: false,
             tabBarIcon: ({ focused }) => {
               let iconColor;
               iconColor = focused ? 'white' : '#8e8e8e'

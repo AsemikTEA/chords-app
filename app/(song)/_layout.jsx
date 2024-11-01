@@ -7,7 +7,7 @@ import { Button } from '@rneui/base'
 const AuthLayout = () => {
 
   const headerTitle = () => {
-    return  <View>
+    return <View>
       <Text style={styles.listItemSongName}>Perfect</Text>
       <Text style={styles.listItemAuthor}>Ed Sheeran</Text>
     </View>
@@ -31,7 +31,7 @@ const AuthLayout = () => {
         <Stack.Screen
           name='create'
           options={{
-            // headerShown: false
+            headerShown: false
           }}
         />
       </Stack>
