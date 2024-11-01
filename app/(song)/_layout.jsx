@@ -1,8 +1,10 @@
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { styles } from '../../style/styles'
 import { Button } from '@rneui/base'
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Header from '../../components/Header'
 
 const AuthLayout = () => {
 
@@ -13,19 +15,33 @@ const AuthLayout = () => {
     </View>
   }
 
+  const song =
+    {
+        name: "Afterglow",
+        author: "Ed Sheeran"
+    }
+
   return (
     <>
-      <Stack>
+      <Stack
+        // screenOptions={{
+        //   headerTintColor: "black",
+        //   headerLeft: () => (
+        //     <Ionicons name="chevron-back" size={28} color="black" />
+        //   ),
+        //   headerRight: () => <View />,
+        // }}
+      >
         <Stack.Screen
           name='song-versions'
           options={{
-            headerShown: false
+            header: () => <Header song={song} />
           }}
         />
         <Stack.Screen
           name='display'
           options={{
-            headerShown: false
+            header: () => <Header song={song} />
           }}
         />
         <Stack.Screen

@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import VersionListItem from '../../components/VersionListItem';
 import { router } from 'expo-router';
-import Header from '../../components/Header';
 
 const SongVersions = () => {
 
@@ -77,8 +76,9 @@ const SongVersions = () => {
     return (
         <SafeAreaView
             style={styles.container}
+            edges={['bottom', 'left', 'right']}
         >
-            <Header song={song} />
+            
             <FlashList
                 data={data}
                 renderItem={versionListItem}
