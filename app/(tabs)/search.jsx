@@ -9,48 +9,50 @@ import SongListItem from '../../components/SongListItem';
 
 const Search = () => {
 
-    const data = [
-        {
-            name: "Afterglow",
-            author: "Ed Sheeran"
-        },
-        {
-            name: "Perfect",
-            author: "Ed Sheeran"
-        },
-        {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        },
-        {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }, {
-            name: "Lego House",
-            author: "Ed Sheeran"
-        }
-    ]
+  
+
+  const data = [
+    {
+      name: "Afterglow",
+      author: "Ed Sheeran"
+    },
+    {
+      name: "Perfect",
+      author: "Ed Sheeran"
+    },
+    {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    },
+    {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }, {
+      name: "Lego House",
+      author: "Ed Sheeran"
+    }
+  ]
 
     const separator = () => {
         return <View style={styles.separator} />;

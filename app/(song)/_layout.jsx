@@ -5,15 +5,9 @@ import { styles } from '../../style/styles'
 import { Button } from '@rneui/base'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../../components/Header'
+import NewSongHeader from '../../components/NewSongHeader'
 
 const AuthLayout = () => {
-
-  const headerTitle = () => {
-    return <View>
-      <Text style={styles.listItemSongName}>Perfect</Text>
-      <Text style={styles.listItemAuthor}>Ed Sheeran</Text>
-    </View>
-  }
 
   const song =
     {
@@ -23,15 +17,7 @@ const AuthLayout = () => {
 
   return (
     <>
-      <Stack
-        // screenOptions={{
-        //   headerTintColor: "black",
-        //   headerLeft: () => (
-        //     <Ionicons name="chevron-back" size={28} color="black" />
-        //   ),
-        //   headerRight: () => <View />,
-        // }}
-      >
+      <Stack>
         <Stack.Screen
           name='song-versions'
           options={{
@@ -47,7 +33,13 @@ const AuthLayout = () => {
         <Stack.Screen
           name='create'
           options={{
-            headerShown: false
+            header: () => <NewSongHeader/>
+          }}
+        />
+        <Stack.Screen
+          name='edit'
+          options={{
+            header: () => <NewSongHeader/>
           }}
         />
       </Stack>

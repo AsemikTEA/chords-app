@@ -4,12 +4,18 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { styles } from '../style/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
+import { useTranspositionStore } from '../state/store';
 
 const Header = ({ song }) => {
 
-    const func = (value) => {
+  const setTransposition = useTranspositionStore((state) => state.transpose);
+
+    const dropdownSelect = (value) => {
         if(value==='Transpose') {
-            return '';
+            setTransposition();
+        }
+        if(value==='Edit song') {
+          router.navigate('/edit');
         }
     }
 
@@ -28,11 +34,11 @@ const Header = ({ song }) => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ModalDropdown
                     saveScrollPosition={false}
-                    options={['Transpose', 'Share', 'Export as PDF']}
+                    options={['Transpose', 'Share', 'Export as PDF', 'Edit song']}
                     dropdownStyle={{ borderWidth: 2, top: 0 }}
                     dropdownTextStyle={{ color: 'black', fontSize: 15 }}
                     dropdownTextHighlightStyle={{ color: 'black' }}
-                    onSelect={(index, value) => func(value)}
+                    onSelect={(index, value) => dropdownSelect(value)}
                 >
                     <Ionicons name="ellipsis-vertical" size={30} color="black" />
                 </ModalDropdown>

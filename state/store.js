@@ -1,27 +1,32 @@
 import { create } from "zustand";
 
-// import { createContext, useContext, useEffect, useState } from "react";
-
 export const useTranspositionNumberStore = create((set) => ({
-    transpositionNumber: 0,
-    transposeUp: () => set((state) => ({transpositionNumber: state.transpositionNumber + 1})),
-    transposeDown: () => set((state) => ({transpositionNumber: state.transpositionNumber - 1})),
+  transpositionNumber: 0,
+  transposeUp: () => set((state) => ({ transpositionNumber: state.transpositionNumber + 1 })),
+  transposeDown: () => set((state) => ({ transpositionNumber: state.transpositionNumber - 1 })),
 }));
 
 export const useChordsStore = create((set) => ({
-    chords: [],
-    transposedChords: [],
-    addChords: (chordBlock) => set((state) => ({chords: [...state.chords, chordBlock]})),
-    addTransposedChords: (transposedChord) => set((state) => ({transposedChords: [...state.transposedChords, transposedChord]})),
-    resetTransposedChords: () => set((state) => ({transposedChords: []})),
+  chords: [],
+  transposedChords: [],
+  addChords: (chordBlock) => set((state) => ({ chords: [...state.chords, chordBlock] })),
+  addTransposedChords: (transposedChord) => set((state) => ({ transposedChords: [...state.transposedChords, transposedChord] })),
+  resetTransposedChords: () => set((state) => ({ transposedChords: [] })),
 }));
 
-// export const useSongStore = create((set) => ({
-//     note: null,
-//     songData: [],
-//     setSongData: (data) => set((state) => ({...state.songData, ...data})),
-//     setName: (e) => set((state) => ({noteData: {...state.noteData, name: e}})),
-//     setContent: (e) => set((state) => ({noteData: {...state.noteData, content: e}})),
+export const useSongContentStore = create((set) => ({
+  songMetaData: {title: '', artist: '', key: '', capo: 0},
+  content: '',
+  setContent: (e) => set((state) => ({ content:  e})),
+  addTemplate: (template) => set((state) => ({content: state.content + template})),
+  setTitle: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, title: e } })),
+  setArtist: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, artist: e } })),
+  setKey: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, key: e } })),
+  setCapo: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, capo: e } })),
+}));
 
-//     logIn: (userData) => set((state) => ({user: userData})),
-// }));
+export const useTranspositionStore = create((set) => ({
+  transposition: false,
+  transpose: () => set((state) => ({ transposition: !state.transposition })),
+  
+}));
