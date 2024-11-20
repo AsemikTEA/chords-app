@@ -3,21 +3,15 @@ import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../../style/styles'
 import FormField from '../../components/FormField'
-import SubmitButton from '../../components/SubmitButton'
-import { Link } from 'expo-router'
 import { useSongContentStore } from '../../state/store'
 import SongContentInput from '../../components/SongContentInput'
 import DropdownSelectInput from '../../components/DropdownSelectInput'
-import { SelectList } from 'react-native-dropdown-select-list'
 
 const CreateSong = () => {
 
-  const songMetaData = useSongContentStore((state) => state.songMetaData);
   const setTitle = useSongContentStore((state) => state.setTitle);
   const setArtist = useSongContentStore((state) => state.setArtist);
   const setKey = useSongContentStore((state) => state.setKey);
-  const setCapo = useSongContentStore((state) => state.setCapo);
-  const setContent = useSongContentStore((state) => state.setContent);
   const addTemplate = useSongContentStore((state) => state.addTemplate);
 
   const verseTemplate = `\n\n{start_of_verse}\n\n{end_of_verse}`;
@@ -29,13 +23,7 @@ const CreateSong = () => {
   let title;
   let artist;
   let key;
-  let capo;
   let content;
-
-  useEffect(() => {
-    console.log(songMetaData);
-  }, [songMetaData])
-
 
   return (
     <SafeAreaView
@@ -48,21 +36,21 @@ const CreateSong = () => {
             <FormField
               title="Name of the song"
               value={title}
-              handleChangeText={(e) => { title = e; console.log(title) }}
+              handleChangeText={(e) => { title = e; setTitle(e); console.log(title) }}
               style={styles.formField}
               placeholder={"Enter name of the song"}
             />
             <FormField
               title="Artist"
               value={artist}
-              handleChangeText={(e) => { artist = e; console.log(artist) }}
+              handleChangeText={(e) => { artist = e; setArtist(e); console.log(artist) }}
               style={styles.formField}
               placeholder={"Enter name of the artist"}
             />
             <FormField
               title="Key"
               value={key}
-              handleChangeText={(e) => { key = e; console.log(key) }}
+              handleChangeText={(e) => { key = e; setKey(e); console.log(key) }}
               style={styles.formField}
               placeholder={"Enter musical key of the song"}
             />

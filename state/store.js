@@ -15,18 +15,30 @@ export const useChordsStore = create((set) => ({
 }));
 
 export const useSongContentStore = create((set) => ({
-  songMetaData: {title: '', artist: '', key: '', capo: 0},
+  songMetaData: { version: 0, title: '', artist: '', key: '', capo: 0 },
   content: '',
-  setContent: (e) => set((state) => ({ content:  e})),
-  addTemplate: (template) => set((state) => ({content: state.content + template})),
+  setContent: (e) => set((state) => ({ content: e })),
+  addTemplate: (template) => set((state) => ({ content: state.content + template })),
   setTitle: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, title: e } })),
   setArtist: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, artist: e } })),
   setKey: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, key: e } })),
   setCapo: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, capo: e } })),
+  setVersion: (e) => set((state) => ({ songMetaData: { ...state.songMetaData, version: e } })),
 }));
 
 export const useTranspositionStore = create((set) => ({
   transposition: false,
   transpose: () => set((state) => ({ transposition: !state.transposition })),
-  
+}));
+
+export const useSearchStore = create((set) => ({
+  songName: '',
+  setSongName: (e) => set((state) => ({ songName: e })),
+}));
+
+export const useSongVersionStore = create((set) => ({
+  songId: '',
+  versionId: '',
+  setSongId: (e) => set((state) => ({ songId: e })),
+  setVersionId: (e) => set((state) => ({ versionId: e })),
 }));

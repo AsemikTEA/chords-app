@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useChordsStore, useTranspositionNumberStore } from '../state/store';
 
 const SongView = ({ songContent }) => {
@@ -15,7 +14,6 @@ const SongView = ({ songContent }) => {
   let array;
   let chordIndex = 0;
   let blockIndex = -1;
-  let transposeChordArray = [];
 
   const chords = useChordsStore((state) => state.chords);
   const addChords = useChordsStore((state) => state.addChords);
@@ -109,13 +107,10 @@ const SongView = ({ songContent }) => {
       if (firstBlockIndex > currentIndex) {
         const text = songContent.substring(currentIndex, firstBlockIndex).trim();
         const { chords, lyrics } = parseChordsAndLyrics(text);
-        //console.log(lyrics);
-        //console.log(chords);
         if (text) {
           currentText.push({
             block: blockName,
             lyrics: lyrics,
-            //chords: chords
           });
           chordsArray.push({
             block: blockName,
@@ -126,7 +121,6 @@ const SongView = ({ songContent }) => {
       };
 
       currentIndex = regex.lastIndex;
-      //console.log(currentText);
     }
 
     return currentText;
@@ -202,22 +196,22 @@ const SongView = ({ songContent }) => {
           </View>
           <View style={styles2.lyricLine}>
             {/* Render starting chords if they exist */}
-            {chordsArray[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
+            {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
               <Pressable style={styles2.relativeContainer}>
-                <Text style={styles2.chord}>{chordsArray[0].chords[chordIndex++].name}</Text>
+                <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex++]}</Text>
               </Pressable>
             )}
 
             {/* Render lyrics and chordsArray */}
             {block.lyrics.map((item, index) => {
-              if (item.isFollowedByChord && chordIndex < chordsArray[blockIndex].chords.length) {
+              if (item.isFollowedByChord && chordIndex < transposedChords[blockIndex].chords.length) {
                 return (
                   <>
                     <Text key={index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
                     <Pressable style={styles2.relativeContainer}>
-                      <Text style={styles2.chord}>{chordsArray[blockIndex].chords[chordIndex++].name}</Text>
+                      <Text style={styles2.chord}>{transposedChords[blockIndex].chords[chordIndex++]}</Text>
                     </Pressable>
                   </>
                 );

@@ -1,12 +1,17 @@
 import { View, Text, TextInput } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SearchBar } from '@rneui/themed';
 import { styles } from '../style/styles';
+import { useSearchStore } from '../state/store';
 
 const SearchForm = () => {
+
+  const setSongName = useSearchStore((state) => state.setSongName);
+
   return (
     <View style={styles.searchForm}>
       <SearchBar
+      onChangeText={(e) => {setSongName(e)}}
         platform="android"
         clearIcon={{ color: "black" }}
         searchIcon={{ color: "black" }}

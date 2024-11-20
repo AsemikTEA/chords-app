@@ -5,12 +5,12 @@ import { router } from 'expo-router'
 
 const SongListItem = ({ item, handlePress }) => {
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.listItem}
       onPress={handlePress}
     >
-        <Text style={styles.listItemSongName}>{item.name}</Text>
-        <Text style={styles.listItemAuthor}>{item.author}</Text>
+      <Text style={styles.listItemSongName}>{item.name}</Text>
+      <Text style={styles.listItemAuthor}>{item.artist_id[0].name}</Text>
     </TouchableOpacity>
   )
 }

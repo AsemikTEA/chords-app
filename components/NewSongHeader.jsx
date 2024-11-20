@@ -3,31 +3,43 @@ import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, usePathname } from 'expo-router';
 import { styles } from '../style/styles';
-import ModalDropdown from 'react-native-modal-dropdown';
+import { useCreateVersion } from '../hooks/useCreateVersion';
+import { useSongContentStore, useSongVersionStore } from '../state/store';
+import { useEditVersion } from '../hooks/useEditSong';
 
 const NewSongHeader = ({ song, }) => {
 
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const metadata = useSongContentStore((state) => state.songMetaData);
+  const content = useSongContentStore((state) => state.content);
+  const versionId = useSongVersionStore((state) => state.versionId);
+  const songId = useSongVersionStore((state) => state.songId);
 
-  const saveVersion = () => {
+  const setTitle = useSongContentStore((state) => state.setTitle);
+  const setArtist = useSongContentStore((state) => state.setArtist);
+  const setKey = useSongContentStore((state) => state.setKey);
+  const setCapo = useSongContentStore((state) => state.setCapo);
+  const setContent = useSongContentStore((state) => state.setContent);
+  const setVersion = useSongContentStore((state) => state.setVersion);
 
-  };
+  const createMutation = useCreateVersion();
+  const editMutation = useEditVersion();
 
-  const editVersion = () => {
-
-  };
-
-  const func = (value) => {
-    if (value === 'Transpose') {
-      return '';
-    }
+  const goBack = () => {
+    setTitle('');
+    setArtist('');
+    setKey('');
+    setCapo(0);
+    setContent('');
+    setVersion(0);
+    router.back();
   }
 
   return (
     <View style={styles.header}>
       <Pressable
         style={styles.backButton}
-        onPress={() => { router.back() }}
+        onPress={goBack}
       >
         <Ionicons name="chevron-back" size={28} color="black" />
       </Pressable>
@@ -39,7 +51,12 @@ const NewSongHeader = ({ song, }) => {
           <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
             <Pressable
               style={styles.backButton}
-              onPress={() => { saveVersion }}
+              onPress={() => { 
+                createMutation.mutate({ 
+                  metadata: metadata, 
+                  content: content 
+                });
+              }}
             >
               <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Save</Text>
             </Pressable>
@@ -53,7 +70,14 @@ const NewSongHeader = ({ song, }) => {
             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
               <Pressable
                 style={styles.backButton}
-                onPress={() => { editVersion }}
+                onPress={() => { 
+                  editMutation.mutate({
+                    songId: songId,
+                    versionId: versionId,
+                    metadata: metadata, 
+                    content: content 
+                  });
+                }}
               >
                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Save</Text>
               </Pressable>

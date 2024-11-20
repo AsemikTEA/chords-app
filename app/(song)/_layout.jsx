@@ -1,13 +1,13 @@
-import { View, Text, Pressable } from 'react-native'
 import { Stack } from 'expo-router'
-import { StatusBar } from 'expo-status-bar'
-import { styles } from '../../style/styles'
-import { Button } from '@rneui/base'
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Header from '../../components/Header'
 import NewSongHeader from '../../components/NewSongHeader'
+import { useSongVersionStore } from '../../state/store'
+import { useSongVersions } from '../../hooks/useSongVersions'
 
 const AuthLayout = () => {
+
+  // const songId = useSongVersionStore((state) => state.songId);
+  // const versions = useSongVersions(songId);
 
   const song =
     {

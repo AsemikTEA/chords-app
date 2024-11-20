@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useSongContentStore } from '../state/store';
 import { styles } from '../style/styles';
 
-const SongContentInput = ({text}) => {
+const SongContentInput = ({ text }) => {
 
   const setContent = useSongContentStore((state) => state.setContent);
   const content = useSongContentStore((state) => state.content);
@@ -20,7 +20,6 @@ const SongContentInput = ({text}) => {
           value={content}
           style={{
             fontSize: 17,
-            //backgroundColor: 'lightgrey', 
             flex: 1,
             textAlignVertical: 'top',
             borderRadius: 3,

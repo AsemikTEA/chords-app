@@ -5,10 +5,6 @@ import { Link, Redirect } from 'expo-router';
 export default function App() {
   
   const displayData = () => {};
-//   const user = useUserStore((state) => state.user)
-
-//   if (user !== null) return <Redirect replace href='/notes'/>
-//   if (user == null) return <Redirect replace href='/sign-in'/>
 
   return (
     <View style={styles.container}>
