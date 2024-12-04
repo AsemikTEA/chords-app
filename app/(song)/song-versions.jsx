@@ -25,10 +25,22 @@ const SongVersions = () => {
         item={item}
         handlePress={() => { 
           setVersionId(item._id); 
-          router.navigate('/display') 
+          router.navigate('/display'); 
         }}
       />)
   };
+
+  if (versions.isPending) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (versions.isError) {
+    return <Text>Error fetching versions. Please try again.</Text>;
+  }
+
+  if (!versions.data || !versions.data.length === 0) {
+    return <Text>No versions available for this song.</Text>;
+  }
 
   return (
     <SafeAreaView

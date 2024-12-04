@@ -1,8 +1,6 @@
 import { Stack } from 'expo-router'
 import Header from '../../components/Header'
 import NewSongHeader from '../../components/NewSongHeader'
-import { useSongVersionStore } from '../../state/store'
-import { useSongVersions } from '../../hooks/useSongVersions'
 
 const AuthLayout = () => {
 

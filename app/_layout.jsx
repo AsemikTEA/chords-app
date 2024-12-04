@@ -9,17 +9,18 @@ const HomeLayout = () => {
   return (
 
     <>
-    <QueryClientProvider client={queryClient}>
-      <Stack>
-          <Stack.Screen name="index" options={{headerShown: false}} />
+      <QueryClientProvider client={queryClient}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{
             headerShown: false
-            }} />
+          }} />
           <Stack.Screen name="(tabs)" options={{
             headerShown: false
-            }} />
-          <Stack.Screen name="(song)" options={{headerShown: false}} />
-      </Stack>
+          }} />
+          <Stack.Screen name="(song)" options={{ headerShown: false }} />
+          <Stack.Screen name="(playlist)" options={{ headerShown: false }} />
+        </Stack>
       </QueryClientProvider>
     </>
   )

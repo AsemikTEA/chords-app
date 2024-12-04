@@ -6,29 +6,22 @@ import SearchForm from '../../components/SearchForm';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import SongListItem from '../../components/SongListItem';
-import { useSearchStore, useSongVersionStore } from '../../state/store';
+import { useSearchStore, useSongContentStore, useSongVersionStore } from '../../state/store';
 import { useSearchSongs } from '../../hooks/useSearchSong';
 
 const Search = () => {
 
-  const setSongId = useSongVersionStore((state) => state.setSongId);
   const songName = useSearchStore((state) => state.songName);
+
+  const setSongId = useSongVersionStore((state) => state.setSongId);
+  const setTitle = useSongContentStore((state) => state.setTitle);
+  const setArtist = useSongContentStore((state) => state.setTitle);
+
   const songs = useSearchSongs(songName);
 
   useEffect(() => {
     songs.refetch();
   }, [songName]);
-
-  const data = [
-    {
-      name: "Afterglow",
-      author: "Ed Sheeran"
-    },
-    {
-      name: "Perfect",
-      author: "Ed Sheeran"
-    },
-  ]
 
   const separator = () => {
     return <View style={styles.separator} />;
@@ -37,7 +30,12 @@ const Search = () => {
   const songListItem = ({ item }) => {
     return <SongListItem
       item={item}
-      handlePress={() => { setSongId(item._id); router.navigate('/song-versions'); }}
+      handlePress={() => {
+        setTitle(item.name);
+        //setArtist();
+        setSongId(item._id); 
+        router.navigate('/song-versions'); 
+      }}
     />
   };
 

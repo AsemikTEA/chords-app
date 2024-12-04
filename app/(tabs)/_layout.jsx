@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { styles } from '../../style/styles';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import NewSongHeader from '../../components/NewSongHeader'
+import PlaylistHeader from '../../components/PlaylistHeader';
 // import { useUserStore } from '../../context/userStore';
 // import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 // import Ionicons from '@expo/vector-icons/Ionicons';
@@ -53,7 +55,7 @@ const TabsLayout = () => {
           name='playlists'
           options={{
             title: 'Playlists',
-            // headerShown: false,
+            header: () => <PlaylistHeader name={'Your playlists'}/>,
             tabBarIcon: ({ focused }) => {
               let iconColor;
               iconColor = focused ? 'white' : '#8e8e8e'

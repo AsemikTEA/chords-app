@@ -42,3 +42,35 @@ export const useSongVersionStore = create((set) => ({
   setSongId: (e) => set((state) => ({ songId: e })),
   setVersionId: (e) => set((state) => ({ versionId: e })),
 }));
+
+export const useUserStore = create((set) => ({
+  user: {id: '', username: '', email: '', token: ''},
+  logInData: {email: '', password: ''},
+  setId: (e) => set((state) => ({ user: { ...state.user, id: e }})),
+  setUsername: (e) => set((state) => ({ user: { ...state.user, username: e }})),
+  setEmail: (e) => set((state) => ({ user: { ...state.user, email: e }})),
+  setToken: (e) => set((state) => ({ user: { ...state.user, token: e }})),
+  setLogInEmail: (e) => set((state) => ({ logInData: { ...state.logInData, email: e }})),
+  setLogInPassword: (e) => set((state) => ({ logInData: { ...state.logInData, password: e }})),
+}));
+
+export const usePlaylistStore = create((set) => ({
+  playlistId: '',
+  playlistSongs: [],
+  playlistName: '',
+  setPlaylistId: (e) => set((state) => ({ playlistId: e })),
+  setPlaylistSong: (songId) => set((state) => ({ playlistSongs: [...state.playlistSongs, songId] })),
+  setPlaylistName: (e) => set((state) => ({ playlistName: e })),
+}));
+
+export const useModalStore = create((set) => ({
+  modalVisible: false,
+  modalOptions: false,
+  setModalVisible: () => set((state) => ({ modalVisible: !state.modalVisible })),
+  setModalOptions: () => set((state) => ({ modalOptions: !state.modalOptions }))
+}));
+
+export const useDisplayModeStore = create((set) => ({
+  displayOnlyChords: false,
+  setDisplayOnlyChords: () => set((state) => ({ displayOnlyChords: !state.displayOnlyChords })),
+}));

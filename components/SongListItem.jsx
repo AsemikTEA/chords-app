@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { styles } from '../style/styles'
-import { router } from 'expo-router'
 
 const SongListItem = ({ item, handlePress }) => {
   return (

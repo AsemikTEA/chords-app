@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: "center",
     justifyContent: 'flex-start',
-    flex: 1
+    flex: 2
   },
   versionListItemNameText: {
     //borderWidth: 1, 
@@ -103,7 +103,8 @@ export const styles = StyleSheet.create({
   },
   versionListItemText: {
     //borderWidth: 1, 
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingRight: 10
   },
   header: {
     flexDirection: 'row',
@@ -112,7 +113,7 @@ export const styles = StyleSheet.create({
     marginTop: 30
   },
   backButton: {
-    flex: 1,
+    flex: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -124,5 +125,57 @@ export const styles = StyleSheet.create({
   headerMainTitle: {
     fontWeight: 'bold',
     fontSize: 20
-  }
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    width: 350,
+    height: 180,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    gap: 15,
+    padding: 20
+  },
+  button: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 1,
+    width: '80%',
+    height: '55%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#24232B'
+  },
+  buttonDelete: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 1,
+    width: '80%',
+    height: '55%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E5131F',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 20,
+  },
 })

@@ -4,13 +4,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, usePathname } from 'expo-router';
 import { styles } from '../style/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { useTranspositionStore } from '../state/store';
+import { useDisplayModeStore, useModalStore, useSongContentStore, useTranspositionStore } from '../state/store';
 
-const Header = ({ song }) => {
+const Header = () => {
 
   const pathname = usePathname();
+  const songMetaData = useSongContentStore((state) => state.songMetaData); 
 
   const setTransposition = useTranspositionStore((state) => state.transpose);
+  const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
+  const setModalVisible = useModalStore((state) => state.setModalVisible);
 
   const dropdownSelect = (value) => {
     if (value === 'Transpose') {
@@ -18,6 +21,12 @@ const Header = ({ song }) => {
     }
     if (value === 'Edit song') {
       router.navigate('/edit');
+    }
+    if (value === 'Only chords') {
+      setDisplayOnlyChords();
+    }
+    if (value === 'Add to playlist') {
+      setModalVisible();
     }
   }
 
@@ -30,14 +39,14 @@ const Header = ({ song }) => {
         <Ionicons name="chevron-back" size={28} color="black" />
       </Pressable>
       <View style={styles.headerTitleContainer}>
-        <Text style={styles.headerMainTitle}>{song.name}</Text>
-        <Text>{song.author}</Text>
+        <Text style={styles.headerMainTitle}>{songMetaData.title}</Text>
+        <Text>{songMetaData.artist}</Text>
       </View>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {pathname === '/display' && (
           <ModalDropdown
             saveScrollPosition={false}
-            options={['Transpose', 'Only chords', 'Edit song', 'Share', 'Export as PDF',]}
+            options={['Transpose', 'Only chords', 'Edit song', 'Add to playlist', 'Share', 'Export as PDF',]}
             dropdownStyle={{ borderWidth: 1, borderColor: 'black', }}
             dropdownTextStyle={{ color: 'black', fontSize: 15 }}
             dropdownTextHighlightStyle={{ color: 'black' }}

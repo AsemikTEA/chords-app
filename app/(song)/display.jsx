@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, ScrollView, } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongView from '../../components/SongView';
 import Transpose from '../../components/Transpose';
-import { useSongVersionStore, useTranspositionStore } from '../../state/store';
+import { useSongVersionStore, useTranspositionStore, } from '../../state/store';
 import { useSongVersion } from '../../hooks/useSongVersion';
+import AddToPlaylistModal from '../../components/AddToPlaylistModal';
 
 const DisplaySong = () => {
 
@@ -19,47 +20,24 @@ const DisplaySong = () => {
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
+      <AddToPlaylistModal version={versionId}/>
       <ScrollView>
         {version.isFetching && (
           <View>
             <Text>Loading...</Text>
           </View>
         ) || (
-            <View style={styles2.container}>
+            <View style={{ padding: 10 }}>
               <SongView songContent={version.data.content} />
             </View>
           )}
       </ScrollView>
-      {transposition &&
+      {
+        transposition &&
         <Transpose />
       }
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
 export default DisplaySong;
-
-const styles2 = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  lyricLine: {
-    flexDirection: 'row',     // Horizontal line for lyrics and chords
-    flexWrap: 'wrap',
-    padding: 3
-  },
-  relativeContainer: {
-    position: 'relative',
-    marginTop: 20
-  },
-  chord: {
-    position: 'absolute',     // Position the chord above the lyrics
-    top: -20,                 // Adjust this to control how far above the lyrics the chord should be
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  lyrics: {
-    fontSize: 16,
-  },
-});
