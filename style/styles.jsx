@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
     marginRight: 10,
     //borderWidth: 1,
     height: 75,
-    justifyContent: 'center',
+    //justifyContent: 'center',
     paddingLeft: 20,
     gap: 8
   },
@@ -177,5 +177,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 20,
+  },
+  error: {
+    color: "red",
   },
 })

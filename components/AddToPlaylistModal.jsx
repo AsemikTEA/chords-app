@@ -6,8 +6,11 @@ import { styles } from '../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { useAddToPlaylist } from '../hooks/useAddToPlaylist';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AddToPlaylistModal = ({ version }) => {
+
+  const queryClient = useQueryClient();
 
   const user = useUserStore((state) => state.user);
   const modalVisible = useModalStore((state) => state.modalVisible);
@@ -25,11 +28,23 @@ const AddToPlaylistModal = ({ version }) => {
     return <PlaylistListItem
       item={item}
       handlePress={() => {
-        addToPlaylist.mutate({playlist: item, songToAdd: version});
+        addToPlaylist.mutate(
+          {
+            playlist: item, 
+            songToAdd: version
+          },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries(['playlists']);
+            }
+          }
+        );
         setModalVisible();
       }}
     />
   };
+
+  console.log('addmodal');
 
   return (
     <Modal

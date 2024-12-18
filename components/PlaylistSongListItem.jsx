@@ -1,19 +1,30 @@
-import { Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { styles } from '../style/styles'
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { styles } from '../style/styles';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-const PlaylistSongListItem = ({ item, handlePress }) => {
-
-  // const playlistSongs = usePlaylistSongs();
+const PlaylistSongListItem = ({ item, handlePress, handleDeletePress }) => {
 
   return (
+    <>
     <TouchableOpacity
-      style={styles.listItem}
+      style={[styles.listItem, { flexDirection: 'row' }]}
       onPress={handlePress}
     >
-      <Text style={styles.listItemSongName}>{item.metadata.title}</Text>
-      <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
+
+      <View style={{ flex: 4 }}>
+        <Text style={styles.listItemSongName}>{item.metadata.title}</Text>
+        <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
+      </View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity
+          onPress={handleDeletePress}
+        >
+          <AntDesign name="close" size={28} color="black" />
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
+    </>
   )
 }
 

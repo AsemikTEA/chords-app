@@ -6,10 +6,11 @@ import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import { usePathname } from 'expo-router';
 
-const SongView = ({ songContent, songName }) => {
+const SongViewPlaylist = ({ songContent, songName, transposition }) => {
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
+  const [transpositionNumber, setTranspositionNumber] = useState(0);
 
   let parsedSongData;
   let chordsArray = [];
@@ -18,7 +19,7 @@ const SongView = ({ songContent, songName }) => {
   let blockIndex = -1;
 
   const pathname = usePathname();
-  const transpositionNumber = useTranspositionNumberStore((state) => state.transpositionNumber);
+  // const transpositionNumber = useTranspositionNumberStore((state) => state.transpositionNumber);
   const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
 
   const intervals = new Map([
@@ -289,7 +290,7 @@ const SongView = ({ songContent, songName }) => {
   return array;
 };
 
-export default SongView
+export default SongViewPlaylist;
 
 const styles2 = StyleSheet.create({
   container: {

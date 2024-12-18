@@ -5,7 +5,7 @@ import React from 'react'
 const SubmitButton = ({handlePress, textValue, style}) => {
   return (
     <TouchableOpacity
-    style={style}
+    style={styles.submitButton}
     onPress={ handlePress }
     >
         <Text style={styles.buttonTextStyle}>{textValue}</Text>

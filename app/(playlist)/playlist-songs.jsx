@@ -8,24 +8,29 @@ import { usePlaylistStore } from '../../state/store';
 import { usePlaylistSongs } from '../../hooks/usePlaylistSongs';
 import PlaylistSongListItem from '../../components/PlaylistSongListItem';
 import TabPlaylistPlayButton from '../../components/TabPlayButton';
+import { usePlaylistSongDelete } from '../../hooks/usePlaylistSongDelete';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SongVersions = () => {
+
+  const queryClient = useQueryClient();
 
   const playlistId = usePlaylistStore((state) => state.playlistId);
 
   const setPlaylistSong = usePlaylistStore((state) => state.setPlaylistSong);
 
-  const { data, isLoading, isError } = usePlaylistSongs(playlistId);
+  const playlistSongs = usePlaylistSongs(playlistId);
+  const deletePlaylistSong = usePlaylistSongDelete();
 
-  if (isLoading) {
+  if (playlistSongs.isLoading) {
     return <Text>Loading...</Text>;
   }
 
-  if (isError) {
+  if (playlistSongs.isError) {
     return <Text>Error fetching playlist songs. Please try again.</Text>;
   }
 
-  if (!data || !data.songs || data.songs.length === 0) {
+  if (!playlistSongs.data || !playlistSongs.data.songs || playlistSongs.data.songs.length === 0) {
     return <Text>No songs available in this playlist.</Text>;
   }
 
@@ -38,10 +43,25 @@ const SongVersions = () => {
       <PlaylistSongListItem
         item={item}
         handlePress={() => {
-          for(song of data.songs) {
+          for (song of playlistSongs.data.songs) {
             setPlaylistSong(song._id)
-          }
+          };
           router.navigate('/display-playlist');
+        }}
+        handleDeletePress={() => {
+          console.log('asd')
+          deletePlaylistSong.mutate(
+            {
+              song: item,
+              playlist: playlistSongs.data,
+            },
+            {
+              onSuccess: () => {
+                playlistSongs.refetch();
+                queryClient.invalidateQueries(['playlists']);
+              }
+            }
+          );
         }}
       />)
   };
@@ -52,12 +72,12 @@ const SongVersions = () => {
       edges={['bottom', 'left', 'right']}
     >
       <FlashList
-        data={data.songs}
+        data={playlistSongs.data.songs}
         renderItem={playlistSongListItem}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
       />
-      <TabPlaylistPlayButton/>
+      <TabPlaylistPlayButton />
     </SafeAreaView>
   );
 }

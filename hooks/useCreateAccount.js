@@ -11,9 +11,11 @@ const createAccount = async (userData) => {
 
   try {
     const response = await axios.post(`http://10.0.0.87:3000/v1/users/sign-up`, newAccountObject);
-    console.log(response);
+    //console.log(response);
+    return response;
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data.message);
+    return error;
   }
 }
 

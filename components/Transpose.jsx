@@ -1,6 +1,8 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { useTranspositionNumberStore } from '../state/store';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Transpose = () => {
 
@@ -9,23 +11,29 @@ const Transpose = () => {
   const transposeDown = useTranspositionNumberStore((state) => state.transposeDown);
 
   return (
-    <View style={{ borderWidth: 1, height: 50 }}>
-      <View style={{ flexDirection: 'row' }}>
-        <Pressable
-          style={{ borderWidth: 1, flex: 1, }}
-          onPress={transposeUp}
-        >
-          <Text>Nahoru</Text>
-        </Pressable>
-        <View>
-          <Text>{transpositionNumber}</Text>
+    <View style={{ height: 80, borderTopLeftRadius: 25, borderTopRightRadius: 25, backgroundColor: '#24232B' }}>
+      <View style={{ flexDirection: 'row', flex: 1 }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable
+            style={{ flexDirection: 'row'}}
+            onPress={transposeUp}
+          >
+            <FontAwesome6 name="arrow-up-long" size={34} color="#f2f2f2" />
+            <MaterialCommunityIcons name="music-accidental-sharp" size={30} color="#f2f2f2" />
+          </Pressable>
         </View>
-        <Pressable
-          style={{ borderWidth: 1, flex: 1, }}
-          onPress={transposeDown}
-        >
-          <Text>Dolu</Text>
-        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+          <Text style={{ fontSize: 25, color: '#f2f2f2'}}>{transpositionNumber}</Text>
+        </View>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable
+            style={{ flexDirection: 'row'}}
+            onPress={transposeDown}
+          >
+            <FontAwesome6 name="arrow-down-long" size={34} color="#f2f2f2" />
+            <MaterialCommunityIcons name="music-accidental-flat" size={30} color="#f2f2f2" />
+          </Pressable>
+        </View>
       </View>
     </View>
   )

@@ -6,6 +6,7 @@ import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Transpose from '../../components/Transpose'
 import SongView from '../../components/SongView'
+import SongViewPlaylist from '../../components/SongViewPlaylist'
 
 const PlaylistDisplay = () => {
 
@@ -34,10 +35,10 @@ const PlaylistDisplay = () => {
       <ScrollView>
         {data.songs.map((item) => {
           return (
-            <View style={{ padding: 10 }}>
-              <SongView 
+            <View style={{ paddingLeft: 10 }}>
+              <SongViewPlaylist 
                 songContent={item.content} 
-                songName={item.metadata.title}  
+                songName={item.metadata.title}
               />
             </View>
           )
@@ -51,4 +52,4 @@ const PlaylistDisplay = () => {
   );
 }
 
-export default PlaylistDisplay
+export default PlaylistDisplay;
