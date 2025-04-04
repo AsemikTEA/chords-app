@@ -4,12 +4,13 @@ import React from 'react';
 import { useSongContentStore } from '../state/store';
 import { SelectList } from 'react-native-dropdown-select-list';
 
-const DropdownSelectInput = ({ title, value, placeholder, style, handleChangeText, hidePassword, maxLength, ...props }) => {
+const DropdownSelectInput = ({ title, value, placeholder, style, handleSelectChange, ...props }) => {
   
   const setCapo = useSongContentStore((state) => state.setCapo);
   const songMetaData = useSongContentStore((state) => state.songMetaData);
 
   const data = [
+    { key: '0', value: 0 },
     { key: '1', value: 1 },
     { key: '2', value: 2 },
     { key: '3', value: 3 },
@@ -27,18 +28,13 @@ const DropdownSelectInput = ({ title, value, placeholder, style, handleChangeTex
   ]
   
   return (
-    <View>
-      <Text style={styles.formTextStyle}>{title}</Text>
-      <View>
-        <SelectList
-          defaultOption={{ key: songMetaData.capo, value: songMetaData.capo}}
-          setSelected={(val) => { setCapo(val) }}
-          data={data}
-          save="value"
-          label='Capo'
-        />
-      </View>
-    </View>
+    <SelectList
+      defaultOption={{ key: value, value: value}}
+      setSelected={() => handleSelectChange}
+      data={data}
+      save="value"
+      label={title}
+    />
   );
 };
 

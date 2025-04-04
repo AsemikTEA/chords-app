@@ -9,7 +9,7 @@ const SongListItem = ({ item, handlePress }) => {
       onPress={handlePress}
     >
       <Text style={styles.listItemSongName}>{item.name}</Text>
-      <Text style={styles.listItemAuthor}>{item.artist_id[0].name}</Text>
+      <Text style={styles.listItemAuthor}>{item.artist[0].name}</Text>
     </TouchableOpacity>
   )
 }

@@ -4,22 +4,27 @@ import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { router } from 'expo-router';
-import { usePlaylistStore } from '../../state/store';
+import { usePlaylistStore, useUserStore } from '../../state/store';
 import { usePlaylistSongs } from '../../hooks/usePlaylistSongs';
 import PlaylistSongListItem from '../../components/PlaylistSongListItem';
 import TabPlaylistPlayButton from '../../components/TabPlayButton';
 import { usePlaylistSongDelete } from '../../hooks/usePlaylistSongDelete';
 import { useQueryClient } from '@tanstack/react-query';
+import { use } from 'react';
 
 const SongVersions = () => {
 
   const queryClient = useQueryClient();
 
   const playlistId = usePlaylistStore((state) => state.playlistId);
+  const user = useUserStore((state) => state.user);
 
   const setPlaylistSong = usePlaylistStore((state) => state.setPlaylistSong);
 
-  const playlistSongs = usePlaylistSongs(playlistId);
+  const playlistSongs = usePlaylistSongs({
+    playlistId: playlistId,
+    userId: user.id
+  });
   const deletePlaylistSong = usePlaylistSongDelete();
 
   if (playlistSongs.isLoading) {

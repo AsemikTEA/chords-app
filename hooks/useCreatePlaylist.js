@@ -11,7 +11,7 @@ const createPlaylist = async (data) => {
   }
 
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/playlists`, newPlaylistObject);
+    const response = await axios.post(`http://10.0.0.87:3000/v1/playlists/create`, newPlaylistObject);
     console.log(response);
   } catch (error) {
     console.log(error);

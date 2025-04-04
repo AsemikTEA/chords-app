@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const fetchPlaylistSong = async (playlistId) => {
+const fetchPlaylistSong = async (searchObject) => {
+
+  console.log(searchObject);
+
   try {
-    const {data: response} = await axios.get(`http://10.0.0.87:3000/v1/playlists/${playlistId}`);
+    const {data: response} = await axios.post('http://10.0.0.87:3000/v1/playlists/', searchObject);
     console.log(response);
     return response;
   } catch (error) {
@@ -11,9 +14,9 @@ const fetchPlaylistSong = async (playlistId) => {
   }
 }
 
-export const usePlaylistSongs = (playlistId) => {
+export const usePlaylistSongs = (searchObject) => {
   return useQuery({
     queryKey: ['playlist-songs'],
-    queryFn: ()  => fetchPlaylistSong(playlistId),
+    queryFn: ()  => fetchPlaylistSong(searchObject),
   });
 }

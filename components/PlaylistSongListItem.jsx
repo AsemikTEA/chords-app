@@ -12,9 +12,14 @@ const PlaylistSongListItem = ({ item, handlePress, handleDeletePress }) => {
       onPress={handlePress}
     >
 
-      <View style={{ flex: 4 }}>
+      <View style={{ flex: 3 }}>
         <Text style={styles.listItemSongName}>{item.metadata.title}</Text>
         <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
+      </View>
+      <View style={{ flex: 1.8 }}>
+        {item.userTransposition && (
+          <Text>transposition: {item.userTransposition}</Text>
+        )}
       </View>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity

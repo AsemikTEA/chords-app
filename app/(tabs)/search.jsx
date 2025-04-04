@@ -8,20 +8,22 @@ import { FlashList } from '@shopify/flash-list';
 import SongListItem from '../../components/SongListItem';
 import { useSearchStore, useSongContentStore, useSongVersionStore } from '../../state/store';
 import { useSearchSongs } from '../../hooks/useSearchSong';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const Search = () => {
 
   const songName = useSearchStore((state) => state.songName);
+  const debouncedSearch = useDebounce(songName);
 
   const setSongId = useSongVersionStore((state) => state.setSongId);
   const setTitle = useSongContentStore((state) => state.setTitle);
   const setArtist = useSongContentStore((state) => state.setTitle);
 
-  const songs = useSearchSongs(songName);
+  const songs = useSearchSongs(debouncedSearch);
 
   useEffect(() => {
     songs.refetch();
-  }, [songName]);
+  }, [debouncedSearch]);
 
   const separator = () => {
     return <View style={styles.separator} />;
@@ -41,7 +43,9 @@ const Search = () => {
 
   return (
     <SafeAreaView
-      style={styles.container}>
+      style={styles.container}
+      edges={['bottom', 'left', 'right']}
+    >
       <SearchForm />
       <FlashList
         data={songs.data}

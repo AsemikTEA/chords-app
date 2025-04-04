@@ -2,16 +2,7 @@ import { Stack } from 'expo-router'
 import Header from '../../components/Header'
 import NewSongHeader from '../../components/NewSongHeader'
 
-const AuthLayout = () => {
-
-  // const songId = useSongVersionStore((state) => state.songId);
-  // const versions = useSongVersions(songId);
-
-  const song =
-    {
-        name: "Afterglow",
-        author: "Ed Sheeran"
-    }
+const SongLayout = () => {
 
   return (
     <>
@@ -19,20 +10,17 @@ const AuthLayout = () => {
         <Stack.Screen
           name='song-versions'
           options={{
-            header: () => <Header song={song} />
+            header: () => <Header/>
           }}
         />
         <Stack.Screen
           name='display'
           options={{
-            header: () => <Header song={song} />
+            header: () => <Header/>
           }}
         />
         <Stack.Screen
           name='create'
-          options={{
-            header: () => <NewSongHeader/>
-          }}
         />
         <Stack.Screen
           name='edit'
@@ -45,4 +33,4 @@ const AuthLayout = () => {
   )
 }
 
-export default AuthLayout
+export default SongLayout

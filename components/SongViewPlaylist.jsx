@@ -6,7 +6,7 @@ import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import { usePathname } from 'expo-router';
 
-const SongViewPlaylist = ({ songContent, songName, transposition }) => {
+const SongViewPlaylist = ({ song }) => {
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
@@ -53,6 +53,8 @@ const SongViewPlaylist = ({ songContent, songName, transposition }) => {
     });
 
     setTransposedChords(transposed);
+    setTranspositionNumber(song.userTransposition);
+    transposeChord(chordsArray, transpositionNumber);
   }, [])
 
   useEffect(() => {
@@ -63,7 +65,6 @@ const SongViewPlaylist = ({ songContent, songName, transposition }) => {
     }
 
     transposeChord(chordsArray, transpositionNumber);
-    //console.log(transposedChords)
   }, [transpositionNumber]);
 
   const getIntervalCoord = (transpositionNumber) => {
@@ -190,7 +191,7 @@ const SongViewPlaylist = ({ songContent, songName, transposition }) => {
     return { chords, lyrics };
   };
 
-  parsedSongData = splitSongToBlocks(songContent);
+  parsedSongData = splitSongToBlocks(song.content);
 
   if (!transposedChords || transposedChords.length === 0) {
     return <Text>Loading chords...</Text>;
@@ -202,7 +203,7 @@ const SongViewPlaylist = ({ songContent, songName, transposition }) => {
     if (pathname === '/display-playlist') {
       array.push(
         <View style={{ marginTop: 10, marginBottom: 5 }}>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{songName}</Text>
+          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{song.metadata.title}</Text>
         </View>
       )
     }
@@ -236,7 +237,7 @@ const SongViewPlaylist = ({ songContent, songName, transposition }) => {
     if (pathname === '/display-playlist') {
       array.push(
         <View style={{ marginTop: 10, marginBottom: 5 }}>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{songName}</Text>
+          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{song.metadata.title}</Text>
         </View>
       )
     }

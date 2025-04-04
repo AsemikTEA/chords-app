@@ -1,7 +1,7 @@
-import { View, Text, ScrollView } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
-import { usePlaylistStore, useTranspositionStore } from '../../state/store'
+import { usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
 import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Transpose from '../../components/Transpose'
@@ -11,9 +11,13 @@ import SongViewPlaylist from '../../components/SongViewPlaylist'
 const PlaylistDisplay = () => {
 
   const playlistId = usePlaylistStore((state) => state.playlistId);
+  const user = useUserStore((state) => state.user);
   const transposition = useTranspositionStore((state) => state.transposition);
 
-  const { data, isPending, isError } = usePlaylistDisplay(playlistId);
+  const { data, isPending, isError } = usePlaylistDisplay({
+    playlistId: playlistId,
+    userId: user.id
+  });
 
   if (isPending) {
     return <Text>Loading...</Text>;
@@ -33,13 +37,15 @@ const PlaylistDisplay = () => {
       edges={['bottom', 'left', 'right']}
     >
       <ScrollView>
-        {data.songs.map((item) => {
+        {data.songs.map((item, index) => {
           return (
             <View style={{ paddingLeft: 10 }}>
-              <SongViewPlaylist 
-                songContent={item.content} 
-                songName={item.metadata.title}
-              />
+              <TouchableOpacity>
+                <SongViewPlaylist
+                  key={index}
+                  song={item}
+                />
+              </TouchableOpacity>
             </View>
           )
         })
