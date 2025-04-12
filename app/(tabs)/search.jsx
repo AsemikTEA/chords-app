@@ -17,7 +17,7 @@ const Search = () => {
 
   const setSongId = useSongVersionStore((state) => state.setSongId);
   const setTitle = useSongContentStore((state) => state.setTitle);
-  const setArtist = useSongContentStore((state) => state.setTitle);
+  const setArtist = useSongContentStore((state) => state.setArtist);
 
   const songs = useSearchSongs(debouncedSearch);
 
@@ -33,8 +33,9 @@ const Search = () => {
     return <SongListItem
       item={item}
       handlePress={() => {
+        console.log('data v itemu', item)
         setTitle(item.name);
-        //setArtist();
+        setArtist(item.artist[0].name);
         setSongId(item._id); 
         router.navigate('/song-versions'); 
       }}

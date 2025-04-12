@@ -51,14 +51,7 @@ const NewSongHeader = ({ song, onSubmit }) => {
             <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
               <Pressable
                 style={styles.backButton}
-                onPress={() => { 
-                  editMutation.mutate({
-                    songId: songId,
-                    versionId: versionId,
-                    metadata: metadata, 
-                    content: content 
-                  });
-                }}
+                onPress={onSubmit}
               >
                 <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Save</Text>
               </Pressable>

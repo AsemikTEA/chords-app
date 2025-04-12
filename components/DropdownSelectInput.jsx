@@ -1,13 +1,10 @@
 import { View, Text, TextInput } from 'react-native';
 import { styles } from '../style/styles';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSongContentStore } from '../state/store';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 const DropdownSelectInput = ({ title, value, placeholder, style, handleSelectChange, ...props }) => {
-  
-  const setCapo = useSongContentStore((state) => state.setCapo);
-  const songMetaData = useSongContentStore((state) => state.songMetaData);
 
   const data = [
     { key: '0', value: 0 },
@@ -30,7 +27,8 @@ const DropdownSelectInput = ({ title, value, placeholder, style, handleSelectCha
   return (
     <SelectList
       defaultOption={{ key: value, value: value}}
-      setSelected={() => handleSelectChange}
+      setSelected={(value) => handleSelectChange}
+      //onSelect={(handleSelectChange)}
       data={data}
       save="value"
       label={title}

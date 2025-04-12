@@ -1,25 +1,28 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-const editVersion = async (versionId, metadata, content) => {
-
+const editVersion = async (songData) => {
+  
   const versionObject = {
-    version: metadata.version,
+    version: songData.version,
     metadata: {
-      title: metadata.title,
-      artist: metadata.artist,
-      tempo: metadata.tempo || null,
-      key: metadata.key,
-      capo: metadata.capo,
-      duration: metadata.duration || null,
+      title: songData.title,
+      artist: songData.artist,
+      tempo: songData.tempo || null,
+      key: songData.key,
+      capo: songData.capo,
+      duration: songData.duration || null,
+      tranposition: songData.transposition || null,
     },
-    content: content,
-    song_id: null,
+    content: songData.content,
+    song_id: songData.songId,
+    user_id: songData.userId,
   }
 
   try {
-    const response = await axios.put(`http://10.0.0.87:3000/v1/song-versions/${versionId}`, versionObject);
-    console.log(response);
+    const response = await axios.post(`http://10.0.0.87:3000/v1/personal-version/`, versionObject);
+    console.log(response.data);
+    return(response);
   } catch (error) {
     console.log(error);
   }
@@ -27,6 +30,6 @@ const editVersion = async (versionId, metadata, content) => {
 
 export const useEditVersion = () => {
   return useMutation({
-    mutationFn: (value) => editVersion(value.versionId, value.metadata, value.content),
+    mutationFn: (songData) => editVersion(songData.data),
   });
 }
