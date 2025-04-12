@@ -64,9 +64,21 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
+          name='user-edited-songs'
+          options={{
+            title: 'My songs',
+            headerShown: false,
+            tabBarIcon: ({ focused }) => {
+              let iconColor;
+              iconColor = focused ? 'white' : '#8e8e8e'
+              return <MaterialCommunityIcons name="account-cog" size={28} color={iconColor} />;
+            }
+          }}
+        />
+        <Tabs.Screen
           name='account'
           options={{
-            title: 'Account',
+            title: 'Profile',
             headerShown: false,
             tabBarIcon: ({ focused }) => {
               let iconColor;

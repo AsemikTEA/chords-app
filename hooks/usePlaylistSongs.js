@@ -10,7 +10,7 @@ const fetchPlaylistSong = async (searchObject) => {
     console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(error.response);
   }
 }
 

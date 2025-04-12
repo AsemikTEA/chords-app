@@ -13,8 +13,8 @@ const PlaylistSongListItem = ({ item, handlePress, handleDeletePress }) => {
     >
 
       <View style={{ flex: 3 }}>
-        <Text style={styles.listItemSongName}>{item.metadata.title}</Text>
-        <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
+        <Text style={styles.listItemSongName}>{item.version.metadata.title}</Text>
+        <Text style={styles.listItemAuthor}>Version: {item.version.version}</Text>
       </View>
       <View style={{ flex: 1.8 }}>
         {item.userTransposition && (

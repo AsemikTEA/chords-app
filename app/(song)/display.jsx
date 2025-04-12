@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongView from '../../components/SongView';
@@ -7,20 +7,37 @@ import Transpose from '../../components/Transpose';
 import { useSongVersionStore, useTranspositionStore, } from '../../state/store';
 import { useSongVersion } from '../../hooks/useSongVersion';
 import AddToPlaylistModal from '../../components/AddToPlaylistModal';
+import { useNavigation } from 'expo-router';
+import Header from '../../components/Header';
 
 const DisplaySong = () => {
+
+  const navigation = useNavigation();
 
   const versionId = useSongVersionStore((state) => state.versionId);
   const transposition = useTranspositionStore((state) => state.transposition);
 
   const version = useSongVersion(versionId);
 
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => <Header
+        song={version.data?.metadata?.title ?? ''}
+        artist={version.data?.metadata?.artist ?? ''}
+      />
+    });
+  }, [version.data, navigation]);
+
+  if (version.isPending) {
+      return <Text>Loading...</Text>;
+    }
+
   return (
     <SafeAreaView
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
-      <AddToPlaylistModal version={versionId}/>
+      <AddToPlaylistModal version={{ version: versionId, versionModel: version.data.model }} />
       <ScrollView>
         {version.isFetching && (
           <View>

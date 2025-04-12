@@ -15,7 +15,7 @@ const AddToPlaylistModal = ({ version }) => {
   const user = useUserStore((state) => state.user);
   const modalVisible = useModalStore((state) => state.modalVisible);
 
-  const playlists = usePlaylists(user.id);
+  const playlists = usePlaylists(user.id, modalVisible);
   const addToPlaylist = useAddToPlaylist();
 
   const setModalVisible = useModalStore((state) => state.setModalVisible);
@@ -30,12 +30,14 @@ const AddToPlaylistModal = ({ version }) => {
       handlePress={() => {
         addToPlaylist.mutate(
           {
-            playlist: item, 
+            playlist: item,
             songToAdd: version
           },
           {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['playlists']);
+            onSuccess: ({ status: status, data: data, response: error }) => {
+              queryClient.setQueryData(['playlist-songs'], (oldData) => {
+                return [...oldData, data]
+              });
             }
           }
         );
@@ -43,8 +45,6 @@ const AddToPlaylistModal = ({ version }) => {
       }}
     />
   };
-
-  console.log('addmodal');
 
   return (
     <Modal

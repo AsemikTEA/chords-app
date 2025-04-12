@@ -6,10 +6,9 @@ import { styles } from '../style/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { useDisplayModeStore, useModalStore, useSongContentStore, useTranspositionStore } from '../state/store';
 
-const Header = () => {
+const Header = ({ song, artist }) => {
 
   const pathname = usePathname();
-  const songMetaData = useSongContentStore((state) => state.songMetaData); 
 
   const setTransposition = useTranspositionStore((state) => state.transpose);
   const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
@@ -39,8 +38,8 @@ const Header = () => {
         <Ionicons name="chevron-back" size={28} color="black" />
       </Pressable>
       <View style={styles.headerTitleContainer}>
-        <Text style={styles.headerMainTitle}>{songMetaData.title}</Text>
-        <Text>{songMetaData.artist}</Text>
+        <Text style={styles.headerMainTitle}>{song}</Text>
+        <Text>{artist}</Text>
       </View>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {pathname === '/display' && (

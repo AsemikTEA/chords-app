@@ -3,23 +3,24 @@ import React, { useEffect, useRef, useState } from 'react'
 import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
-import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
+import { useDisplayModeStore } from '../state/store';
 import { usePathname } from 'expo-router';
 
-const SongViewPlaylist = ({ song }) => {
+const SongViewPlaylist = ({ song }) => {;
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
   const [transpositionNumber, setTranspositionNumber] = useState(0);
 
-  let parsedSongData;
-  let chordsArray = [];
   let array;
-  let chordIndex = 0;
-  let blockIndex = -1;
+
+  const chordsArray = useRef([]);
+  const parsedSongData = useRef([]);
+  const blockIndex = useRef(-1);
+  const chordIndex = useRef(0);
 
   const pathname = usePathname();
-  // const transpositionNumber = useTranspositionNumberStore((state) => state.transpositionNumber);
+  
   const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
 
   const intervals = new Map([
@@ -38,7 +39,15 @@ const SongViewPlaylist = ({ song }) => {
   ]);
 
   useEffect(() => {
-    const transposed = chordsArray.map((block) => {
+    console.log('prvni useEffect jde!');
+    chordsArray.current = [];
+    blockIndex.current = -1;
+    chordIndex.current = 0;
+
+    const parsed = splitSongToBlocks(song.content);
+    parsedSongData.current = parsed;
+
+    const transposed = chordsArray.current.map((block) => {
       const c = [];
       console.log("block name: " + block.block);
 
@@ -53,9 +62,9 @@ const SongViewPlaylist = ({ song }) => {
     });
 
     setTransposedChords(transposed);
-    setTranspositionNumber(song.userTransposition);
-    transposeChord(chordsArray, transpositionNumber);
-  }, [])
+    setTranspositionNumber(song.userTransposition || 0);
+    transposeChord(chordsArray.current, transpositionNumber);
+  }, []);
 
   useEffect(() => {
     if (!hasMounted.current) {
@@ -64,7 +73,7 @@ const SongViewPlaylist = ({ song }) => {
       return;
     }
 
-    transposeChord(chordsArray, transpositionNumber);
+    transposeChord(chordsArray.current, transpositionNumber);
   }, [transpositionNumber]);
 
   const getIntervalCoord = (transpositionNumber) => {
@@ -79,11 +88,10 @@ const SongViewPlaylist = ({ song }) => {
 
     const transposed = chordsArray.map((block) => {
       const transChords = [];
-      console.log("block name: " + block.block);
+      console.log("block name in transposeChord: " + block.block);
 
       block.chords.map((item) => {
         const transposedChord = item.interval(getIntervalCoord(transpositionNumber));
-        //console.log('TRANSPOSE ARRAY: ' + transposedChord);
         transChords.push(transposedChord.name);
       });
 
@@ -124,12 +132,12 @@ const SongViewPlaylist = ({ song }) => {
             block: blockName,
             lyrics: lyrics,
           });
-          chordsArray.push({
+          chordsArray.current.push({
             block: blockName,
             chords: chords,
           });
         }
-        //console.log(chordsArray);
+        //console.log(chordsArray.current);
       };
 
       currentIndex = regex.lastIndex;
@@ -191,11 +199,15 @@ const SongViewPlaylist = ({ song }) => {
     return { chords, lyrics };
   };
 
-  parsedSongData = splitSongToBlocks(song.content);
+  //parsedSongData = splitSongToBlocks(song.content);
+  if (!parsedSongData.current.length) return <Text>Loading...</Text>
 
   if (!transposedChords || transposedChords.length === 0) {
     return <Text>Loading chords...</Text>;
   }
+
+  blockIndex.current = -1;
+  chordIndex.current = 0;
 
   if (displayOnlyChords) {
     array = [];
@@ -210,7 +222,6 @@ const SongViewPlaylist = ({ song }) => {
 
     for (block of transposedChords) {
       const blockName = block.block
-      console.log(transposedChords)
 
       array.push(
         <View style={styles.container}>
@@ -242,11 +253,13 @@ const SongViewPlaylist = ({ song }) => {
       )
     }
 
-    for (block of parsedSongData) {
+    for (block of parsedSongData.current) {
       const blockName = block.block;
-      chordIndex = 0;
-      blockIndex++;
-      console.log(transposedChords);
+
+      chordIndex.current = 0;
+      blockIndex.current++;
+
+      if (!transposedChords[blockIndex.current]) return null;
 
       array.push(
         <View style={styles.container}>
@@ -257,20 +270,20 @@ const SongViewPlaylist = ({ song }) => {
             {/* Render starting chords if they exist */}
             {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
               <Pressable style={styles2.relativeContainer}>
-                <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex++]}</Text>
+                <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex.current++]}</Text>
               </Pressable>
             )}
 
             {/* Render lyrics and chordsArray */}
             {block.lyrics.map((item, index) => {
-              if (item.isFollowedByChord && chordIndex < transposedChords[blockIndex].chords.length) {
+              if (item.isFollowedByChord && chordIndex.current < transposedChords[blockIndex.current].chords.length) {
                 return (
                   <>
                     <Text key={index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
                     <Pressable style={styles2.relativeContainer}>
-                      <Text style={styles2.chord}>{transposedChords[blockIndex].chords[chordIndex++]}</Text>
+                      <Text style={styles2.chord}>{transposedChords[blockIndex.current].chords[chordIndex.current++]}</Text>
                     </Pressable>
                   </>
                 );

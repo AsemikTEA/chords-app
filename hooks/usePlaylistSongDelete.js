@@ -3,7 +3,7 @@ import axios from "axios";
 
 const deletePlaylistSong = async (value) => {
 
-  const newSongsArry = value.playlist.songs.filter(song => song._id !== value.song._id);
+  const newSongsArry = value.playlist.songs.filter(song => song.version._id !== value.song.version._id);
   console.log(newSongsArry);
 
   const playlistObject = {

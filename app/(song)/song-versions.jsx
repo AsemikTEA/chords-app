@@ -1,19 +1,32 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import VersionListItem from '../../components/VersionListItem';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { useSongVersions } from '../../hooks/useSongVersions';
-import { useSongVersionStore } from '../../state/store';
+import { useSongContentStore, useSongVersionStore } from '../../state/store';
+import Header from '../../components/Header';
 const SongVersions = () => {
 
-  const songId = useSongVersionStore((state) => state.songId);
+  const navigation = useNavigation();
 
+  const songId = useSongVersionStore((state) => state.songId);
   const setVersionId = useSongVersionStore((state) => state.setVersionId);
+  const songMetaData = useSongContentStore((state) => state.songMetaData); 
 
   const versions = useSongVersions(songId);
+
+  useEffect(() => {
+    console.log('songMetaData v headeru:', songMetaData);
+    navigation.setOptions({
+      header: () => <Header
+        song={songMetaData?.title ?? ''}
+        artist={songMetaData?.artist ?? ''}
+      />
+    });
+  }, [navigation, songMetaData]);
 
   const separator = () => {
     return <View style={styles.separator} />;

@@ -10,7 +10,6 @@ import PlaylistSongListItem from '../../components/PlaylistSongListItem';
 import TabPlaylistPlayButton from '../../components/TabPlayButton';
 import { usePlaylistSongDelete } from '../../hooks/usePlaylistSongDelete';
 import { useQueryClient } from '@tanstack/react-query';
-import { use } from 'react';
 
 const SongVersions = () => {
 
@@ -26,7 +25,7 @@ const SongVersions = () => {
     userId: user.id
   });
   const deletePlaylistSong = usePlaylistSongDelete();
-
+  
   if (playlistSongs.isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -49,7 +48,7 @@ const SongVersions = () => {
         item={item}
         handlePress={() => {
           for (song of playlistSongs.data.songs) {
-            setPlaylistSong(song._id)
+            setPlaylistSong(song.version._id)
           };
           router.navigate('/display-playlist');
         }}

@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     //borderWidth: 1,
-    height: 75,
+    //height: 75,
     //justifyContent: 'center',
     paddingLeft: 20,
     gap: 8
@@ -109,7 +109,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    height: 80,
+    height: 70,
     //borderWidth: 2,
     marginTop: 20
   },

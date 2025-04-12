@@ -4,7 +4,8 @@ import { styles } from '../style/styles'
 
 const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
 
-  const countOfSongs = item.songs.length
+  const countOfSongs = item.songs.length;
+  
   return (
     <TouchableOpacity
       style={styles.versionListItem}

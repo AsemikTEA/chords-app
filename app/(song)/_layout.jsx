@@ -15,18 +15,12 @@ const SongLayout = () => {
         />
         <Stack.Screen
           name='display'
-          options={{
-            header: () => <Header/>
-          }}
         />
         <Stack.Screen
           name='create'
         />
         <Stack.Screen
           name='edit'
-          options={{
-            header: () => <NewSongHeader/>
-          }}
         />
       </Stack>
     </>
