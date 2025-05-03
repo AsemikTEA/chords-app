@@ -1,3 +1,4 @@
+import { autoScroll } from "@shopify/flash-list";
 import { create } from "zustand";
 
 export const useTranspositionNumberStore = create((set) => ({
@@ -73,4 +74,14 @@ export const useModalStore = create((set) => ({
 export const useDisplayModeStore = create((set) => ({
   displayOnlyChords: false,
   setDisplayOnlyChords: () => set((state) => ({ displayOnlyChords: !state.displayOnlyChords })),
+}));
+
+export const useAutoscrollStore = create((set) => ({
+  isScrolling: false,
+  autoScrollSpeed: 5,
+  setAutoScrollSpeed: (e) => {
+    const speed = e < 1 ? 1 : e > 10 ? 10 : e;
+    set((state) => ({ autoScrollSpeed: speed }))},
+  setIsScrolling: () => set((state) => ({ isScrolling: !state.isScrolling })),
+  setEndScroll: () => set((state) => ({ isScrolling: false, autoScrollSpeed: 5 })),
 }));

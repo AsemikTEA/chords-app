@@ -1,22 +1,29 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
-import { usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
+import { useAutoscrollStore, usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
 import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Transpose from '../../components/Transpose'
 import SongViewPlaylist from '../../components/SongViewPlaylist'
 import { useNavigation } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
+import AutoscrollSpeed from '../../components/AutoscrollSpeed'
 
 const PlaylistDisplay = () => {
+
+  const scrollRef = useRef(null);
+  const scrollInterval = useRef(null);
+  const currentScrollY = useRef(0);
+  const scrollSpeed = useRef(useAutoscrollStore.getState().autoScrollSpeed);
+  const speedPanel = useRef(null);
 
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
   const playlistId = usePlaylistStore((state) => state.playlistId);
   const user = useUserStore((state) => state.user);
-  const transposition = useTranspositionStore((state) => state.transposition);
+
+  const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
 
   const { data, isPending, isError } = usePlaylistDisplay({
     playlistId: playlistId,
@@ -27,8 +34,97 @@ const PlaylistDisplay = () => {
     navigation.addListener('blur', () => {
       queryClient.invalidateQueries({ queryKey: ['playlist-songs-display'] });
       console.log('Uživatel opustil display-song (z `SongView`)');
+      stopAutoScroll();
     });
   }, [navigation]);
+
+  useEffect(() => {
+    const unsub = useAutoscrollStore.subscribe((state) => {
+      if (state.isScrolling) {
+        showPanel();
+        startAutoScroll();
+      }
+      else {
+        stopAutoScroll();
+        hidePanel();
+      }
+    });
+
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    const unsub = useAutoscrollStore.subscribe((newSpeed, oldSpeed) => {
+      console.log('Auto scroll speed changed from', oldSpeed.autoScrollSpeed, 'to', newSpeed.autoScrollSpeed);
+      scrollSpeed.current = newSpeed.autoScrollSpeed;
+
+      if (scrollInterval.current) {
+        stopAutoScroll();
+        startAutoScroll();
+      }
+    });
+
+    return unsub;
+  }, []);
+
+  const handleScroll = (event) => {
+    const y = event.nativeEvent.contentOffset.y;
+    currentScrollY.current = y;
+
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const viewportHeight = event.nativeEvent.layoutMeasurement.height;
+
+    if (y + viewportHeight >= contentHeight - 5) {
+      stopAutoScroll();
+      setEndScroll();
+    }
+  }
+
+  const startAutoScroll = useCallback(() => {
+    if (!scrollRef.current || scrollInterval.current) return;
+
+    if (!scrollRef.currentContentY) {
+      scrollRef.currentContentY = 0;
+    }
+
+    stopAutoScroll();
+
+    scrollInterval.current = setInterval(() => {
+      scrollRef.current.scrollTo({
+        y: currentScrollY.current + 1,
+        animated: false,
+      });
+      currentScrollY.current += 1;
+    }, getDelayFromSpeed(scrollSpeed.current));
+  }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollInterval.current) {
+      clearInterval(scrollInterval.current);
+      scrollInterval.current = null;
+    }
+  }, []);
+
+  const getDelayFromSpeed = (speed) => {
+    const maxSpeed = 10;
+    const minDelay = 10;
+    const maxDelay = 200;
+
+    const fraction = (maxSpeed - speed) / (maxSpeed - 1);
+    return Math.round(minDelay + fraction * (maxDelay - minDelay));
+  };
+
+  const showPanel = () => {
+    speedPanel.current?.setNativeProps({
+      style: { display: 'flex' }
+    });
+  };
+
+  const hidePanel = () => {
+    speedPanel.current?.setNativeProps({
+      style: { display: 'none' }
+    });
+  };
 
   if (isPending) {
     return <Text>Loading...</Text>;
@@ -47,24 +143,31 @@ const PlaylistDisplay = () => {
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
-      <ScrollView>
+      <ScrollView
+        ref={scrollRef}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         {data.songs.map((item, index) => {
           return (
-            <View style={{ paddingLeft: 10 }}>
+            <View style={{ paddingLeft: 10 }} key={index}>
               <TouchableOpacity>
                 <SongViewPlaylist
-                  key={index}
                   song={item.version}
                 />
               </TouchableOpacity>
             </View>
           )
-        })
-        }
+        })}
       </ScrollView>
-      {transposition &&
-        <Transpose />
-      }
+      <View
+        ref={speedPanel}
+        style={{
+          display: 'none',
+        }}
+      >
+        <AutoscrollSpeed />
+      </View>
     </SafeAreaView>
   );
 }

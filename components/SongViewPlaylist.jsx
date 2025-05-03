@@ -8,6 +8,8 @@ import { usePathname } from 'expo-router';
 
 const SongViewPlaylist = ({ song }) => {;
 
+  const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
+
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
   const [transpositionNumber, setTranspositionNumber] = useState(0);
@@ -20,8 +22,6 @@ const SongViewPlaylist = ({ song }) => {;
   const chordIndex = useRef(0);
 
   const pathname = usePathname();
-  
-  const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
 
   const intervals = new Map([
     [1, 'm2'], [-1, 'm-2'],
@@ -39,7 +39,7 @@ const SongViewPlaylist = ({ song }) => {;
   ]);
 
   useEffect(() => {
-    console.log('prvni useEffect jde!');
+    //console.log('prvni useEffect jde!');
     chordsArray.current = [];
     blockIndex.current = -1;
     chordIndex.current = 0;
@@ -49,7 +49,7 @@ const SongViewPlaylist = ({ song }) => {;
 
     const transposed = chordsArray.current.map((block) => {
       const c = [];
-      console.log("block name: " + block.block);
+      //console.log("block name: " + block.block);
 
       block.chords.map((item) => {
         c.push(item.name);
@@ -228,7 +228,7 @@ const SongViewPlaylist = ({ song }) => {;
           <View style={{ marginTop: 2, flexDirection: 'row', }}>
             <Text style={{ fontSize: 17, marginRight: 8 }}>{blockName}:</Text>
             <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
-              {block.chords.map((item) => {
+              {block.chords.map((item, index) => {
 
                 return (
                   <Pressable style={{ marginRight: 7 }}>
@@ -282,7 +282,7 @@ const SongViewPlaylist = ({ song }) => {;
                     <Text key={index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
-                    <Pressable style={styles2.relativeContainer}>
+                    <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex.current}>
                       <Text style={styles2.chord}>{transposedChords[blockIndex.current].chords[chordIndex.current++]}</Text>
                     </Pressable>
                   </>

@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router'
 import PlaylistHeader from '../../components/PlaylistHeader'
+import DisplayPlaylistHeader from '../../components/DisplayPlaylistHeader'
 
 const AuthLayout = () => {
 
@@ -15,7 +16,7 @@ const AuthLayout = () => {
         <Stack.Screen
           name='display-playlist'
           options={{
-            header: () => <PlaylistHeader/>
+            header: () => <DisplayPlaylistHeader/>
           }}
         />
         <Stack.Screen

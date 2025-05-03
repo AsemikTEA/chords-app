@@ -71,7 +71,7 @@ const TabsLayout = () => {
             tabBarIcon: ({ focused }) => {
               let iconColor;
               iconColor = focused ? 'white' : '#8e8e8e'
-              return <MaterialCommunityIcons name="account-cog" size={28} color={iconColor} />;
+              return <MaterialCommunityIcons name="account-music" size={28} color={iconColor} />;
             }
           }}
         />

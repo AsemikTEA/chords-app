@@ -198,14 +198,6 @@ const SongView = ({ songContent, songName }) => {
   if (displayOnlyChords) {
     array = [];
 
-    if (pathname === '/display-playlist') {
-      array.push(
-        <View style={{ marginTop: 10, marginBottom: 5 }}>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{songName}</Text>
-        </View>
-      )
-    }
-
     for (block of transposedChords) {
       const blockName = block.block
       console.log(transposedChords)
@@ -231,14 +223,6 @@ const SongView = ({ songContent, songName }) => {
     }
   } else {
     array = [];
-
-    if (pathname === '/display-playlist') {
-      array.push(
-        <View style={{ marginTop: 10, marginBottom: 5 }}>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{songName}</Text>
-        </View>
-      )
-    }
 
     for (block of parsedSongData) {
       const blockName = block.block;
@@ -267,7 +251,7 @@ const SongView = ({ songContent, songName }) => {
                     <Text key={index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
-                    <Pressable style={styles2.relativeContainer}>
+                    <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex}>
                       <Text style={styles2.chord}>{transposedChords[blockIndex].chords[chordIndex++]}</Text>
                     </Pressable>
                   </>

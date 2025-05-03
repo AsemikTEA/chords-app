@@ -121,7 +121,8 @@ export const styles = StyleSheet.create({
   headerTitleContainer: {
     flex: 8,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-start',
+    paddingLeft: 20,
   },
   headerMainTitle: {
     fontWeight: 'bold',

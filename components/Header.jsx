@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, usePathname } from 'expo-router';
 import { styles } from '../style/styles';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { useDisplayModeStore, useModalStore, useSongContentStore, useTranspositionStore } from '../state/store';
+import { useAutoscrollStore, useDisplayModeStore, useModalStore, useSongContentStore, useTranspositionStore } from '../state/store';
 
 const Header = ({ song, artist }) => {
 
@@ -13,6 +13,10 @@ const Header = ({ song, artist }) => {
   const setTransposition = useTranspositionStore((state) => state.transpose);
   const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
   const setModalVisible = useModalStore((state) => state.setModalVisible);
+
+  const setIsScrolling = useAutoscrollStore((state) => state.setIsScrolling);
+  const isScrolling = useAutoscrollStore((state) => state.isScrolling);
+  const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
 
   const dropdownSelect = (value) => {
     if (value === 'Transpose') {
@@ -33,14 +37,31 @@ const Header = ({ song, artist }) => {
     <View style={styles.header}>
       <Pressable
         style={styles.backButton}
-        onPress={() => { router.back() }}
+        onPress={() => {
+          setEndScroll();
+          router.back()
+        }}
       >
         <Ionicons name="chevron-back" size={28} color="black" />
       </Pressable>
+
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerMainTitle}>{song}</Text>
         <Text>{artist}</Text>
       </View>
+
+      {pathname === '/display' && (
+        <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+          <Pressable
+            style={styles.backButton}
+            onPress={() => {
+              setIsScrolling();
+            }}
+          >
+            <Ionicons name={isScrolling ? "pause" : "play"} size={30} color="black" />
+          </Pressable>
+        </View>)}
+
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {pathname === '/display' && (
           <ModalDropdown
@@ -55,6 +76,7 @@ const Header = ({ song, artist }) => {
           </ModalDropdown>
         )}
       </View>
+
     </View>
   )
 }
