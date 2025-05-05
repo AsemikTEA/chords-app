@@ -74,6 +74,7 @@ export const useModalStore = create((set) => ({
 export const useDisplayModeStore = create((set) => ({
   displayOnlyChords: false,
   setDisplayOnlyChords: () => set((state) => ({ displayOnlyChords: !state.displayOnlyChords })),
+  setDisableOnlyChords: () => set((state) => ({ displayOnlyChords: false })),
 }));
 
 export const useAutoscrollStore = create((set) => ({

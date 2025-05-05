@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
-import { useAutoscrollStore, usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
+import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
 import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SongViewPlaylist from '../../components/SongViewPlaylist'
@@ -24,6 +24,7 @@ const PlaylistDisplay = () => {
   const user = useUserStore((state) => state.user);
 
   const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
+  const setDisableOnlyChords = useDisplayModeStore((state) => state.setDisableOnlyChords);
 
   const { data, isPending, isError } = usePlaylistDisplay({
     playlistId: playlistId,
@@ -35,6 +36,7 @@ const PlaylistDisplay = () => {
       queryClient.invalidateQueries({ queryKey: ['playlist-songs-display'] });
       console.log('Uživatel opustil display-song (z `SongView`)');
       stopAutoScroll();
+      setDisableOnlyChords();
     });
   }, [navigation]);
 

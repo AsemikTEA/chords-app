@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongView from '../../components/SongView';
 import Transpose from '../../components/Transpose';
-import { useAutoscrollStore, useSongVersionStore, useTranspositionStore, } from '../../state/store';
+import { useAutoscrollStore, useDisplayModeStore, useSongVersionStore, useTranspositionStore, } from '../../state/store';
 import { useSongVersion } from '../../hooks/useSongVersion';
 import AddToPlaylistModal from '../../components/AddToPlaylistModal';
 import { useNavigation } from 'expo-router';
@@ -25,6 +25,7 @@ const DisplaySong = () => {
   const transposition = useTranspositionStore((state) => state.transposition);
 
   const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
+  const setDisableOnlyChords = useDisplayModeStore((state) => state.setDisableOnlyChords);
 
   const version = useSongVersion(versionId);
 
@@ -36,6 +37,14 @@ const DisplaySong = () => {
       />
     });
   }, [version.data, navigation]);
+
+  useEffect(() => {
+      navigation.addListener('blur', () => {
+        console.log('Uživatel opustil display-song (z `SongView`)');
+        stopAutoScroll();
+        setDisableOnlyChords();
+      });
+    }, [navigation]);
 
   useEffect(() => {
     const unsub = useAutoscrollStore.subscribe((state) => {
