@@ -19,6 +19,7 @@ const DisplayPlaylistHeader = () => {
   const dropdownSelect = (value) => {
     if (value === 'Only chords') {
       setDisplayOnlyChords();
+      console.log('Only chords selected');
     };
     if (value === 'Transpose') {
       setTransposition();
@@ -60,7 +61,7 @@ const DisplayPlaylistHeader = () => {
           dropdownStyle={{ borderWidth: 1, borderColor: 'black', }}
           dropdownTextStyle={{ color: 'black', fontSize: 15 }}
           dropdownTextHighlightStyle={{ color: 'black' }}
-          onSelect={(value) => dropdownSelect(value)}
+          onSelect={(index, value) => dropdownSelect(value)}
         >
           <Ionicons name="ellipsis-vertical" size={28} color="black" />
         </ModalDropdown>

@@ -27,6 +27,7 @@ const Header = ({ song, artist }) => {
     }
     if (value === 'Only chords') {
       setDisplayOnlyChords();
+      console.log('Only chords selected');
     }
     if (value === 'Add to playlist') {
       setModalVisible();

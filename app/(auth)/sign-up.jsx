@@ -48,7 +48,6 @@ const SignUp = () => {
     }
     if (status === 201) {
       console.log(data);
-      console.log('router replace');
       router.replace('/sign-in');
     }
   }
