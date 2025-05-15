@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchSongVersion = async (versionId) => {
   try {
-    const { data: response } = await axios.get(`http://10.0.0.87:3000/v1/personal-version/${versionId}`);
+    const { data: response } = await axios.get(`https://rest-api-chords.onrender.com/v1/personal-version/${versionId}`);
     console.log(response);
     if (response) {
       response.model = 'Personal_version';
@@ -14,7 +14,7 @@ const fetchSongVersion = async (versionId) => {
     if (error?.response?.status === 404) {
 
       try {
-        const { data: fallbackResponse } = await axios.get(`http://10.0.0.87:3000/v1/song-versions/${versionId}`);
+        const { data: fallbackResponse } = await axios.get(`https://rest-api-chords.onrender.com/v1/song-versions/${versionId}`);
         
         if (fallbackResponse) {
           fallbackResponse.model = 'Song_version';
@@ -23,9 +23,11 @@ const fetchSongVersion = async (versionId) => {
         return fallbackResponse;
       } catch (fallbackError) {
         console.error('Chyba při načítání veřejné verze:', fallbackError);
+        throw fallbackError;
       }
     } else {
       console.error('Neočekávaná chyba při načítání osobní verze:', error);
+      throw error;
     }
   }
 

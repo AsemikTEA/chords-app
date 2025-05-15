@@ -7,6 +7,7 @@ import { FlashList } from '@shopify/flash-list';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { useAddToPlaylist } from '../hooks/useAddToPlaylist';
 import { useQueryClient } from '@tanstack/react-query';
+import { showMessage } from 'react-native-flash-message';
 
 const AddToPlaylistModal = ({ version }) => {
 
@@ -33,13 +34,6 @@ const AddToPlaylistModal = ({ version }) => {
             playlist: item,
             songToAdd: version
           },
-          {
-            onSuccess: ({ status: status, data: data, response: error }) => {
-              queryClient.setQueryData(['playlist-songs'], (oldData) => {
-                return [...oldData, data]
-              });
-            }
-          }
         );
         setModalVisible();
       }}

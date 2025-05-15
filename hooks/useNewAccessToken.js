@@ -4,7 +4,7 @@ import axios from "axios";
 const newAccessToken = async (token) => {
 
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/users/check-refresh-token`, token);
+    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/users/check-refresh-token`, token);
     console.log('New access Token check response:', response.data);
     return response
   } catch (error) {

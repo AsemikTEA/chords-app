@@ -10,6 +10,7 @@ import AddToPlaylistModal from '../../components/AddToPlaylistModal';
 import { useNavigation } from 'expo-router';
 import Header from '../../components/Header';
 import AutoscrollSpeed from '../../components/AutoscrollSpeed';
+import { showMessage } from 'react-native-flash-message';
 
 const DisplaySong = () => {
 
@@ -138,6 +139,23 @@ const DisplaySong = () => {
     return <Text>Loading...</Text>;
   }
 
+  if (version.isError) {
+    showMessage({
+      message: 'Error loading song version',
+      description: version.error.message,
+      type: 'danger',
+    });
+    return (
+      <SafeAreaView
+        style={styles.container}
+      >
+        <View>
+          <Text>Error: {version.error.message}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView
       style={styles.container}
@@ -154,7 +172,7 @@ const DisplaySong = () => {
             <Text>Loading...</Text>
           </View>
         ) || (
-            <View style={{ padding: 10 }}>
+            <View style={{ margin: 15 }}>
               <SongView songContent={version.data.content} />
             </View>
           )}

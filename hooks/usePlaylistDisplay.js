@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchPlaylistSongs = async (searchObject) => {
   try {
-    const {data: response} = await axios.post('http://10.0.0.87:3000/v1/playlists/playlist-songs', searchObject);
+    const {data: response} = await axios.post('https://rest-api-chords.onrender.com/v1/playlists/playlist-songs', searchObject);
     console.log(response);
     return response;
   } catch (error) {

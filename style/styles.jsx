@@ -183,4 +183,51 @@ export const styles = StyleSheet.create({
   error: {
     color: "red",
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  modalCard: {
+    width: '85%',
+    backgroundColor: '#1c1c1e',
+    borderRadius: 12,
+    padding: 20,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 16,
+  },
+  modalCloseIcon: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    padding: 4,
+    zIndex: 10,
+  },
+  formTextInputModal: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  submitButtonModal: {
+    backgroundColor: '#319413',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  submitButtonTextModal: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 })

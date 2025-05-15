@@ -4,7 +4,7 @@ import { styles } from '../style/styles';
 import { router } from 'expo-router';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useTranspositionStore } from '../state/store';
+import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useShareStore, useTranspositionStore } from '../state/store';
 
 const DisplayPlaylistHeader = () => {
 
@@ -15,6 +15,7 @@ const DisplayPlaylistHeader = () => {
   const setIsScrolling = useAutoscrollStore((state) => state.setIsScrolling);
   const isScrolling = useAutoscrollStore((state) => state.isScrolling);
   const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
+  const setShare = useShareStore((state) => state.setShare);
 
   const dropdownSelect = (value) => {
     if (value === 'Only chords') {
@@ -23,6 +24,9 @@ const DisplayPlaylistHeader = () => {
     };
     if (value === 'Transpose') {
       setTransposition();
+    };
+    if (value === 'Share') {
+      setShare();
     };
   }
 

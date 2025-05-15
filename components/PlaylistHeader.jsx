@@ -6,7 +6,7 @@ import { router, usePathname } from 'expo-router';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useDisplayModeStore, useModalStore, usePlaylistStore, useTranspositionStore } from '../state/store';
+import { useDisplayModeStore, useModalStore, usePlaylistStore, useShareStore, useTranspositionStore } from '../state/store';
 
 const PlaylistsHeader = () => {
 

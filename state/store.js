@@ -1,4 +1,3 @@
-import { autoScroll } from "@shopify/flash-list";
 import { create } from "zustand";
 
 export const useTranspositionNumberStore = create((set) => ({
@@ -45,14 +44,13 @@ export const useSongVersionStore = create((set) => ({
 }));
 
 export const useUserStore = create((set) => ({
-  user: {id: '', username: '', email: '', token: ''},
-  logInData: {email: '', password: ''},
-  setId: (e) => set((state) => ({ user: { ...state.user, id: e }})),
-  setUsername: (e) => set((state) => ({ user: { ...state.user, username: e }})),
-  setEmail: (e) => set((state) => ({ user: { ...state.user, email: e }})),
-  setToken: (e) => set((state) => ({ user: { ...state.user, token: e }})),
-  setLogInEmail: (e) => set((state) => ({ logInData: { ...state.logInData, email: e }})),
-  setLogInPassword: (e) => set((state) => ({ logInData: { ...state.logInData, password: e }})),
+  user: { id: '', username: '', email: '', },
+  logInData: { email: '', password: '' },
+  setId: (e) => set((state) => ({ user: { ...state.user, id: e } })),
+  setUsername: (e) => set((state) => ({ user: { ...state.user, username: e } })),
+  setEmail: (e) => set((state) => ({ user: { ...state.user, email: e } })),
+  setLogInEmail: (e) => set((state) => ({ logInData: { ...state.logInData, email: e } })),
+  setLogInPassword: (e) => set((state) => ({ logInData: { ...state.logInData, password: e } })),
 }));
 
 export const usePlaylistStore = create((set) => ({
@@ -82,7 +80,20 @@ export const useAutoscrollStore = create((set) => ({
   autoScrollSpeed: 5,
   setAutoScrollSpeed: (e) => {
     const speed = e < 1 ? 1 : e > 10 ? 10 : e;
-    set((state) => ({ autoScrollSpeed: speed }))},
+    set((state) => ({ autoScrollSpeed: speed }))
+  },
   setIsScrolling: () => set((state) => ({ isScrolling: !state.isScrolling })),
   setEndScroll: () => set((state) => ({ isScrolling: false, autoScrollSpeed: 5 })),
+}));
+
+export const useShareStore = create((set) => ({
+  share: false,
+  sending: false,
+  username: '',
+  rerenderHelper: false,
+  setRerenderHelper: () => set((state) => ({ rerenderHelper: !state.rerenderHelper })),
+  setUsername: (e) => set((state) => ({ username: e })),
+  setSending: () => set((state) => ({ sending: !state.sending })),
+  setShare: () => set((state) => ({ share: !state.share })),
+  setDisableShare: () => set((state) => ({ share: false })),
 }));

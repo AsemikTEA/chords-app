@@ -13,11 +13,11 @@ import { useEditVersion } from '../../hooks/useEditSong'
 import { SelectList } from 'react-native-dropdown-select-list'
 import NewSongHeader from '../../components/NewSongHeader'
 import { QueryClient, useQueryClient } from '@tanstack/react-query'
+import { showMessage } from 'react-native-flash-message'
 
 const EditSong = () => {
 
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
 
   const songId = useSongVersionStore((state) => state.songId);
   const versionId = useSongVersionStore((state) => state.versionId);
@@ -57,23 +57,14 @@ const EditSong = () => {
   const chordTemplate = `[]`;
 
   useEffect(() => {
-    navigation.setOptions({ 
-      header: () => <NewSongHeader onSubmit={handleSubmit(onSubmit, onError)} /> });
+    navigation.setOptions({
+      header: () => <NewSongHeader onSubmit={handleSubmit(onSubmit)} />
+    });
   }, [navigation]);
 
   const onSubmit = (data, e) => {
-    editMutation.mutate(
-      { data },
-      {
-        onSuccess: ({ status: status, data: data, response: error }) => {
-          queryClient.setQueryData(['personal-version'], (oldData) => {
-            return [...oldData, data];
-          })
-          setModalVisible(true);
-        },
-      });
+    editMutation.mutate({ data });
   };
-  const onError = (errors, e) => console.log('errors', errors);
 
   return (
     <SafeAreaView
@@ -173,39 +164,7 @@ const EditSong = () => {
           </View>
         </View>
       </ScrollView>
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.container}
-          activeOpacity={1}
-          onPressOut={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <View style={{
-              backgroundColor: 'white',
-              borderRadius: 10,
-              width: 350,
-              height: 100,
-              alignItems: 'center',
-              justifyContent: 'center',
-              shadowColor: '#000',
-              elevation: 30,
-            }}>
 
-              <Text style={{ fontSize: 17 }}>Your edit has been saved to 'My songs'!</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Modal>
       <View style={{ borderWidth: 1, height: 65, width: '100%', alignSelf: 'flex-end', bottom: 0 }}>
         <View style={{ flexDirection: 'row', gap: 5, padding: 5, height: '100%', }}>
           <SongBlockTemplate title={'Verse'} handlePress={() => setValue('content', getValues('content') + verseTemplate)} />

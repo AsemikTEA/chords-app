@@ -1,26 +1,16 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect } from 'react';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SearchForm from '../../components/SearchForm';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
-import SongListItem from '../../components/SongListItem';
-import { useSearchStore, useSongContentStore, useSongVersionStore, useUserStore } from '../../state/store';
-import { useSearchSongs } from '../../hooks/useSearchSong';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useSongVersionStore, useUserStore } from '../../state/store';
 import { useSearchPersonalVersions } from '../../hooks/useSearchPersonalVersions';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { showMessage } from 'react-native-flash-message';
 
 const UserEditedSongs = () => {
 
   const userData = useUserStore((state) => state.user);
-  const songName = useSearchStore((state) => state.songName);
-  const debouncedSearch = useDebounce(songName);
-
-  const setSongId = useSongVersionStore((state) => state.setSongId);
-  const setTitle = useSongContentStore((state) => state.setTitle);
-  const setArtist = useSongContentStore((state) => state.setTitle);
   const setVersionId = useSongVersionStore((state) => state.setVersionId);
 
   const personalVersions = useSearchPersonalVersions(userData.id);
@@ -61,12 +51,40 @@ const UserEditedSongs = () => {
     )
   };
 
+  if (personalVersions.isLoading) {
+    return (
+      <SafeAreaView
+        style={styles.container}
+      >
+        <View>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (personalVersions.isError) {
+    showMessage({
+      message: 'Error loading personal versions',
+      description: personalVersions.error.message,
+      type: 'danger',
+    });
+    return (
+      <SafeAreaView
+        style={styles.container}
+      >
+        <View>
+          <Text>Error: {personalVersions.error.message}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
-      {/* <SearchForm /> */}
       <View style={{ marginTop: 40 }} />
       <FlashList
         data={personalVersions.data}

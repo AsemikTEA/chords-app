@@ -9,6 +9,7 @@ import { usePlaylists } from '../../hooks/usePlaylists';
 import PlaylistListItem from '../../components/PlaylistListItem';
 import OptionsModal from '../../components/OptionsModal';
 import PlaylistNameModal from '../../components/PlaylistNameModal';
+import { showMessage } from 'react-native-flash-message';
 
 const Playlists = () => {
 
@@ -45,6 +46,11 @@ const Playlists = () => {
   }
 
   if (playlists.isError) {
+    showMessage({
+      message: 'Error',
+      description: playlists.error.message,
+      type: 'danger',
+    });
     return <Text>There has been error</Text>;
   }
 

@@ -18,7 +18,7 @@ const createVersion = async (songData) => {
   }
   
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/song-versions`, versionObject);
+    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/song-versions`, versionObject);
     console.log(response.data);
   } catch (error) {
     console.log(error);

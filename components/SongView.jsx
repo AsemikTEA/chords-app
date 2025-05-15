@@ -4,7 +4,6 @@ import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
-import { usePathname } from 'expo-router';
 
 const SongView = ({ songContent, songName }) => {
 
@@ -17,7 +16,6 @@ const SongView = ({ songContent, songName }) => {
   let chordIndex = 0;
   let blockIndex = -1;
 
-  const pathname = usePathname();
   const transpositionNumber = useTranspositionNumberStore((state) => state.transpositionNumber);
   const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
 
@@ -207,10 +205,10 @@ const SongView = ({ songContent, songName }) => {
           <View style={{ marginTop: 2, flexDirection: 'row', }}>
             <Text style={{ fontSize: 17, marginRight: 8 }}>{blockName}:</Text>
             <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
-              {block.chords.map((item) => {
+              {block.chords.map((item, index) => {
 
                 return (
-                  <Pressable style={{ marginRight: 7 }}>
+                  <Pressable style={{ marginRight: 7 }} key={'chord' + index}>
                     <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item}</Text>
                   </Pressable>
                 );
@@ -231,14 +229,14 @@ const SongView = ({ songContent, songName }) => {
       console.log(transposedChords);
 
       array.push(
-        <View style={styles.container}>
+        <View key={'block' + blockIndex} style={styles.container}>
           <View style={{ marginTop: 10, marginBottom: 5 }}>
             <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{blockName}</Text>
           </View>
           <View style={styles2.lyricLine}>
             {/* Render starting chords if they exist */}
             {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
-              <Pressable style={styles2.relativeContainer}>
+              <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex}>
                 <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex++]}</Text>
               </Pressable>
             )}
@@ -248,7 +246,7 @@ const SongView = ({ songContent, songName }) => {
               if (item.isFollowedByChord && chordIndex < transposedChords[blockIndex].chords.length) {
                 return (
                   <>
-                    <Text key={index} style={styles2.relativeContainer}>
+                    <Text key={'lyric' + index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
                     <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex}>
@@ -258,7 +256,7 @@ const SongView = ({ songContent, songName }) => {
                 );
               } else {
                 return (
-                  <Text key={index} style={styles2.relativeContainer}>
+                  <Text key={'lyric' + index} style={styles2.relativeContainer}>
                     {item.value}
                   </Text>
                 );

@@ -4,8 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../../style/styles'
 import { router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store';
+import { useSharePlaylistInvites } from '../../hooks/useSharePlaylistInvites'
+import { useUserStore } from '../../state/store'
 
 const Account = () => {
+
+  const user = useUserStore((state) => state.user);
+
+  const recievedInvites = useSharePlaylistInvites(user?.id);
 
   const removeToken = async () => {
     try {
@@ -32,6 +38,12 @@ const Account = () => {
         onPress={removeToken}
         >
         <Text style={{fontSize: 20}}>Log Out</Text>
+      </Pressable>
+      <Pressable 
+        style={{borderWidth: 1, height: 50, justifyContent: 'center', padding: 5}}
+        onPress={() => { router.navigate('/invites') }}
+        >
+        <Text style={{fontSize: 20}}>Invites to share playlist</Text>
       </Pressable>
       </View>
     </SafeAreaView>

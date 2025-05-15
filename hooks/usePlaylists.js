@@ -7,7 +7,8 @@ const fetchUserPlaylists = async (userId) => {
     console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(error); 
+    throw error;
   }
 }
 
@@ -15,6 +16,6 @@ export const usePlaylists = (userId, enabled) => {
   return useQuery({
     queryKey: ['playlists'],
     queryFn: ()  => fetchUserPlaylists(userId),
-    enabled: enabled 
+    //enabled: enabled 
   });
 }

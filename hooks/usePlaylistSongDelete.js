@@ -12,10 +12,11 @@ const deletePlaylistSong = async (value) => {
   }
 
   try {
-    const response = await axios.put(`http://10.0.0.87:3000/v1/playlists/${value.playlist._id}`, playlistObject);
+    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/playlists/${value.playlist._id}`, playlistObject);
     console.log(response);
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 

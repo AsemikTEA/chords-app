@@ -1,6 +1,7 @@
 import { View, Text, Pressable } from 'react-native';
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
 import { styles } from '../style/styles';
 import { useCreateVersion } from '../hooks/useCreateVersion';
@@ -39,7 +40,7 @@ const NewSongHeader = ({ song, onSubmit }) => {
               style={styles.backButton}
               onPress={onSubmit}
             >
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Save</Text>
+              <Ionicons name="save" size={26} color="black" />
             </Pressable>
           </View>
         </>
@@ -53,7 +54,7 @@ const NewSongHeader = ({ song, onSubmit }) => {
                 style={styles.backButton}
                 onPress={onSubmit}
               >
-                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Save</Text>
+                <MaterialCommunityIcons name="content-save-edit" size={26} color="black" />
               </Pressable>
             </View>
           </>

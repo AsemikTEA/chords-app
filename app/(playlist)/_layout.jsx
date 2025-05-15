@@ -2,7 +2,7 @@ import { Stack } from 'expo-router'
 import PlaylistHeader from '../../components/PlaylistHeader'
 import DisplayPlaylistHeader from '../../components/DisplayPlaylistHeader'
 
-const AuthLayout = () => {
+const PlaylistLayout = () => {
 
   return (
     <>
@@ -30,4 +30,4 @@ const AuthLayout = () => {
   )
 }
 
-export default AuthLayout
+export default PlaylistLayout

@@ -4,7 +4,7 @@ import axios from "axios";
 const logIn = async (userData) => {
 
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/users/login`, userData);
+    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/users/login`, userData);
     return response
   } catch (error) {
     console.log(error);

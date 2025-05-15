@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { showMessage } from "react-native-flash-message";
 
 const addToPlaylist = async (value) => {
 
@@ -9,15 +10,31 @@ const addToPlaylist = async (value) => {
   }
 
   try {
-    const response = await axios.put(`http://10.0.0.87:3000/v1/playlists/${value.playlist._id}`, playlistObject);
+    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/playlists/${value.playlist._id}`, playlistObject);
     console.log(response);
+    return response;
   } catch (error) {
-    console.log(error);
+    console.log('ERROR', error);
+    throw error;
   }
 }
 
 export const useAddToPlaylist = () => {
+
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (value) => addToPlaylist(value),
+    onSuccess: (response) => {
+      showMessage({ message: 'Song added', type: 'success' });
+      queryClient.invalidateQueries({ queryKey: ['playlists'] });
+    },
+    onError: (error) => {
+      showMessage({
+        message: 'Error adding song',
+        description: error.response?.data?.message || 'Unknown error',
+        type: 'danger',
+      });
+    },
   });
 }

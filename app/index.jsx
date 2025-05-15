@@ -6,6 +6,7 @@ import { useTokenAuth } from '../hooks/useTokenAuth';
 import { useEffect } from 'react';
 import { useUserStore } from '../state/store';
 import { useNewAccessToken } from '../hooks/useNewAccessToken';
+import { showMessage } from 'react-native-flash-message';
 
 export default function App() {
 
@@ -24,9 +25,19 @@ export default function App() {
         return accessToken;
       } else {
         console.log('No token found');
+        showMessage({
+        message: 'Error retrieving token',
+        description: error.message,
+        type: 'info',
+      });
       }
     } catch (error) {
       console.error('Error retrieving token:', error);
+      showMessage({
+        message: 'Error retrieving token',
+        description: error.message,
+        type: 'danger',
+      });
     }
   }
 
@@ -69,12 +80,27 @@ export default function App() {
       setUsername(result.data.decoded.username);
       setEmail(result.data.decoded.email);
 
+      showMessage({
+        message: 'Succesfully logged in',
+        type: 'success',
+      });
+
       router.replace('/search');
 
     } catch (error) {
       console.error('Error checking token:', error.response.data.message);
 
+      showMessage({
+        message: 'Error checking token',
+        description: error.response.data.message,
+        type: 'danger',
+      });
+
       await requestNewAccessToken();
+      showMessage({
+        message: 'Succesfully logged in',
+        type: 'success',
+      });
       return;
     }
   }

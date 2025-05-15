@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
 import { styles } from '../style/styles'
+import { Ionicons } from '@expo/vector-icons';
 
 const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
 
@@ -15,6 +15,16 @@ const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
       <View style={styles.versionListItemName}>
         <Text style={styles.versionListItemNameText}>{item.name}</Text>
       </View>
+
+      {item.is_shared && (
+        
+          <Ionicons
+            name="people"
+            size={20}
+            style={{ alignSelf: 'center',}}
+          />
+        )}
+
       <View style={styles.versionListItemRating}>
         <View style={styles.versionListItemText}>
           <Text>Songs: {countOfSongs}</Text>

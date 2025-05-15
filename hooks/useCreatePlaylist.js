@@ -7,14 +7,18 @@ const createPlaylist = async (data) => {
     name: data.name,
     songs: [],
     user_id: data.user_id,
+    shared_with: [],
+    is_shared: false,
     token: data.token,
   }
 
   try {
     const response = await axios.post(`http://10.0.0.87:3000/v1/playlists/create`, newPlaylistObject);
     console.log(response);
+    return response.data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 

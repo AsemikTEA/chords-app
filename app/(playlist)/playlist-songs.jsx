@@ -11,7 +11,7 @@ import TabPlaylistPlayButton from '../../components/TabPlayButton';
 import { usePlaylistSongDelete } from '../../hooks/usePlaylistSongDelete';
 import { useQueryClient } from '@tanstack/react-query';
 
-const SongVersions = () => {
+const PlaylistSongs = () => {
 
   const queryClient = useQueryClient();
 
@@ -25,7 +25,7 @@ const SongVersions = () => {
     userId: user.id
   });
   const deletePlaylistSong = usePlaylistSongDelete();
-  
+
   if (playlistSongs.isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -63,7 +63,10 @@ const SongVersions = () => {
               onSuccess: () => {
                 playlistSongs.refetch();
                 queryClient.invalidateQueries(['playlists']);
-              }
+              },
+              onError: (err) => {
+                console.log(err.response?.data || err.message);
+              },
             }
           );
         }}
@@ -86,4 +89,4 @@ const SongVersions = () => {
   );
 }
 
-export default SongVersions
+export default PlaylistSongs

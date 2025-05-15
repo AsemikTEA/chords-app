@@ -1,13 +1,14 @@
-import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable, StyleSheet, TextInput } from 'react-native'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
-import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useTranspositionStore, useUserStore } from '../../state/store'
+import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useShareStore, useTranspositionStore, useUserStore } from '../../state/store'
 import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SongViewPlaylist from '../../components/SongViewPlaylist'
 import { useNavigation } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import AutoscrollSpeed from '../../components/AutoscrollSpeed'
+import SharePlaylistModal from '../../components/SharePlaylistModal'
 
 const PlaylistDisplay = () => {
 
@@ -25,6 +26,7 @@ const PlaylistDisplay = () => {
 
   const setEndScroll = useAutoscrollStore((state) => state.setEndScroll);
   const setDisableOnlyChords = useDisplayModeStore((state) => state.setDisableOnlyChords);
+  const setDisableShare = useShareStore((state) => state.setDisableShare);
 
   const { data, isPending, isError } = usePlaylistDisplay({
     playlistId: playlistId,
@@ -37,6 +39,7 @@ const PlaylistDisplay = () => {
       console.log('Uživatel opustil display-song (z `SongView`)');
       stopAutoScroll();
       setDisableOnlyChords();
+      setDisableShare();
     });
   }, [navigation]);
 
@@ -170,6 +173,7 @@ const PlaylistDisplay = () => {
       >
         <AutoscrollSpeed />
       </View>
+      <SharePlaylistModal userId={user.id} playlistId={playlistId} />
     </SafeAreaView>
   );
 }

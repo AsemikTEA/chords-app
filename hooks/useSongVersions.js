@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchSongVersions = async (songId) => {
   try {
-    const {data: response} = await axios.get(`http://10.0.0.87:3000/v1/song-versions/all-versions/${songId}`);
+    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/song-versions/all-versions/${songId}`);
     console.log(response);
     return response;
   } catch (error) {

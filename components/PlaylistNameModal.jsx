@@ -3,143 +3,120 @@ import React from 'react';
 import { styles } from '../style/styles';
 import { useModalStore, usePlaylistStore, useUserStore } from '../state/store';
 import { useCreatePlaylist } from '../hooks/useCreatePlaylist';
-import FormField from './FormField';
-import SubmitButton from './SubmitButton';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { useRenamePlaylist } from '../hooks/useRenamePlaylist';
 import { Controller, useForm } from 'react-hook-form';
+import SubmitButton from './SubmitButton';
+import { Ionicons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
 
 const PlaylistNameModal = () => {
-
   const {
     control,
     handleSubmit,
-    setError,
     reset,
-    setValue,
     clearErrors,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      playlistName: playlistName,
-    }
+      playlistName: '',
+    },
   });
 
   const user = useUserStore((state) => state.user);
   const modalVisible = useModalStore((state) => state.modalVisible);
   const playlistName = usePlaylistStore((state) => state.playlistName);
   const playlistId = usePlaylistStore((state) => state.playlistId);
-
   const setModalVisible = useModalStore((state) => state.setModalVisible);
   const setPlaylistName = usePlaylistStore((state) => state.setPlaylistName);
 
   const createPlaylist = useCreatePlaylist();
   const renamePlaylist = useRenamePlaylist();
-
   const playlists = usePlaylists(user.id);
 
-  const createPlaylistSuccess = () => {
-    setModalVisible(!modalVisible);
+  const closeModal = () => {
+    setModalVisible(false);
+    setPlaylistName('');
     reset();
-    playlists.refetch();
-  }
-
-  const onSubmitCreate = (data) => {
-    createPlaylist.mutate(
-      {
-        name: data.playlistName,
-        user_id: user.id,
-        token: user.token,
-      },
-      {
-        onSuccess: () => {
-          createPlaylistSuccess();
-        }
-      }
-    );
   };
 
-  const onSubmitChange = (data) => {
-    renamePlaylist.mutate(
-      {
-        id: playlistId,
-        name: data.playlistName,
+  const onSubmit = (data) => {
+    const action = playlistName ? renamePlaylist : createPlaylist;
+    const payload = playlistName
+      ? { id: playlistId, name: data.playlistName }
+      : { name: data.playlistName, user_id: user.id, token: user.token };
+
+    action.mutate(payload, {
+      onSuccess: () => {
+        showMessage({
+          message: playlistName ? 'Playlist renamed successfully' : 'Playlist created successfully',
+          type: 'success',
+        });
+        closeModal();
+        playlists.refetch();
       },
-      {
-        onSuccess: () => {
-          createPlaylistSuccess();
-        }
-      }
-    );
+      onError: (err) => {
+        showMessage({
+          message: playlistName ? 'Failed to rename playlist' : 'Failed to create playlist',
+          type: 'danger',
+        });
+        console.log(err.response?.data || err.message);
+      },
+    });
   };
 
   return (
     <Modal
-      animationType='none'
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible();
-        setPlaylistName('');
-        reset();
-      }}>
-      <TouchableOpacity
-        style={styles.container}
-        activeOpacity={1}
-        onPressOut={() => {
-          setModalVisible();
-          setPlaylistName('');
-          reset();
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+      onRequestClose={closeModal}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalCard}>
+          {/* Křížek pro zavření */}
+          <TouchableOpacity onPress={closeModal} style={styles.modalCloseIcon}>
+            <Ionicons name="close" size={24} color="#fff" />
+          </TouchableOpacity>
 
-            {/* Playlist name Field */}
-            <Text style={styles.formTextStyle}>Playlist name</Text>
-            <Controller
-              control={control}
-              name="playlistName"
-              rules={{
-                required: "Name is required",
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.formTextInput}
-                  placeholder="Enter playlist name"
-                  onBlur={onBlur}
-                  onChangeText={(text) => {
-                    onChange(text);
-                    clearErrors('FORM_ERROR');
-                  }}
-                  value={value}
-                />
-              )}
-            />
-            {errors.playlistName && <Text style={styles.error}>{errors.email.message}</Text>}
-            
-            {!playlistName && (
-              <SubmitButton
-                handlePress={
-                  handleSubmit(onSubmitCreate)
-                }
-                textValue={'Create Playlist'}
-                style={[styles.submitButton, { width: '80%' }]}
+          {/* Nadpis */}
+          <Text style={styles.modalTitle}>
+            {playlistName ? 'Rename Playlist' : 'Create New Playlist'}
+          </Text>
+
+          {/* Vstupní pole */}
+          <Controller
+            control={control}
+            name="playlistName"
+            rules={{ required: 'Name is required' }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.formTextInputModal}
+                placeholder="Enter playlist name"
+                onBlur={onBlur}
+                onChangeText={(text) => {
+                  onChange(text);
+                  clearErrors('FORM_ERROR');
+                }}
+                value={value}
               />
-            ) || (
-                <SubmitButton
-                  handlePress={
-                    handleSubmit(onSubmitChange)
-                  }
-                  textValue={'Rename Playlist'}
-                  style={[styles.submitButton, { width: '80%' }]}
-                />
-              )}
-          </View>
+            )}
+          />
+          {errors.playlistName && (
+            <Text style={styles.error}>{errors.playlistName.message}</Text>
+          )}
+
+          {/* Tlačítko */}
+          <TouchableOpacity
+            style={[styles.submitButtonModal, { width: '100%', marginTop: 16 }]}
+            onPress={handleSubmit(onSubmit)}
+          >
+            <Text style={styles.submitButtonTextModal}>{playlistName ? 'Rename Playlist' : 'Create Playlist'}</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     </Modal>
   );
-}
+};
 
 export default PlaylistNameModal;

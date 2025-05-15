@@ -6,7 +6,7 @@ const fetchSearchSongs = async (songName) => {
     if (!songName) {
       return [];
     }
-    const {data: response} = await axios.get(`http://10.0.0.87:3000/v1/songs/search/${songName}`);
+    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/songs/search/${songName}`);
     console.log(response);
     return response;
   } catch (error) {

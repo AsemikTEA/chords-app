@@ -1,19 +1,9 @@
-import { Redirect, Tabs } from 'expo-router';
-import { View } from 'react-native';
-import { styles } from '../../style/styles';
+import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import NewSongHeader from '../../components/NewSongHeader'
 import PlaylistHeader from '../../components/PlaylistHeader';
-// import { useUserStore } from '../../context/userStore';
-// import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-// import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TabsLayout = () => {
-
-  //   const user = useUserStore((state) => state.user);
-
-  //   if (user == null) return <Redirect replace href='/sign-in'/>;
 
   return (
     <>
