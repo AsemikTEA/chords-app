@@ -42,13 +42,13 @@ const PlaylistSongs = () => {
     return <View style={styles.separator} />;
   };
 
-  const playlistSongListItem = ({ item }) => {
+  const playlistSongListItem = ({ item, index }) => {
     return (
       <PlaylistSongListItem
         item={item}
         handlePress={() => {
           for (song of playlistSongs.data.songs) {
-            setPlaylistSong(song.version._id)
+            setPlaylistSong(song.version._id);
           };
           router.navigate('/display-playlist');
         }}
@@ -56,7 +56,7 @@ const PlaylistSongs = () => {
           console.log('asd')
           deletePlaylistSong.mutate(
             {
-              song: item,
+              song: index,
               playlist: playlistSongs.data,
             },
             {
@@ -80,7 +80,7 @@ const PlaylistSongs = () => {
     >
       <FlashList
         data={playlistSongs.data.songs}
-        renderItem={playlistSongListItem}
+        renderItem={({item, index}) => playlistSongListItem({ item, index })}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
       />

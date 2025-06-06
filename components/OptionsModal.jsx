@@ -4,6 +4,7 @@ import { styles } from '../style/styles';
 import { useModalStore, usePlaylistStore, useUserStore } from '../state/store';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { useDeletePlaylist } from '../hooks/useDeletePlaylist';
+import { showMessage } from 'react-native-flash-message';
 
 const OptionsModal = () => {
 
@@ -23,14 +24,14 @@ const OptionsModal = () => {
       animationType='none'
       transparent={true}
       visible={modalOptions}
-      onRequestClose={() => { 
+      onRequestClose={() => {
         setModalOptions();
         setPlaylistName('');
-        }}>
+      }}>
       <TouchableOpacity
         style={styles.container}
         activeOpacity={1}
-        onPressOut={() => { 
+        onPressOut={() => {
           setModalOptions();
           setPlaylistName('');
         }}
@@ -49,10 +50,25 @@ const OptionsModal = () => {
               style={styles.buttonDelete}
               onPress={() => {
                 deletePlaylist.mutate(
-                  { id: playlistId },
+                  {
+                    id: playlistId,
+                    userId: user.id
+                  },
                   {
                     onSuccess: () => {
                       playlists.refetch();
+                      showMessage({
+                        message: 'Playlist deleted successfully',
+                        type: 'success',
+                      });
+                    },
+                    onError: (error) => {
+                      console.error('Error deleting playlist:', error);
+                      showMessage({
+                        message: 'Error deleting playlist',
+                        description: error.response.data.message,
+                        type: 'danger',
+                      });
                     }
                   }
                 );

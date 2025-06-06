@@ -29,6 +29,8 @@ export const useSongContentStore = create((set) => ({
 export const useTranspositionStore = create((set) => ({
   transposition: false,
   transpose: () => set((state) => ({ transposition: !state.transposition })),
+  setDisableTransposition: () => set((state) => ({ transposition: false})),
+  setEnableTransposition: () => set((state) => ({ transposition: true })),
 }));
 
 export const useSearchStore = create((set) => ({

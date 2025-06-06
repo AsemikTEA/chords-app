@@ -11,6 +11,7 @@ const DisplayPlaylistHeader = () => {
   const playlistName = usePlaylistStore((state) => state.playlistName);
 
   const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
+  const setDisableTransposition = useTranspositionStore((state) => state.setDisableTransposition);
   const setTransposition = useTranspositionStore((state) => state.transpose);
   const setIsScrolling = useAutoscrollStore((state) => state.setIsScrolling);
   const isScrolling = useAutoscrollStore((state) => state.isScrolling);
@@ -37,6 +38,7 @@ const DisplayPlaylistHeader = () => {
         style={styles.backButton}
         onPress={() => {
           setEndScroll();
+          setDisableTransposition();
           router.back();
         }}
       >

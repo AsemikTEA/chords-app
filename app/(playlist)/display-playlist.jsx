@@ -9,6 +9,10 @@ import { useNavigation } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
 import AutoscrollSpeed from '../../components/AutoscrollSpeed'
 import SharePlaylistModal from '../../components/SharePlaylistModal'
+import Transpose from '../../components/Transpose'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { set } from 'react-hook-form'
 
 const PlaylistDisplay = () => {
 
@@ -33,6 +37,11 @@ const PlaylistDisplay = () => {
     userId: user.id
   });
 
+  const [transpositionNumbers, setTranspositionNumbers] = useState([]);
+  const activeSongIndex = useRef(null);
+  const [activeSongIndex2, setActiveSongIndex] = useState(null);
+  const songRefs = useRef([]);
+
   useEffect(() => {
     navigation.addListener('blur', () => {
       queryClient.invalidateQueries({ queryKey: ['playlist-songs-display'] });
@@ -40,8 +49,16 @@ const PlaylistDisplay = () => {
       stopAutoScroll();
       setDisableOnlyChords();
       setDisableShare();
+
     });
   }, [navigation]);
+
+  useEffect(() => {
+  if (data?.songs && transpositionNumbers.length < data.songs.length) {
+    const initial = data.songs.map((item) => item.transposition || 0);
+    setTranspositionNumbers(initial);
+  }
+}, [data]);
 
   useEffect(() => {
     const unsub = useAutoscrollStore.subscribe((state) => {
@@ -154,11 +171,21 @@ const PlaylistDisplay = () => {
         scrollEventThrottle={16}
       >
         {data.songs.map((item, index) => {
+
+          console.log('Transposition numbers:', transpositionNumbers ||[]);
           return (
             <View style={{ paddingLeft: 10 }} key={index}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onLongPress={() => {
+                  setActiveSongIndex(index);
+                  activeSongIndex.current = index;
+                }}
+                key={"touchable" + index}
+              >
                 <SongViewPlaylist
+                  ref={(el) => songRefs.current[index] = el}
                   song={item.version}
+                  transposition={transpositionNumbers[index] || 0}
                 />
               </TouchableOpacity>
             </View>
@@ -173,6 +200,48 @@ const PlaylistDisplay = () => {
       >
         <AutoscrollSpeed />
       </View>
+      {
+        activeSongIndex2 !== null &&
+        (<View style={{ height: 80, borderTopLeftRadius: 25, borderTopRightRadius: 25, backgroundColor: '#24232B' }}>
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+              <Pressable
+                style={{ flexDirection: 'row' }}
+                onPress={() => {
+                  setTranspositionNumbers(prev => {
+                    const newArr = [...prev];
+                    newArr[activeSongIndex.current] += 1;
+                    return newArr;
+                  });
+                  console.log('Transposition number increased:', transpositionNumbers)
+                }}
+              >
+                <FontAwesome6 name="arrow-up-long" size={34} color="#f2f2f2" />
+                <MaterialCommunityIcons name="music-accidental-sharp" size={30} color="#f2f2f2" />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+              <Text style={{ fontSize: 25, color: '#f2f2f2' }}>{transpositionNumbers[activeSongIndex2]}</Text>
+            </View>
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
+              <Pressable
+                style={{ flexDirection: 'row' }}
+                onPress={() => {
+                  setTranspositionNumbers(prev => {
+                    const newArr = [...prev];
+                    newArr[activeSongIndex.current] -= 1;
+                    return newArr;
+                  });
+                  console.log('Transposition number decreased:', transpositionNumbers)
+                }}
+              >
+                <FontAwesome6 name="arrow-down-long" size={34} color="#f2f2f2" />
+                <MaterialCommunityIcons name="music-accidental-flat" size={30} color="#f2f2f2" />
+              </Pressable>
+            </View>
+          </View>
+        </View>)
+      }
       <SharePlaylistModal userId={user.id} playlistId={playlistId} />
     </SafeAreaView>
   );

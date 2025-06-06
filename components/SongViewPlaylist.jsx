@@ -1,18 +1,32 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
-import { useDisplayModeStore } from '../state/store';
+import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import { usePathname } from 'expo-router';
 
-const SongViewPlaylist = ({ song }) => {;
+const SongViewPlaylist = ({ song, transposition, ref }) => {
 
   const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
+  const transNumberStore = useTranspositionNumberStore((state) => state.transpositionNumber);
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
   const [transpositionNumber, setTranspositionNumber] = useState(0);
+
+  useImperativeHandle(ref, () => {
+    return{
+    increaseTransposition() {
+      setTranspositionNumber((prev) => prev + 1);
+    },
+    decreaseTransposition(){
+      setTranspositionNumber((prev) => prev - 1);
+    },
+    resetTransposition() {
+      setTranspositionNumber(transNumberStore);
+    }
+  }});
 
   let array;
 
@@ -40,6 +54,7 @@ const SongViewPlaylist = ({ song }) => {;
 
   useEffect(() => {
     //console.log('prvni useEffect jde!');
+    console.log(transposition);
     chordsArray.current = [];
     blockIndex.current = -1;
     chordIndex.current = 0;
@@ -61,9 +76,9 @@ const SongViewPlaylist = ({ song }) => {;
       };
     });
 
-    setTransposedChords(transposed);
-    setTranspositionNumber(song.userTransposition || 0);
-    transposeChord(chordsArray.current, transpositionNumber);
+    //setTransposedChords(transposed);
+    setTranspositionNumber(transposition || 0);
+    transposeChord(chordsArray.current, transposition);
   }, []);
 
   useEffect(() => {
@@ -75,6 +90,10 @@ const SongViewPlaylist = ({ song }) => {;
 
     transposeChord(chordsArray.current, transpositionNumber);
   }, [transpositionNumber]);
+
+  useEffect(() => {
+    setTranspositionNumber(transposition);
+  }, [transposition]);
 
   const getIntervalCoord = (transpositionNumber) => {
     const interval = intervals.get(transpositionNumber);
