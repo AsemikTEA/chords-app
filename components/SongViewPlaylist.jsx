@@ -6,27 +6,13 @@ import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import { usePathname } from 'expo-router';
 
-const SongViewPlaylist = ({ song, transposition, ref }) => {
+const SongViewPlaylist = ({ song, index }) => {
 
   const displayOnlyChords = useDisplayModeStore((state) => state.displayOnlyChords);
-  const transNumberStore = useTranspositionNumberStore((state) => state.transpositionNumber);
+  const transpositionArray = useTranspositionNumberStore((state) => state.transpositionArray);
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
-  const [transpositionNumber, setTranspositionNumber] = useState(0);
-
-  useImperativeHandle(ref, () => {
-    return{
-    increaseTransposition() {
-      setTranspositionNumber((prev) => prev + 1);
-    },
-    decreaseTransposition(){
-      setTranspositionNumber((prev) => prev - 1);
-    },
-    resetTransposition() {
-      setTranspositionNumber(transNumberStore);
-    }
-  }});
 
   let array;
 
@@ -54,7 +40,7 @@ const SongViewPlaylist = ({ song, transposition, ref }) => {
 
   useEffect(() => {
     //console.log('prvni useEffect jde!');
-    console.log(transposition);
+    console.log(transpositionArray);
     chordsArray.current = [];
     blockIndex.current = -1;
     chordIndex.current = 0;
@@ -62,23 +48,21 @@ const SongViewPlaylist = ({ song, transposition, ref }) => {
     const parsed = splitSongToBlocks(song.content);
     parsedSongData.current = parsed;
 
-    const transposed = chordsArray.current.map((block) => {
-      const c = [];
-      //console.log("block name: " + block.block);
+    // const transposed = chordsArray.current.map((block) => {
+    //   const c = [];
+    //   //console.log("block name: " + block.block);
 
-      block.chords.map((item) => {
-        c.push(item.name);
-      });
+    //   block.chords.map((item) => {
+    //     c.push(item.name);
+    //   });
 
-      return {
-        block: block.block,
-        chords: c,
-      };
-    });
+    //   return {
+    //     block: block.block,
+    //     chords: c,
+    //   };
+    // });
 
-    //setTransposedChords(transposed);
-    setTranspositionNumber(transposition || 0);
-    transposeChord(chordsArray.current, transposition);
+    transposeChord(chordsArray.current, transpositionArray[index] || 0);
   }, []);
 
   useEffect(() => {
@@ -87,13 +71,10 @@ const SongViewPlaylist = ({ song, transposition, ref }) => {
       hasMounted.current = true;
       return;
     }
+    console.log('TRANSPOSITION ARRAY CHANGED: ', transpositionArray);
 
-    transposeChord(chordsArray.current, transpositionNumber);
-  }, [transpositionNumber]);
-
-  useEffect(() => {
-    setTranspositionNumber(transposition);
-  }, [transposition]);
+    transposeChord(chordsArray.current, transpositionArray[index]);
+  }, [transpositionArray[index]]);
 
   const getIntervalCoord = (transpositionNumber) => {
     const interval = intervals.get(transpositionNumber);

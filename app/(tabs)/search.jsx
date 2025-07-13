@@ -67,6 +67,7 @@ const Search = () => {
         renderItem={songListItem}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
+        contentContainerStyle={{ paddingBottom: 85 }}
       />
     </SafeAreaView>
   );

@@ -1,11 +1,11 @@
 import { Text, TouchableOpacity, View } from 'react-native'
 import { styles } from '../style/styles'
-import { Ionicons } from '@expo/vector-icons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
 
   const countOfSongs = item.songs.length;
-  
+
   return (
     <TouchableOpacity
       style={styles.versionListItem}
@@ -17,13 +17,13 @@ const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
       </View>
 
       {item.is_shared && (
-        
-          <Ionicons
-            name="people"
-            size={20}
-            style={{ alignSelf: 'center',}}
-          />
-        )}
+        <MaterialCommunityIcons
+          name="account-multiple-outline"
+          size={24}
+          color="black"
+          style={{ alignSelf: 'center' }}
+        />
+      )}
 
       <View style={styles.versionListItemRating}>
         <View style={styles.versionListItemText}>

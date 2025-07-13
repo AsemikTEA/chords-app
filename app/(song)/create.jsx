@@ -64,7 +64,9 @@ const CreateSong = () => {
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
-      <ScrollView>
+      <ScrollView
+        //contentContainerStyle={{ paddingBottom: 100 }}
+      >
         <View style={[styles.signContainer, { marginTop: 0 }]}>
           <View style={{ gap: 17, marginBottom: 20 }}>
 

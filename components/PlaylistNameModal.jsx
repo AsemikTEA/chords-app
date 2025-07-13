@@ -24,10 +24,10 @@ const PlaylistNameModal = () => {
   });
 
   const user = useUserStore((state) => state.user);
-  const modalVisible = useModalStore((state) => state.modalVisible);
+  const modalVisible = useModalStore((state) => state.playlistNameModal);
   const playlistName = usePlaylistStore((state) => state.playlistName);
   const playlistId = usePlaylistStore((state) => state.playlistId);
-  const setModalVisible = useModalStore((state) => state.setModalVisible);
+  const setModalVisible = useModalStore((state) => state.setPlaylistNameModal);
   const setPlaylistName = usePlaylistStore((state) => state.setPlaylistName);
 
   const createPlaylist = useCreatePlaylist();
@@ -35,7 +35,7 @@ const PlaylistNameModal = () => {
   const playlists = usePlaylists(user.id);
 
   const closeModal = () => {
-    setModalVisible(false);
+    setModalVisible();
     setPlaylistName('');
     reset();
   };
@@ -74,17 +74,14 @@ const PlaylistNameModal = () => {
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalCard}>
-          {/* Křížek pro zavření */}
           <TouchableOpacity onPress={closeModal} style={styles.modalCloseIcon}>
             <Ionicons name="close" size={24} color="#fff" />
           </TouchableOpacity>
 
-          {/* Nadpis */}
           <Text style={styles.modalTitle}>
             {playlistName ? 'Rename Playlist' : 'Create New Playlist'}
           </Text>
 
-          {/* Vstupní pole */}
           <Controller
             control={control}
             name="playlistName"
@@ -106,7 +103,6 @@ const PlaylistNameModal = () => {
             <Text style={styles.error}>{errors.playlistName.message}</Text>
           )}
 
-          {/* Tlačítko */}
           <TouchableOpacity
             style={[styles.submitButtonModal, { width: '100%', marginTop: 16 }]}
             onPress={handleSubmit(onSubmit)}

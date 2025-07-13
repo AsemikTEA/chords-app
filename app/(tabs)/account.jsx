@@ -1,11 +1,12 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, StyleSheet } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { styles } from '../../style/styles'
+//import { styles } from '../../style/styles'
 import { router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store';
 import { useSharePlaylistInvites } from '../../hooks/useSharePlaylistInvites'
 import { useUserStore } from '../../state/store'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Account = () => {
 
@@ -26,28 +27,53 @@ const Account = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{padding: 10}}>
-      <Pressable 
-        style={{borderWidth: 1, height: 50, justifyContent: 'center', padding: 5}}
-        onPress={() => { router.navigate('/create') }}
-        >
-        <Text style={{fontSize: 20}}>Create song</Text>
-      </Pressable>
-      <Pressable 
-        style={{borderWidth: 1, height: 50, justifyContent: 'center', padding: 5}}
-        onPress={removeToken}
-        >
-        <Text style={{fontSize: 20}}>Log Out</Text>
-      </Pressable>
-      <Pressable 
-        style={{borderWidth: 1, height: 50, justifyContent: 'center', padding: 5}}
-        onPress={() => { router.navigate('/invites') }}
-        >
-        <Text style={{fontSize: 20}}>Invites to share playlist</Text>
-      </Pressable>
+      <View style={{ paddingLeft: 16, paddingRight: 16 }}>
+        <Pressable style={styles.darkButton} onPress={() => router.navigate('/create')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="file-music-outline" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Create Song</Text>
+          </View>
+        </Pressable>
+
+        <Pressable style={styles.darkButton} onPress={removeToken}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="door-open" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Log Out</Text>
+          </View>
+        </Pressable>
+
+        <Pressable style={styles.darkButton} onPress={() => router.navigate('/invites')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="account-multiple-outline" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Invites to Share Playlist</Text>
+          </View>
+        </Pressable>
       </View>
     </SafeAreaView>
-  )
+  );
 }
 
-export default Account
+export default Account;
+
+const styles = StyleSheet.create({
+  darkButton: {
+    backgroundColor: '#24232B',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#000',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  darkButtonText: {
+    marginLeft: 10,
+    fontSize: 17,
+    fontWeight: '500',
+    color: '#fff',
+  },
+});

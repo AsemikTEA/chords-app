@@ -70,6 +70,7 @@ const Playlists = () => {
         renderItem={playlistListItem}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
+        contentContainerStyle={{ paddingBottom: 85 }}
       />
     </SafeAreaView>
   );

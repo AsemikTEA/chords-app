@@ -1,19 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const fetchSongVersions = async (songId) => {
+const fetchSongVersions = async (songData) => {
   try {
-    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/song-versions/all-versions/${songId}`);
+    const {data: response} = await axios.post(`http://10.0.0.87:3000/v1/song-versions/all-versions/`, songData);
     console.log(response);
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
-export const useSongVersions = (songId) => {
+export const useSongVersions = (songData) => {
   return useQuery({
     queryKey: ['song-versions'],
-    queryFn: ()  => fetchSongVersions(songId),
+    queryFn: ()  => fetchSongVersions(songData),
   });
 }

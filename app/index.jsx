@@ -96,11 +96,18 @@ export default function App() {
         type: 'danger',
       });
 
-      await requestNewAccessToken();
-      showMessage({
+      const isValid = await requestNewAccessToken();
+      if (isValid) {showMessage({
         message: 'Succesfully logged in',
         type: 'success',
+      })
+    } else {
+      showMessage({
+        message: 'Error checking token, redirecting to sign-in page.',
+        description: error.response.data.message,
+        type: 'danger',
       });
+    }
       return;
     }
   }
@@ -127,6 +134,7 @@ export default function App() {
         console.log('Tokens saved successfully');
 
         router.replace('/search');
+        return true;
       } catch (error) {
         console.error('Error saving tokens:', error);
       }
@@ -134,6 +142,7 @@ export default function App() {
     } catch (error) {
       console.error('Error checking refresh token:', error.response.data.message);
       router.replace('/sign-in');
+      return false;
     }
   }
 

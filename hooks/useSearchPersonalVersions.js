@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchPersonalVersions = async (userId) => {
   try {
-    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/personal-version/get-all/${userId}`);
+    const {data: response} = await axios.get(`http://10.0.0.87:3000/v1/personal-version/get-all/${userId}`);
     console.log(response);
     return response;
   } catch (error) {

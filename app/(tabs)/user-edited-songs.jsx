@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
@@ -7,13 +7,27 @@ import { useSongVersionStore, useUserStore } from '../../state/store';
 import { useSearchPersonalVersions } from '../../hooks/useSearchPersonalVersions';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { showMessage } from 'react-native-flash-message';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const UserEditedSongs = () => {
+
+  const queryClient = useQueryClient();
 
   const userData = useUserStore((state) => state.user);
   const setVersionId = useSongVersionStore((state) => state.setVersionId);
 
   const personalVersions = useSearchPersonalVersions(userData.id);
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({ queryKey: ['personal-version'] });
+      console.log('UserEditedSongs: useFocusEffect - personalVersions invalidated');
+
+      return;
+    }, [])
+  );
 
   const separator = () => {
     return <View style={styles.separator} />;
@@ -35,9 +49,26 @@ const UserEditedSongs = () => {
             <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
           </View>
           <View style={{ flex: 1.8 }}>
-            {item.metadata.transposition && (
-              <Text>transposition: {item.metadata.transposition}</Text>
-            )}
+            {(item.userTransposition !== undefined && item.userTransposition !== 0) &&
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 10 }}>
+                <Text style={{ fontSize: 16 }}>Your</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MaterialCommunityIcons
+                    name="music-accidental-flat"
+                    size={24}
+                    color="black"
+                    style={{ padding: 0, marginRight: -7 }} // zmenšíme mezeru mezi ♭ a ♯
+                  />
+                  <MaterialCommunityIcons
+                    name="music-accidental-sharp"
+                    size={24}
+                    color="black"
+                    style={{ padding: 0, marginLeft: -7, marginRight: -5 }} // zmenšíme mezeru mezi ♭ a ♯
+                  />
+                </View>
+                <Text style={{ fontSize: 16 }}>: {item.userTransposition}</Text>
+              </View>
+            }
           </View>
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <TouchableOpacity
@@ -91,6 +122,7 @@ const UserEditedSongs = () => {
         renderItem={versionListItem}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
+        contentContainerStyle={{ paddingBottom: 85 }}
       />
     </SafeAreaView>
   );

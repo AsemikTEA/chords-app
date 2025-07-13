@@ -1,17 +1,20 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
+import GuitarChordSvg from './GuitarChordSvg';
 
 const SongView = ({ songContent, songName }) => {
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedChord, setSelectedChord] = useState(null);
 
-  let parsedSongData;
-  let chordsArray = [];
+  const parsedSongData = useRef([]);
+  const chordsArray = useRef([]);
   let array;
   let chordIndex = 0;
   let blockIndex = -1;
@@ -35,7 +38,10 @@ const SongView = ({ songContent, songName }) => {
   ]);
 
   useEffect(() => {
-    const transposed = chordsArray.map((block) => {
+
+    parsedSongData.current = splitSongToBlocks(songContent);
+
+    const transposed = chordsArray.current.map((block) => {
       const c = [];
       console.log("block name: " + block.block);
 
@@ -48,8 +54,10 @@ const SongView = ({ songContent, songName }) => {
         chords: c,
       };
     });
+    console.log('Transposed chords: ', transposed);
 
     setTransposedChords(transposed);
+    transposeChord(chordsArray.current, transpositionNumber || 0);
   }, [])
 
   useEffect(() => {
@@ -59,13 +67,15 @@ const SongView = ({ songContent, songName }) => {
       return;
     }
 
-    transposeChord(chordsArray, transpositionNumber);
+    transposeChord(chordsArray.current, transpositionNumber);
     //console.log(transposedChords)
   }, [transpositionNumber]);
 
   const getIntervalCoord = (transpositionNumber) => {
     const interval = intervals.get(transpositionNumber);
+    console.log('Interval: ' + interval);
     const intervalCoord = Interval.toCoord(interval);
+    console.log('Interval coord: ' + intervalCoord);
     return intervalCoord;
   }
 
@@ -79,7 +89,7 @@ const SongView = ({ songContent, songName }) => {
 
       block.chords.map((item) => {
         const transposedChord = item.interval(getIntervalCoord(transpositionNumber));
-        //console.log('TRANSPOSE ARRAY: ' + transposedChord);
+        console.log('TRANSPOSE ARRAY: ' + transposedChord);
         transChords.push(transposedChord.name);
       });
 
@@ -120,7 +130,7 @@ const SongView = ({ songContent, songName }) => {
             block: blockName,
             lyrics: lyrics,
           });
-          chordsArray.push({
+          chordsArray.current.push({
             block: blockName,
             chords: chords,
           });
@@ -187,11 +197,9 @@ const SongView = ({ songContent, songName }) => {
     return { chords, lyrics };
   };
 
-  parsedSongData = splitSongToBlocks(songContent);
+  if (!parsedSongData.current.length) return <Text>Loading...</Text>
 
-  if (!transposedChords || transposedChords.length === 0) {
-    return <Text>Loading chords...</Text>;
-  }
+  if (!transposedChords || transposedChords.length === 0) return <Text>Loading chords...</Text>
 
   if (displayOnlyChords) {
     array = [];
@@ -208,7 +216,14 @@ const SongView = ({ songContent, songName }) => {
               {block.chords.map((item, index) => {
 
                 return (
-                  <Pressable style={{ marginRight: 7 }} key={'chord' + index}>
+                  <Pressable
+                    style={{ marginRight: 7 }}
+                    key={'chord' + index}
+                    onPress={() => {
+                      setSelectedChord(item);
+                      setModalVisible(true);
+                    }}
+                  >
                     <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item}</Text>
                   </Pressable>
                 );
@@ -222,7 +237,7 @@ const SongView = ({ songContent, songName }) => {
   } else {
     array = [];
 
-    for (block of parsedSongData) {
+    for (block of parsedSongData.current) {
       const blockName = block.block;
       chordIndex = 0;
       blockIndex++;
@@ -236,27 +251,48 @@ const SongView = ({ songContent, songName }) => {
           <View style={styles2.lyricLine}>
             {/* Render starting chords if they exist */}
             {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
-              <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex}>
-                <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex++]}</Text>
-              </Pressable>
+              () => {
+                const chord = transposedChords[blockIndex].chords[chordIndex];
+                chordIndex++;
+                return (
+                  <Pressable
+                    style={styles2.relativeContainer}
+                    onPress={() => {
+                      setSelectedChord(chord);
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Text style={styles2.chord}>{chord}</Text>
+                  </Pressable>
+                );
+              }
             )}
 
             {/* Render lyrics and chordsArray */}
             {block.lyrics.map((item, index) => {
               if (item.isFollowedByChord && chordIndex < transposedChords[blockIndex].chords.length) {
+                const chord = transposedChords[blockIndex].chords[chordIndex];
+                chordIndex++;
+
                 return (
                   <>
-                    <Text key={'lyric' + index} style={styles2.relativeContainer}>
+                    <Text style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
-                    <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex}>
-                      <Text style={styles2.chord}>{transposedChords[blockIndex].chords[chordIndex++]}</Text>
+                    <Pressable
+                      style={styles2.relativeContainer}
+                      onPress={() => {
+                        setSelectedChord(chord);
+                        setModalVisible(true);
+                      }}
+                    >
+                      <Text style={styles2.chord}>{chord}</Text>
                     </Pressable>
                   </>
                 );
               } else {
                 return (
-                  <Text key={'lyric' + index} style={styles2.relativeContainer}>
+                  <Text style={styles2.relativeContainer}>
                     {item.value}
                   </Text>
                 );
@@ -268,7 +304,58 @@ const SongView = ({ songContent, songName }) => {
     }
   }
 
-  return array;
+  return (
+    <>
+      {array}
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={() => setModalVisible(false)}
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => { }}
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 10,
+              alignItems: 'center',
+              minWidth: 260,
+            }}
+          >
+            {/* Křížek v pravém horním rohu */}
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10,
+                padding: 5,
+                zIndex: 1,
+              }}
+            >
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>✕</Text>
+            </TouchableOpacity>
+
+            {selectedChord && <GuitarChordSvg chordName={selectedChord} />}
+            <Text style={{ fontSize: 25, marginTop: 10, fontWeight: 'bold' }}>{selectedChord}</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  );
 };
 
 export default SongView

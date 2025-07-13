@@ -14,7 +14,7 @@ const PlaylistsHeader = () => {
 
   const playlistName = usePlaylistStore((state) => state.playlistName);
 
-  const setModalVisible = useModalStore((state) => state.setModalVisible);
+  const setModalVisible = useModalStore((state) => state.setPlaylistNameModal);
   const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
   const setPlaylistName = usePlaylistStore((state) => state.setPlaylistName);
   const setPlaylistId = usePlaylistStore((state) => state.setPlaylistId);

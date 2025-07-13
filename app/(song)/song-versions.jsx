@@ -6,7 +6,7 @@ import { styles } from '../../style/styles';
 import VersionListItem from '../../components/VersionListItem';
 import { router, useNavigation } from 'expo-router';
 import { useSongVersions } from '../../hooks/useSongVersions';
-import { useSongContentStore, useSongVersionStore } from '../../state/store';
+import { useSongContentStore, useSongVersionStore, useUserStore } from '../../state/store';
 import Header from '../../components/Header';
 
 const SongVersions = () => {
@@ -15,9 +15,14 @@ const SongVersions = () => {
 
   const songId = useSongVersionStore((state) => state.songId);
   const setVersionId = useSongVersionStore((state) => state.setVersionId);
-  const songMetaData = useSongContentStore((state) => state.songMetaData); 
+  const songMetaData = useSongContentStore((state) => state.songMetaData);
 
-  const versions = useSongVersions(songId);
+  const songData = {
+    songId: songId,
+    userId: useUserStore.getState().user.id,
+  }
+
+  const versions = useSongVersions(songData);
 
   useEffect(() => {
     console.log('songMetaData v headeru:', songMetaData);
@@ -37,9 +42,9 @@ const SongVersions = () => {
     return (
       <VersionListItem
         item={item}
-        handlePress={() => { 
-          setVersionId(item._id); 
-          router.navigate('/display'); 
+        handlePress={() => {
+          setVersionId(item._id);
+          router.navigate('/display');
         }}
       />)
   };

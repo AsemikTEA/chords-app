@@ -3,11 +3,12 @@ import axios from "axios";
 
 const fetchPlaylistSongs = async (searchObject) => {
   try {
-    const {data: response} = await axios.post('https://rest-api-chords.onrender.com/v1/playlists/playlist-songs', searchObject);
-    console.log(response);
+    const {data: response} = await axios.post('http://10.0.0.87:3000/v1/playlists/playlist-songs', searchObject);
+    console.log(response.songs);
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
@@ -15,5 +16,9 @@ export const usePlaylistDisplay = (searchObject) => {
   return useQuery({
     queryKey: ['playlist-songs-display'],
     queryFn: ()  => fetchPlaylistSongs(searchObject),
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    staleTime: 0,
+    gcTime: 10,
   });
 }

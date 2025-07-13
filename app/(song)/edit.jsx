@@ -25,7 +25,7 @@ const EditSong = () => {
 
   const queryClient = useQueryClient();
   const editMutation = useEditVersion();
-  const songVersion = useSongVersion(versionId);
+  const songVersion = useSongVersion({versionId: versionId, userId: user.id});
 
   const formMethods = useForm({
     defaultValues: {
@@ -71,7 +71,9 @@ const EditSong = () => {
       style={styles.container}
       edges={['bottom', 'left', 'right']}
     >
-      <ScrollView>
+      <ScrollView
+        //contentContainerStyle={{ paddingBottom: 100 }}
+      >
         <View style={[styles.signContainer, { marginTop: 0 }]}>
           <View style={{ gap: 15, marginBottom: 20 }}>
             <View>
