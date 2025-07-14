@@ -5,12 +5,12 @@ import { showMessage } from "react-native-flash-message";
 const addToPlaylist = async (value) => {
 
   const playlistObject = {
-    name: value.playlist.name,
-    songs: [...value.playlist.songs, value.songToAdd],
+    name: value.playlist.playlist_id.name,
+    songs: [...value.playlist.playlist_id.songs, value.songToAdd],
   }
 
   try {
-    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/playlists/${value.playlist._id}`, playlistObject);
+    const response = await axios.put(`http://10.0.0.87:3000/v1/playlists/${value.playlist.playlist_id._id}`, playlistObject);
     console.log(response);
     return response;
   } catch (error) {

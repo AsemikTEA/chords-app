@@ -10,8 +10,13 @@ import {
   useModalStore,
   useTranspositionStore,
 } from '../state/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Header = ({ song, artist }) => {
+
+  const queryClient = useQueryClient();
+
   const pathname = usePathname();
   const dropdownRef = useRef(null); // ref pro manuální zavření dropdownu
 
@@ -43,6 +48,7 @@ const Header = ({ song, artist }) => {
     'Show tempo',
     'Edit song',
     'Add to playlist',
+    'Download JSON',
   ];
 
   const multiSelectKeys = ['Transpose', 'Only chords', 'Show metadata', 'Show key', 'Show capo', 'Show tempo'];
@@ -63,135 +69,163 @@ const Header = ({ song, artist }) => {
         );
       }
 
-    if (value === 'Transpose') {
-      setTransposition();
-    }
-    if (value === 'Only chords') {
-      setDisplayOnlyChords();
-    }
-    if (value === 'Show metadata') {
-      setShowMetadata();
+      switch (value) {
+        case 'Transpose':
+          setTransposition();
+          break;
+        case 'Only chords':
+          setDisplayOnlyChords();
+          break;
+        case 'Show metadata':
+          setShowMetadata();
+          break;
+        case 'Show key':
+          setShowKey();
+          break;
+        case 'Show capo':
+          setShowCapo();
+          break;
+        case 'Show tempo':
+          setShowTempo();
+          break;
+        default:
+          break;
+      }
+    } else {
 
-    }
-    if (value === 'Show key') {
-      setShowKey();
-    }
-    if (value === 'Show capo') {
-      setShowCapo();
-    }
-    if (value === 'Show tempo') {
-      setShowTempo();
-    }
+      switch (value) {
+        case 'Edit song':
+          router.navigate('/edit');
+          break;
+        case 'Add to playlist':
+          setModalVisible();
+          break;
+        case 'Share':
+          console.log('Share logic...');
+          break;
+        case 'Export as PDF':
+          console.log('Export logic...');
+          break;
+        case 'Download JSON':
+          const version = queryClient.getQueryData(['song-version']);
 
-  } else {
-    if (value === 'Edit song') {
-    router.navigate('/edit');
-  }
-  if (value === 'Add to playlist') {
-    setModalVisible();
-  }
-  if (value === 'Share') {
-    console.log('Share logic...');
-  }
-  if (value === 'Export as PDF') {
-    console.log('Export logic...');
-  }
+          const jsonObject = {
+            _id: version._id,
+            version: version.version,
+            metadata: version.metadata,
+            content: version.content,
+            userTransposition: version.userTransposition || 0,
+          };
 
-  if (dropdownRef.current) {
-    dropdownRef.current.hide();
-  }
-}
+          const storeData = async (value) => {
+            try {
+              const jsonValue = JSON.stringify(value);
+              await AsyncStorage.setItem(value._id, jsonValue);
+              console.log('JSON saved successfully:', jsonValue);
+            } catch (e) {
+              console.error('Error saving JSON to AsyncStorage:', e);
+              throw e;
+            }
+          };
+
+          storeData(jsonObject);
+
+          break;
+        default:
+          break;
+      }
+    }
   };
 
-return (
-  <View style={styles.header}>
-    <Pressable
-      style={styles.backButton}
-      onPress={() => {
-        setEndScroll();
-        router.back();
-      }}
-    >
-      <Ionicons name="chevron-back" size={28} color="black" />
-    </Pressable>
+  return (
+    <View style={styles.header}>
+      <Pressable
+        style={styles.backButton}
+        onPress={() => {
+          setEndScroll();
+          router.back();
+        }}
+      >
+        <Ionicons name="chevron-back" size={28} color="black" />
+      </Pressable>
 
-    <View style={styles.headerTitleContainer}>
-      <Text style={styles.headerMainTitle}>{song}</Text>
-      <Text>{artist}</Text>
-    </View>
-
-    {pathname === '/display' && (
-      <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
-        <Pressable style={styles.backButton} onPress={() => setIsScrolling()}>
-          <Ionicons name={isScrolling ? 'pause' : 'play'} size={30} color="black" />
-        </Pressable>
+      <View style={styles.headerTitleContainer}>
+        <Text style={styles.headerMainTitle}>{song}</Text>
+        <Text>{artist}</Text>
       </View>
-    )}
 
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {pathname === '/display' && (
-        <ModalDropdown
-          ref={dropdownRef} // připojení referencí
-          saveScrollPosition={false}
-          options={options}
-          dropdownStyle={{
-            backgroundColor: '#fff',
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: '#000',
-            paddingVertical: 4,
-            width: 180,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 6,
-            elevation: 5,
-          }}
-          dropdownTextStyle={{
-            color: '#000',
-            fontSize: 15,
-            paddingVertical: 10,
-            paddingHorizontal: 12,
-          }}
-          dropdownTextHighlightStyle={{
-            backgroundColor: '#f0f0f0',
-            color: '#000',
-          }}
-          adjustFrame={(style) => ({
-            ...style,
-            top: style.top - 60,
-            right: style.right + 10,
-            height: 'auto',
-          })}
-          multipleSelect={true}
-          onSelect={(index, value) => dropdownSelect(value)}
-          renderRow={(item, index, isSelected) => {
-            const isMulti = multiSelectKeys.includes(item);
-            const isSelectedMulti = selectedMultiOptions.includes(item);
-
-            return (
-              <View
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 12,
-                  backgroundColor: isMulti && isSelectedMulti ? '#e0e0e0' : '#fff',
-                }}
-              >
-                <Text style={{ color: '#000', fontSize: 15 }}>
-                  {isMulti ? `${isSelectedMulti ? '☑' : '☐'} ${item}` : item}
-                </Text>
-              </View>
-            );
-          }}
-        >
-          <View style={{ height: 40, width: 40, justifyContent: 'center', alignItems: 'center' }}>
-            <Ionicons name="ellipsis-vertical" size={24} color="black" />
-          </View>
-        </ModalDropdown>
+        <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+          <Pressable style={styles.backButton} onPress={() => setIsScrolling()}>
+            <Ionicons name={isScrolling ? 'pause' : 'play'} size={30} color="black" />
+          </Pressable>
+        </View>
       )}
+
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {pathname === '/display' && (
+          <ModalDropdown
+            ref={dropdownRef} // připojení referencí
+            saveScrollPosition={false}
+            options={options}
+            dropdownStyle={{
+              backgroundColor: '#fff',
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: '#000',
+              paddingVertical: 4,
+              width: 180,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 6,
+              elevation: 5,
+            }}
+            dropdownTextStyle={{
+              color: '#000',
+              fontSize: 15,
+              paddingVertical: 10,
+              paddingHorizontal: 12,
+            }}
+            dropdownTextHighlightStyle={{
+              backgroundColor: '#f0f0f0',
+              color: '#000',
+            }}
+            adjustFrame={(style) => ({
+              ...style,
+              top: style.top - 60,
+              right: style.right + 10,
+              height: 'auto',
+            })}
+            multipleSelect={true}
+            onSelect={(index, value) => dropdownSelect(value)}
+            renderRow={(item, index, isSelected) => {
+              const isMulti = multiSelectKeys.includes(item);
+              const isSelectedMulti = selectedMultiOptions.includes(item);
+
+              return (
+                <View
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 12,
+                    backgroundColor: isMulti && isSelectedMulti ? '#e0e0e0' : '#fff',
+                  }}
+                >
+                  <Text style={{ color: '#000', fontSize: 15 }}>
+                    {isMulti ? `${isSelectedMulti ? '☑' : '☐'} ${item}` : item}
+                  </Text>
+                </View>
+              );
+            }}
+          >
+            <View style={{ height: 40, width: 40, justifyContent: 'center', alignItems: 'center' }}>
+              <Ionicons name="ellipsis-vertical" size={24} color="black" />
+            </View>
+          </ModalDropdown>
+        )}
+      </View>
     </View>
-  </View>
-);
+  );
 };
 
 export default Header;

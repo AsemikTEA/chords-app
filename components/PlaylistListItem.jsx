@@ -4,7 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
 
-  const countOfSongs = item.songs.length;
+  const countOfSongs = item.playlist_id.songs.length;
 
   return (
     <TouchableOpacity
@@ -13,10 +13,10 @@ const PlaylistListItem = ({ item, handlePress, handleLongPress }) => {
       onLongPress={handleLongPress}
     >
       <View style={styles.versionListItemName}>
-        <Text style={styles.versionListItemNameText}>{item.name}</Text>
+        <Text style={styles.versionListItemNameText}>{item.playlist_id.name}</Text>
       </View>
 
-      {item.is_shared && (
+      {item.role === 2 && (
         <MaterialCommunityIcons
           name="account-multiple-outline"
           size={24}

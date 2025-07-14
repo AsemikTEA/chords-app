@@ -4,7 +4,7 @@ import axios from "axios";
 const saveTransposition = async (transData) => {
   
   try {
-    const response = await axios.put(`http://10.0.0.87:3000/v1/transpositions/`, transData);
+    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/transpositions/`, transData);
     console.log(response.data);
   } catch (error) {
     throw error;

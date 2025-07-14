@@ -4,11 +4,15 @@ import { Link, router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useTokenAuth } from '../hooks/useTokenAuth';
 import { useEffect } from 'react';
-import { useUserStore } from '../state/store';
+import { useNetworkStore, useUserStore } from '../state/store';
 import { useNewAccessToken } from '../hooks/useNewAccessToken';
 import { showMessage } from 'react-native-flash-message';
+import * as Network from 'expo-network';
 
 export default function App() {
+
+  const setIsConnected = useNetworkStore((state) => state.setIsConnected);
+  const isConnected = useNetworkStore((state) => state.isConnected);
 
   const setId = useUserStore((state) => state.setId);
   const setUsername = useUserStore((state) => state.setUsername);
@@ -147,8 +151,32 @@ export default function App() {
   }
 
   useEffect(() => {
+    const check = async () => {
+      const state = await Network.getNetworkStateAsync();
+      setIsOnline(state.isInternetReachable ?? false);
+    };
+
+    check();
+
+    const subscription = Network.addNetworkStateListener((state) => {
+      setIsOnline(state.isInternetReachable ?? false);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  if (!isConnected) {
+    return (
+      <View style={styles2.container}>
+        <Text style={{fontWeight: 'bold', fontSize: 40}}>No internet connection</Text>
+        <Link href="/sign-in">Use app in offline mode</Link>
+      </View>
+    );
+  }
+
+  useEffect(() => {
     checkToken();
-  }, [])
+  }, []);
 
   return (
     <View style={styles2.container}>

@@ -142,3 +142,8 @@ export const useShareStore = create((set) => ({
   setShare: () => set((state) => ({ share: !state.share })),
   setDisableShare: () => set((state) => ({ share: false })),
 }));
+
+export const useNetworkStore = create((set) => ({
+  isConnected: true,
+  setIsConnected: (e) => set((state) => ({ isConnected: e })),
+}));

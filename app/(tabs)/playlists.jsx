@@ -29,13 +29,13 @@ const Playlists = () => {
     return <PlaylistListItem
       item={item}
       handlePress={() => {
-        setPlaylistId(item._id);
-        setPlaylistName(item.name);
+        setPlaylistId(item.playlist_id._id);
+        setPlaylistName(item.playlist_id.name);
         router.navigate('/playlist-songs');
       }}
       handleLongPress={() => {
-        setPlaylistName(item.name);
-        setPlaylistId(item._id);
+        setPlaylistName(item.playlist_id.name);
+        setPlaylistId(item.playlist_id._id);
         setModalOptions();
       }}
     />

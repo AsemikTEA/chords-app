@@ -3,7 +3,7 @@ import axios from "axios";
 
 const fetchSongVersion = async (searchData) => {
   try {
-    const { data: response } = await axios.post(`http://10.0.0.87:3000/v1/personal-version/get-version`, searchData);
+    const { data: response } = await axios.post(`https://rest-api-chords.onrender.com/v1/personal-version/get-version`, searchData);
     console.log(response);
     if (response) {
       response.model = 'Personal_version';
@@ -14,7 +14,7 @@ const fetchSongVersion = async (searchData) => {
     if (error?.response?.status === 404) {
 
       try {
-        const { data: fallbackResponse } = await axios.post(`http://10.0.0.87:3000/v1/song-versions/get-version`, searchData);
+        const { data: fallbackResponse } = await axios.post(`https://rest-api-chords.onrender.com/v1/song-versions/get-version`, searchData);
         
         if (fallbackResponse) {
           fallbackResponse.model = 'Song_version';
@@ -41,7 +41,7 @@ const fetchSongVersion = async (searchData) => {
 
 export const useSongVersion = (searchData) => {
   return useQuery({
-    queryKey: ['song-version', searchData.versionId, searchData.userId],
+    queryKey: ['song-version'],
     queryFn: () => fetchSongVersion(searchData),
     staleTime: 0,
     refetchOnMount: true,

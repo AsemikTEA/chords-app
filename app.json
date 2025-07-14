@@ -13,14 +13,19 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.asemik.chordsapp"
+      "package": "com.asemik.chordsapp",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +38,9 @@
       "eas": {
         "projectId": "cc0bb4df-a76d-4f6e-bc7e-4c23d16e847b"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cc0bb4df-a76d-4f6e-bc7e-4c23d16e847b"
     }
   }
 }
