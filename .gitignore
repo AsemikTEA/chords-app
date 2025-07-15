@@ -3,10 +3,15 @@
 # dependencies
 node_modules/
 
+# Android
+android/app/build/
+android-temp/
+
 # Expo
 .expo/
 dist/
 web-build/
+.expo-shared/
 
 # Native
 *.orig.*

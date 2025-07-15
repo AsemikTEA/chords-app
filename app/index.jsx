@@ -153,16 +153,16 @@ export default function App() {
   useEffect(() => {
     const check = async () => {
       const state = await Network.getNetworkStateAsync();
-      setIsOnline(state.isInternetReachable ?? false);
+      setIsConnected(state.isInternetReachable ?? false);
     };
 
     check();
 
-    const subscription = Network.addNetworkStateListener((state) => {
-      setIsOnline(state.isInternetReachable ?? false);
-    });
+    // const subscription = Network.addNetworkStateListener((state) => {
+    //   setIsConnected(state.isInternetReachable ?? false);
+    // });
 
-    return () => subscription.remove();
+    // return () => subscription.remove();
   }, []);
 
   if (!isConnected) {
