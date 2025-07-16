@@ -1,4 +1,3 @@
-
 import { StyleSheet, Text, View } from 'react-native';
 import { Link, router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -30,10 +29,10 @@ export default function App() {
       } else {
         console.log('No token found');
         showMessage({
-        message: 'Error retrieving token',
-        description: error.message,
-        type: 'info',
-      });
+          message: 'Error retrieving token',
+          description: error.message,
+          type: 'info',
+        });
       }
     } catch (error) {
       console.error('Error retrieving token:', error);
@@ -101,17 +100,18 @@ export default function App() {
       });
 
       const isValid = await requestNewAccessToken();
-      if (isValid) {showMessage({
-        message: 'Succesfully logged in',
-        type: 'success',
-      })
-    } else {
-      showMessage({
-        message: 'Error checking token, redirecting to sign-in page.',
-        description: error.response.data.message,
-        type: 'danger',
-      });
-    }
+      if (isValid) {
+        showMessage({
+          message: 'Succesfully logged in',
+          type: 'success',
+        })
+      } else {
+        showMessage({
+          message: 'Error checking token, redirecting to sign-in page.',
+          description: error.response.data.message,
+          type: 'danger',
+        });
+      }
       return;
     }
   }
@@ -151,37 +151,43 @@ export default function App() {
   }
 
   useEffect(() => {
+    // if (isConnected === false) return;
+    // if (isConnected) {
+    //   checkToken();
+    // };
+
+    checkToken();
+  }, []);
+
+  useEffect(() => {
     const check = async () => {
       const state = await Network.getNetworkStateAsync();
-      setIsConnected(state.isInternetReachable ?? false);
+      setIsConnected(true);
     };
-
+ 
     check();
-
-    // const subscription = Network.addNetworkStateListener((state) => {
-    //   setIsConnected(state.isInternetReachable ?? false);
-    // });
-
-    // return () => subscription.remove();
   }, []);
 
   if (!isConnected) {
     return (
       <View style={styles2.container}>
-        <Text style={{fontWeight: 'bold', fontSize: 40}}>No internet connection</Text>
-        <Link href="/sign-in">Use app in offline mode</Link>
+        <Text style={{ fontWeight: 'bold', fontSize: 40 }}>No internet connection</Text>
+        <Link href="/search">Use app in offline mode</Link>
       </View>
     );
   }
 
-  useEffect(() => {
-    checkToken();
-  }, []);
+  if (tokenAuth.isPending || newAccessToken.isPending || tokenAuth.isIdle || newAccessToken.isIdle) {
+    return (
+      <View style={styles2.container}>
+        <Text style={{ fontWeight: 'bold', fontSize: 40 }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles2.container}>
-      {(tokenAuth.isPending || newAccessToken.isPending) ? <Text style={{fontWeight: 'bold', fontSize: 40}}>Loading...</Text>
-        : <Link href="/sign-in">Jít na přihlášení</Link>}
+      <Link href="/sign-in">Jít na přihlášení</Link>
     </View>
   );
 }

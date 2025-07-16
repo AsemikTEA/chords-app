@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongView from '../../components/SongView';
 import Transpose from '../../components/Transpose';
-import { useAutoscrollStore, useDisplayModeStore, useSongVersionStore, useTranspositionNumberStore, useTranspositionStore, useUserStore } from '../../state/store';
+import { useAutoscrollStore, useDisplayModeStore, useNetworkStore, useOfflineStore, useSongVersionStore, useTranspositionNumberStore, useTranspositionStore, useUserStore } from '../../state/store';
 import { useSongVersion } from '../../hooks/useSongVersion';
 import AddToPlaylistModal from '../../components/AddToPlaylistModal';
 import { useFocusEffect, useNavigation } from 'expo-router';
@@ -17,6 +17,7 @@ import WebView from 'react-native-webview';
 import { set } from 'react-hook-form';
 import { useSaveTransposition } from '../../hooks/useSaveTransposition';
 import { QueryClient } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DisplaySong = () => {
 
@@ -115,6 +116,7 @@ const DisplaySong = () => {
   //     );
   //   };
 
+
   const scrollRef = useRef(null);
   const scrollInterval = useRef(null);
   const currentScrollY = useRef(0);
@@ -123,6 +125,8 @@ const DisplaySong = () => {
 
   const navigation = useNavigation();
 
+  const songJSON = useOfflineStore((state) => state.songJSON);
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const versionId = useSongVersionStore((state) => state.versionId);
   const transposition = useTranspositionStore((state) => state.transposition);
   const showMetadata = useDisplayModeStore((state) => state.showMetadata);
@@ -135,11 +139,19 @@ const DisplaySong = () => {
   const setDisableTransposition = useTranspositionStore((state) => state.setDisableTransposition);
   const setTranspositionNumber = useTranspositionNumberStore((state) => state.setTranspositionNumber);
 
-  const searchData = {
-    versionId: versionId,
-    userId: useUserStore.getState().user.id,
+  let version;
+
+  if (isConnected) {
+    const searchData = {
+      versionId: versionId,
+      userId: useUserStore.getState().user.id,
+    }
+    version = useSongVersion(searchData);
+  } else {
+    version = { data: songJSON };
+    console.log(version);
   }
-  const version = useSongVersion(searchData);
+
   const saveTransposition = useSaveTransposition();
 
   // const parser = new ChordProParser();
@@ -172,12 +184,29 @@ const DisplaySong = () => {
         // console.log('Transposition number on blur:', transNumber);
         // console.log('User transposition from version:', userTransposition);
 
-        const transData = {
-          versionId: versionId,
-          userId: useUserStore.getState().user.id,
-          transposition: useTranspositionNumberStore.getState().transpositionNumber,
-        };
-        saveTransposition.mutate(transData);
+        if (isConnected) {
+          const transData = {
+            versionId: versionId,
+            userId: useUserStore.getState().user.id,
+            transposition: useTranspositionNumberStore.getState().transpositionNumber,
+          };
+          saveTransposition.mutate(transData);
+        } else {
+          version.data.userTransposition = useTranspositionNumberStore.getState().transpositionNumber
+
+          const storeData = async (value) => {
+            try {
+              const jsonValue = JSON.stringify(value);
+              await AsyncStorage.setItem(`song_${value._id}`, jsonValue);
+              console.log('JSON saved successfully:', jsonValue);
+            } catch (e) {
+              console.error('Error saving JSON to AsyncStorage:', e);
+              throw e;
+            }
+          };
+
+          storeData(version.data);
+        }
 
         setTranspositionNumber(0);
       };
@@ -320,7 +349,7 @@ const DisplaySong = () => {
     );
   }
 
-  if (version.isSuccess && version.data.userTransposition) {
+  if ((version.isSuccess || !isConnected) && version.data.userTransposition) {
     setTranspositionNumber(version.data.userTransposition);
   }
 
@@ -330,7 +359,9 @@ const DisplaySong = () => {
       edges={['bottom', 'left', 'right']}
     >
       {/* <SongWebView html={html} /> */}
-      <AddToPlaylistModal version={{ version: versionId, versionModel: version.data.model }} />
+      {isConnected &&
+        <AddToPlaylistModal version={{ version: versionId, versionModel: version.data.model }} />
+      }
       <ScrollView
         ref={scrollRef}
         onScroll={handleScroll}

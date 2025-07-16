@@ -43,9 +43,6 @@ export const useSongVersion = (searchData) => {
   return useQuery({
     queryKey: ['song-version'],
     queryFn: () => fetchSongVersion(searchData),
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
   },
 );
 }

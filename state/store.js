@@ -144,6 +144,13 @@ export const useShareStore = create((set) => ({
 }));
 
 export const useNetworkStore = create((set) => ({
-  isConnected: true,
+  isConnected: false,
   setIsConnected: (e) => set((state) => ({ isConnected: e })),
+}));
+
+export const useOfflineStore = create((set) => ({
+  songJSON: null,
+  playlistJSON: null,
+  setSongJSON: (e) => set((state) => ({ songJSON: e })),
+  setPlaylistJSON: (e) => set((state) => ({ playlistJSON: e })),
 }));

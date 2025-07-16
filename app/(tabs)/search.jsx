@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,11 +6,14 @@ import SearchForm from '../../components/SearchForm';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import SongListItem from '../../components/SongListItem';
-import { useSearchStore, useSongContentStore, useSongVersionStore } from '../../state/store';
+import { useNetworkStore, useSearchStore, useSongContentStore, useSongVersionStore } from '../../state/store';
 import { useSearchSongs } from '../../hooks/useSearchSong';
 import { useDebounce } from '../../hooks/useDebounce';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Search = () => {
+
+  const isConnected = useNetworkStore((state) => state.isConnected);
 
   const songName = useSearchStore((state) => state.songName);
   const debouncedSearch = useDebounce(songName);
@@ -41,6 +44,19 @@ const Search = () => {
       }}
     />
   };
+
+  if (!isConnected) {
+    return (
+      <SafeAreaView style={[styles.container, { paddingTop: 40 }]} edges={['bottom', 'left', 'right']}>
+        <View style={styles.offlineContainer}>
+          <MaterialCommunityIcons name="cloud-off-outline" size={24} color="#D32F2F" />
+          <Text style={styles.offlineText}>
+            You are offline. Please connect back to internet to search songs.
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (songs.isLoading) {
     return (

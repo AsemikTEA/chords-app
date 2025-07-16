@@ -5,11 +5,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store';
 import { useSharePlaylistInvites } from '../../hooks/useSharePlaylistInvites'
-import { useUserStore } from '../../state/store'
+import { useNetworkStore, useUserStore } from '../../state/store'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Account = () => {
 
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const user = useUserStore((state) => state.user);
 
   const recievedInvites = useSharePlaylistInvites(user?.id);
@@ -25,6 +27,14 @@ const Account = () => {
     }
   }
 
+  if (!isConnected) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, color: 'red' }}>You are offline. Please connect to the internet to access your account.</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingLeft: 16, paddingRight: 16 }}>
@@ -35,17 +45,32 @@ const Account = () => {
           </View>
         </Pressable>
 
-        <Pressable style={styles.darkButton} onPress={removeToken}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <MaterialCommunityIcons name="door-open" size={24} color="white" />
-            <Text style={styles.darkButtonText}>Log Out</Text>
-          </View>
-        </Pressable>
-
         <Pressable style={styles.darkButton} onPress={() => router.navigate('/invites')}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialCommunityIcons name="account-multiple-outline" size={24} color="white" />
             <Text style={styles.darkButtonText}>Invites to Share Playlist</Text>
+          </View>
+        </Pressable>
+
+        <Pressable style={styles.darkButton} onPress={async () => {
+          try {
+            await AsyncStorage.clear()
+          } catch (e) {
+            console.log('Error: ', e);
+            throw e;
+          }
+          console.log('Done.');
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="delete-outline" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Delete stored songs and playlists</Text>
+          </View>
+        </Pressable>
+
+        <Pressable style={styles.darkButton} onPress={removeToken}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="door-open" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Log Out</Text>
           </View>
         </Pressable>
       </View>

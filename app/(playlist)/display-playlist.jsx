@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable, StyleSheet, TextInput } from 'react-native'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
-import { useAutoscrollStore, useDisplayModeStore, usePlaylistStore, useShareStore, useSongContentStore, useTranspositionNumberStore, useTranspositionStore, useUserStore } from '../../state/store'
+import { useAutoscrollStore, useDisplayModeStore, useNetworkStore, useOfflineStore, usePlaylistStore, useShareStore, useSongContentStore, useTranspositionNumberStore, useTranspositionStore, useUserStore } from '../../state/store'
 import { styles } from '../../style/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SongViewPlaylist from '../../components/SongViewPlaylist'
@@ -11,6 +11,7 @@ import AutoscrollSpeed from '../../components/AutoscrollSpeed'
 import SharePlaylistModal from '../../components/SharePlaylistModal'
 import TranspositionTab from '../../components/TranspositionTab'
 import { useSaveTransposition } from '../../hooks/useSaveTransposition'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PlaylistDisplay = () => {
 
@@ -24,6 +25,8 @@ const PlaylistDisplay = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
 
+  const isConnected = useNetworkStore((state) => state.isConnected);
+  const playlistJSON = useOfflineStore((state) => state.playlistJSON);
   const playlistId = usePlaylistStore((state) => state.playlistId);
   const user = useUserStore((state) => state.user);
   const songMeta = useSongContentStore((state) => state.songMetaData);
@@ -37,10 +40,18 @@ const PlaylistDisplay = () => {
   const setInactiveTransposition = useTranspositionNumberStore((state) => state.setInactiveTransposition);
   const setTitle = useSongContentStore((state) => state.setTitle);
 
-  const { data, isPending, isError } = usePlaylistDisplay({
-    playlistId: playlistId,
-    userId: user.id
-  });
+  let playlistSongs
+
+  if (isConnected) {
+    playlistSongs = usePlaylistDisplay({
+      playlistId: playlistId,
+      userId: user.id
+    });
+  } else {
+    playlistSongs = {
+      data: playlistJSON.playlist_id
+    }
+  }
   const saveTransposition = useSaveTransposition();
 
   // useFocusEffect(
@@ -79,25 +90,46 @@ const PlaylistDisplay = () => {
   // );
 
   useEffect(() => {
-    if (!data || !data.songs || data.songs.length === 0) {
+    if (!playlistSongs.data || !playlistSongs.data.songs || playlistSongs.data.songs.length === 0) {
       return;
     }
-    
+
     const onBlur = () => {
       const transpositionArray = useTranspositionNumberStore.getState().transpositionArray;
 
-      data.songs.forEach((song, i) => {
-        const versionId = song.version._id;
-        const transpositionNumber = transpositionArray[i] || 0;
+      if (isConnected) {
+        playlistSongs.data.songs.forEach((song, i) => {
+          const versionId = song.version._id;
+          const transpositionNumber = transpositionArray[i] || 0;
 
-        const transData = {
-          versionId,
-          userId: useUserStore.getState().user.id,
-          transposition: transpositionNumber,
+          const transData = {
+            versionId,
+            userId: useUserStore.getState().user.id,
+            transposition: transpositionNumber,
+          };
+
+          saveTransposition.mutate(transData);
+        });
+      } else {
+        playlistSongs.data.songs.forEach((song, i) => {
+          const transpositionNumber = transpositionArray[i] || 0;
+
+          song.userTransposition = transpositionNumber;
+        });
+
+        const storeData = async (value) => {
+          try {
+            const jsonValue = JSON.stringify(value);
+            await AsyncStorage.setItem(`playlist_${value.playlist_id._id}`, jsonValue);
+            console.log('JSON saved successfully:', jsonValue);
+          } catch (e) {
+            console.error('Error saving JSON to AsyncStorage:', e);
+            throw e;
+          }
         };
 
-        saveTransposition.mutate(transData);
-      });
+        storeData({playlist_id: playlistSongs.data});
+      }
 
       queryClient.invalidateQueries({ queryKey: ['playlist-songs-display'] });
       stopAutoScroll();
@@ -113,16 +145,16 @@ const PlaylistDisplay = () => {
     return () => {
       unsubscribe;
     }
-  }, [data, navigation]);
+  }, [playlistSongs.data, navigation]);
 
   useEffect(() => {
-    if (!data || !data.songs || data.songs.length === 0) {
+    if (!playlistSongs.data || !playlistSongs.data.songs || playlistSongs.data.songs.length === 0) {
       return;
     }
 
-    const initial = data.songs.map((item) => item.userTransposition || 0);
+    const initial = playlistSongs.data.songs.map((item) => item.userTransposition || 0);
     setTranspositionArray(initial);
-  }, [data]);
+  }, [playlistSongs.data]);
 
   useEffect(() => {
     const unsub = useAutoscrollStore.subscribe((state) => {
@@ -241,15 +273,15 @@ const PlaylistDisplay = () => {
     });
   };
 
-  if (isPending) {
+  if (playlistSongs.isPending) {
     return <Text>Loading...</Text>;
   }
 
-  if (isError) {
+  if (playlistSongs.isError) {
     return <Text>Error fetching playlist songs. Please try again.</Text>;
   }
 
-  if (!data || !data.songs || data.songs.length === 0) {
+  if (!playlistSongs.data || !playlistSongs.data.songs || playlistSongs.data.songs.length === 0) {
     return <Text>No songs available in this playlist.</Text>;
   }
 
@@ -264,7 +296,7 @@ const PlaylistDisplay = () => {
         scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
-        {data.songs.map((item, index) => {
+        {playlistSongs.data.songs.map((item, index) => {
           return (
             <View style={{ paddingLeft: 10 }} key={index}>
               <TouchableOpacity

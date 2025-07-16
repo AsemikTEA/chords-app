@@ -8,6 +8,7 @@ import {
   useAutoscrollStore,
   useDisplayModeStore,
   useModalStore,
+  useNetworkStore,
   useTranspositionStore,
 } from '../state/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +21,7 @@ const Header = ({ song, artist }) => {
   const pathname = usePathname();
   const dropdownRef = useRef(null); // ref pro manuální zavření dropdownu
 
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const setTransposition = useTranspositionStore((state) => state.transpose);
   const setDisplayOnlyChords = useDisplayModeStore((state) => state.setDisplayOnlyChords);
   const setModalVisible = useModalStore((state) => state.setModalVisible);
@@ -39,17 +41,31 @@ const Header = ({ song, artist }) => {
     'Show tempo',
   ]);
 
-  const options = [
-    'Transpose',
-    'Only chords',
-    'Show metadata',
-    'Show key',
-    'Show capo',
-    'Show tempo',
-    'Edit song',
-    'Add to playlist',
-    'Download JSON',
-  ];
+  let options;
+
+  if (isConnected) {
+    options = [
+      'Transpose',
+      'Only chords',
+      'Show metadata',
+      'Show key',
+      'Show capo',
+      'Show tempo',
+      'Edit song',
+      'Add to playlist',
+      'Download JSON',
+    ];
+  } else {
+    options = [
+      'Transpose',
+      'Only chords',
+      'Show metadata',
+      'Show key',
+      'Show capo',
+      'Show tempo',
+      'Edit song',
+    ];
+  }
 
   const multiSelectKeys = ['Transpose', 'Only chords', 'Show metadata', 'Show key', 'Show capo', 'Show tempo'];
 
@@ -120,7 +136,7 @@ const Header = ({ song, artist }) => {
           const storeData = async (value) => {
             try {
               const jsonValue = JSON.stringify(value);
-              await AsyncStorage.setItem(value._id, jsonValue);
+              await AsyncStorage.setItem(`song_${value._id}`, jsonValue);
               console.log('JSON saved successfully:', jsonValue);
             } catch (e) {
               console.error('Error saving JSON to AsyncStorage:', e);

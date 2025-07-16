@@ -1,22 +1,27 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
-import { useSongVersionStore, useUserStore } from '../../state/store';
+import { useNetworkStore, useOfflineStore, useSongVersionStore, useUserStore } from '../../state/store';
 import { useSearchPersonalVersions } from '../../hooks/useSearchPersonalVersions';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { showMessage } from 'react-native-flash-message';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserEditedSongs = () => {
 
+  const [storedSongs, setStoredSongs] = useState([]);
+
   const queryClient = useQueryClient();
 
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const userData = useUserStore((state) => state.user);
   const setVersionId = useSongVersionStore((state) => state.setVersionId);
+  const setSongJSON = useOfflineStore((state) => state.setSongJSON);
 
   const personalVersions = useSearchPersonalVersions(userData.id);
 
@@ -29,6 +34,43 @@ const UserEditedSongs = () => {
     }, [])
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!isConnected) {
+        const getStoredSongs = async () => {
+          try {
+            const allKeys = await AsyncStorage.getAllKeys();
+            const songKeys = allKeys.filter((key) => key.startsWith('song_'));
+
+            const storedJSONSongs = await AsyncStorage.multiGet(songKeys);
+            const songs = storedJSONSongs
+              .map(([key, value]) => {
+                try {
+                  return JSON.parse(value);
+                } catch {
+                  return null;
+                }
+              })
+              .filter(Boolean);
+
+            setStoredSongs(songs);
+          } catch (error) {
+            console.error('Error retrieving stored songs:', error);
+            showMessage({
+              message: 'Error retrieving stored songs',
+              description: error.message,
+              type: 'danger',
+            });
+            setStoredSongs([]);
+          }
+        };
+
+        getStoredSongs();
+      }
+    }, [isConnected])
+  );
+
+
   const separator = () => {
     return <View style={styles.separator} />;
   };
@@ -40,13 +82,22 @@ const UserEditedSongs = () => {
           style={[styles.listItem, { flexDirection: 'row' }]}
           onPress={() => {
             setVersionId(item._id);
+            if (!isConnected) {
+              setSongJSON(item);
+            }
             router.navigate('/display');
           }}
         >
           <View style={{ flex: 3 }}>
-            <Text style={styles.listItemSongName}>{item.metadata.title}</Text>
-            <Text style={styles.listItemAuthor}>{item.metadata.artist}</Text>
-            <Text style={styles.listItemAuthor}>Version: {item.version}</Text>
+            <Text style={styles.listItemSongName}>
+              {item.metadata?.title ?? 'Unknown title'}
+            </Text>
+            <Text style={styles.listItemAuthor}>
+              {item.metadata?.artist ?? 'Unknown artist'}
+            </Text>
+            <Text style={styles.listItemAuthor}>
+              Version: {item.version ?? 'N/A'}
+            </Text>
           </View>
           <View style={{ flex: 1.8 }}>
             {(item.userTransposition !== undefined && item.userTransposition !== 0) &&
@@ -81,6 +132,33 @@ const UserEditedSongs = () => {
       </>
     )
   };
+
+  if (!isConnected) {
+    return (
+      <SafeAreaView style={[styles.container, { paddingTop: 40 }]} edges={['bottom', 'left', 'right']}>
+        <View style={styles.offlineContainer}>
+          <MaterialCommunityIcons name="cloud-off-outline" size={24} color="#D32F2F" />
+          <Text style={styles.offlineText}>
+            You are offline. Showing downloaded songs only.
+          </Text>
+        </View>
+
+        {storedSongs.length > 0 ? (
+          <FlashList
+            data={storedSongs}
+            renderItem={versionListItem}
+            estimatedItemSize={20}
+            ItemSeparatorComponent={separator}
+            contentContainerStyle={{ paddingBottom: 85 }}
+          />
+        ) : (
+          <View style={styles.noSongsContainer}>
+            <Text style={styles.noSongsText}>No songs downloaded for offline use.</Text>
+          </View>
+        )}
+      </SafeAreaView>
+    );
+  }
 
   if (personalVersions.isLoading) {
     return (

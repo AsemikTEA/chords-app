@@ -2,7 +2,7 @@ import { View, Text, ScrollView, Pressable, Modal, TouchableOpacity, TextInput }
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../../style/styles'
-import { useSongContentStore, useUserStore } from '../../state/store'
+import { useNetworkStore, useOfflineStore, useSongContentStore, useUserStore } from '../../state/store'
 import SongContentInput from '../../components/SongContentInput'
 import { useSongVersionStore } from '../../state/store';
 import { useSongVersion } from '../../hooks/useSongVersion';
@@ -14,18 +14,32 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import NewSongHeader from '../../components/NewSongHeader'
 import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import { showMessage } from 'react-native-flash-message'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditSong = () => {
 
+  //const [songVersion, setSongVersion] = useState(null);
+
+  const queryClient = useQueryClient();
+
   const navigation = useNavigation();
 
+  const songJSON = useOfflineStore((state) => state.songJSON);
+  const isConnected = useNetworkStore((state) => state.isConnected);
   const songId = useSongVersionStore((state) => state.songId);
   const versionId = useSongVersionStore((state) => state.versionId);
   const user = useUserStore((state) => state.user);
 
-  const queryClient = useQueryClient();
   const editMutation = useEditVersion();
-  const songVersion = useSongVersion({versionId: versionId, userId: user.id});
+
+  let songVersion;
+
+if (isConnected) {
+  const data = queryClient.getQueryData(['song-version']);
+  songVersion = {data: data};
+} else {
+  songVersion = {data: songJSON};
+}
 
   const formMethods = useForm({
     defaultValues: {
@@ -36,7 +50,7 @@ const EditSong = () => {
       capo: songVersion.data.metadata.capo,
       content: songVersion.data.content,
       songId: songId,
-      userId: user.id,
+      userId: user.id
     }
   });
 
@@ -62,8 +76,33 @@ const EditSong = () => {
     });
   }, [navigation]);
 
-  const onSubmit = (data, e) => {
-    editMutation.mutate({ data });
+  const onSubmit = async (data, e) => {
+    if (isConnected) {
+      editMutation.mutate({ data });
+    } else {
+      const storeData = async (value) => {
+        try {
+          const jsonValue = JSON.stringify(value);
+          await AsyncStorage.setItem(`song_${value._id}`, jsonValue);
+          console.log('JSON saved successfully:', jsonValue);
+          showMessage({
+            message: "Success",
+            description: "Your stored song was succesfully edited.",
+            type: "success",
+          });
+        } catch (e) {
+          console.error('Error saving JSON to AsyncStorage:', e);
+          showMessage({
+            message: "Error",
+            description: e.message,
+            type: "danger",
+          });
+          throw e;
+        }
+      };
+
+      storeData(data);
+    }
   };
 
   return (
@@ -72,14 +111,14 @@ const EditSong = () => {
       edges={['bottom', 'left', 'right']}
     >
       <ScrollView
-        //contentContainerStyle={{ paddingBottom: 100 }}
+      //contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View style={[styles.signContainer, { marginTop: 0 }]}>
           <View style={{ gap: 15, marginBottom: 20 }}>
             <View>
-              <Text style={styles.formTextStyle}>Version: {songVersion.data.version}</Text>
-              <Text style={styles.formTextStyle}>Title: {songVersion.data.metadata.title}</Text>
-              <Text style={styles.formTextStyle}>Artist: {songVersion.data.metadata.artist}</Text>
+              <Text style={styles.formTextStyle}>Version: {songVersion?.data?.version}</Text>
+              <Text style={styles.formTextStyle}>Title: {songVersion?.data?.metadata?.title}</Text>
+              <Text style={styles.formTextStyle}>Artist: {songVersion?.data?.metadata?.artist}</Text>
             </View>
 
             <View>

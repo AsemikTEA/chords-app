@@ -1,22 +1,12 @@
 import { View, Text, Pressable } from 'react-native';
-import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
 import { styles } from '../style/styles';
-import { useCreateVersion } from '../hooks/useCreateVersion';
-import { useSongContentStore, useSongVersionStore } from '../state/store';
-import { useEditVersion } from '../hooks/useEditSong';
 
-const NewSongHeader = ({ song, onSubmit }) => {
+const NewSongHeader = ({ onSubmit }) => {
 
   const pathname = usePathname();
-  const metadata = useSongContentStore((state) => state.songMetaData);
-  const content = useSongContentStore((state) => state.content);
-  const versionId = useSongVersionStore((state) => state.versionId);
-  const songId = useSongVersionStore((state) => state.songId);
-  
-  const editMutation = useEditVersion();
 
   const goBack = () => {
     router.back();
