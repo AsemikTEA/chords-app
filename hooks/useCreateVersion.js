@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const createVersion = async (songData) => {
 
@@ -18,7 +19,7 @@ const createVersion = async (songData) => {
   }
   
   try {
-    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/song-versions`, versionObject);
+    const response = await api.post(`/song-versions`, versionObject);
     console.log(response.data);
   } catch (error) {
     console.log(error);

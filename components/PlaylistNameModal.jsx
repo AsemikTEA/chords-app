@@ -19,7 +19,7 @@ const PlaylistNameModal = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      playlistName: '',
+      playlistName: playlistName,
     },
   });
 
@@ -90,6 +90,7 @@ const PlaylistNameModal = () => {
               <TextInput
                 style={styles.formTextInputModal}
                 placeholder="Enter playlist name"
+                defaultValue={playlistName}
                 onBlur={onBlur}
                 onChangeText={(text) => {
                   onChange(text);

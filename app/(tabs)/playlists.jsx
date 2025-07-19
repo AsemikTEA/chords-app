@@ -12,14 +12,16 @@ import PlaylistNameModal from '../../components/PlaylistNameModal';
 import { showMessage } from 'react-native-flash-message';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SharePlaylistModal from '../../components/SharePlaylistModal';
 
 const Playlists = () => {
 
   const [storedPlaylists, setStoredPlaylists] = useState([]);
 
   const isConnected = useNetworkStore((state) => state.isConnected);
-
+  const playlistId = usePlaylistStore((state) => state.playlistId);
   const user = useUserStore((state) => state.user);
+  
   const setPlaylistJSON = useOfflineStore((state) => state.setPlaylistJSON)
   const setPlaylistId = usePlaylistStore((state) => state.setPlaylistId);
   const setPlaylistName = usePlaylistStore((state) => state.setPlaylistName);
@@ -143,6 +145,7 @@ const Playlists = () => {
         ItemSeparatorComponent={separator}
         contentContainerStyle={{ paddingBottom: 85 }}
       />
+      <SharePlaylistModal userId={user.id} playlistId={playlistId} />
     </SafeAreaView>
   );
 };

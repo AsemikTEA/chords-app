@@ -2,11 +2,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useShareStore } from "../state/store";
 import { showMessage } from "react-native-flash-message";
+import api from "../api/axiosInstance";
 
 const sharePlaylist = async (shareInfo) => {
 
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/playlists/share`, shareInfo);
+    const response = await api.post(`/playlists/share`, shareInfo);
     console.log(response);
     return response;
   } catch (error) {

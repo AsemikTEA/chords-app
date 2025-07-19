@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const saveTransposition = async (transData) => {
   
   try {
-    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/transpositions/`, transData);
+    const response = await api.put(`/transpositions/`, transData);
     console.log(response.data);
   } catch (error) {
     throw error;

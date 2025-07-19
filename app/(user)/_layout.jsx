@@ -29,6 +29,26 @@ const UserLayout = () => {
             </View>,
           }}
         />
+        <Stack.Screen
+          name='account-info'
+          options={{
+            header: () => <View style={styles.header}>
+              <Pressable
+                style={styles.backButton}
+                onPress={() => {
+                  router.back()
+                }}
+              >
+                <Ionicons name="chevron-back" size={28} color="black" />
+              </Pressable>
+
+              <View style={styles.headerTitleContainer}>
+                <Text style={styles.headerMainTitle}>Account Details</Text>
+              </View>
+
+            </View>,
+          }}
+        />
       </Stack>
     </>
   )

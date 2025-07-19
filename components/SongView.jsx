@@ -224,7 +224,7 @@ const SongView = ({ songContent, songName }) => {
                       setModalVisible(true);
                     }}
                   >
-                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item}</Text>
+                    <Text style={styles2.onlyChords}>{item}</Text>
                   </Pressable>
                 );
 
@@ -375,7 +375,7 @@ const styles2 = StyleSheet.create({
     position: 'relative',
     //marginRight: 5,
     //borderWidth: 1,
-    marginTop: 20
+    marginTop: 20,
   },
   chord: {
     position: 'absolute',
@@ -383,7 +383,23 @@ const styles2 = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    //borderWidth: 1,
+    backgroundColor: '#d4d4d4ff',
+    paddingLeft: 3,
+    paddingRight: 3,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#9b9b9bff'
+  },
+  onlyChords: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 17,
+    backgroundColor: '#d4d4d4ff',
+    paddingLeft: 3,
+    paddingRight: 3,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#9b9b9bff'
   },
   lyrics: {
     fontSize: 16,

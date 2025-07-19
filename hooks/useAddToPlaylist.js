@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { showMessage } from "react-native-flash-message";
+import api from "../api/axiosInstance";
 
 const addToPlaylist = async (value) => {
 
@@ -10,7 +11,7 @@ const addToPlaylist = async (value) => {
   }
 
   try {
-    const response = await axios.put(`http://10.0.0.87:3000/v1/playlists/${value.playlist.playlist_id._id}`, playlistObject);
+    const response = await api.put(`/playlists/${value.playlist.playlist_id._id}`, playlistObject);
     console.log(response);
     return response;
   } catch (error) {

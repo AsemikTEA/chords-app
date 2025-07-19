@@ -1,10 +1,11 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import teoria from 'teoria';
 import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import { usePathname } from 'expo-router';
+import GuitarChordSvg from './GuitarChordSvg';
 
 const SongViewPlaylist = ({ song, index }) => {
 
@@ -13,6 +14,8 @@ const SongViewPlaylist = ({ song, index }) => {
 
   const hasMounted = useRef(false);
   const [transposedChords, setTransposedChords] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedChord, setSelectedChord] = useState(null);
 
   let array;
 
@@ -231,8 +234,14 @@ const SongViewPlaylist = ({ song, index }) => {
               {block.chords.map((item, index) => {
 
                 return (
-                  <Pressable style={{ marginRight: 7 }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{item}</Text>
+                  <Pressable
+                    style={{ marginRight: 7 }}
+                    onPress={() => {
+                      setSelectedChord(item);
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Text style={styles2.onlyChords}>{item}</Text>
                   </Pressable>
                 );
 
@@ -269,21 +278,43 @@ const SongViewPlaylist = ({ song, index }) => {
           <View style={styles2.lyricLine}>
             {/* Render starting chords if they exist */}
             {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
-              <Pressable style={styles2.relativeContainer}>
-                <Text style={styles2.chord}>{transposedChords[0].chords[chordIndex.current++]}</Text>
-              </Pressable>
+              () => {
+                const chord = transposedChords[blockIndex.current].chords[chordIndex.current];
+                chordIndex.current++;
+                return (
+                  <Pressable
+                    style={styles2.relativeContainer}
+                    onPress={() => {
+                      setSelectedChord(chord);
+                      setModalVisible(true);
+                    }}
+                  >
+                    <Text style={styles2.chord}>{chord}</Text>
+                  </Pressable>
+                );
+              }
             )}
 
             {/* Render lyrics and chordsArray */}
             {block.lyrics.map((item, index) => {
               if (item.isFollowedByChord && chordIndex.current < transposedChords[blockIndex.current].chords.length) {
+                const chord = transposedChords[blockIndex.current].chords[chordIndex.current];
+                chordIndex.current++;
+
                 return (
                   <>
                     <Text key={index} style={styles2.relativeContainer}>
                       {item.value}
                     </Text>
-                    <Pressable style={styles2.relativeContainer} key={'chord' + chordIndex.current}>
-                      <Text style={styles2.chord}>{transposedChords[blockIndex.current].chords[chordIndex.current++]}</Text>
+                    <Pressable
+                      style={styles2.relativeContainer}
+                      key={'chord' + chordIndex.current}
+                      onPress={() => {
+                        setSelectedChord(chord);
+                        setModalVisible(true);
+                      }}
+                    >
+                      <Text style={styles2.chord}>{chord}</Text>
                     </Pressable>
                   </>
                 );
@@ -301,7 +332,58 @@ const SongViewPlaylist = ({ song, index }) => {
     }
   }
 
-  return array;
+  return (
+    <>
+      {array}
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressOut={() => setModalVisible(false)}
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => { }}
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 10,
+              alignItems: 'center',
+              minWidth: 260,
+            }}
+          >
+            {/* Křížek v pravém horním rohu */}
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 10,
+                padding: 5,
+                zIndex: 1,
+              }}
+            >
+              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>✕</Text>
+            </TouchableOpacity>
+
+            {selectedChord && <GuitarChordSvg chordName={selectedChord} />}
+            <Text style={{ fontSize: 25, marginTop: 10, fontWeight: 'bold' }}>{selectedChord}</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  );
 };
 
 export default SongViewPlaylist;
@@ -321,7 +403,7 @@ const styles2 = StyleSheet.create({
     position: 'relative',
     //marginRight: 5,
     //borderWidth: 1,
-    marginTop: 20
+    marginTop: 20,
   },
   chord: {
     position: 'absolute',
@@ -329,7 +411,23 @@ const styles2 = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    //borderWidth: 1,
+    backgroundColor: '#d4d4d4ff',
+    paddingLeft: 3,
+    paddingRight: 3,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#9b9b9bff'
+  },
+  onlyChords: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 17,
+    backgroundColor: '#d4d4d4ff',
+    paddingLeft: 3,
+    paddingRight: 3,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: '#9b9b9bff'
   },
   lyrics: {
     fontSize: 16,

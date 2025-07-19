@@ -7,6 +7,7 @@ import { useLogIn } from '../../hooks/useLogIn';
 import { useUserStore } from '../../state/store';
 import { Controller, useForm } from 'react-hook-form';
 import * as SecureStore from 'expo-secure-store';
+import { setAuthToken } from '../../api/axiosInstance';
 
 const SignIn = () => {
 
@@ -56,6 +57,10 @@ const SignIn = () => {
 
       try {
         await saveToken(data.accessToken, data.refreshToken);
+
+        const accessToken = await SecureStore.getItemAsync('access_token');
+        setAuthToken(accessToken);
+        
         router.replace('/search');
       } catch (err) {
         Alert.alert('Login succeeded, but failed to save token.');

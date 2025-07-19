@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchInvites = async (userId) => {
   try {
-    const response = await axios.get(`https://rest-api-chords.onrender.com/v1/share-invites/${userId}`);
+    const response = await api.get(`/share-invites/${userId}`);
     console.log(response.data);
     console.log('fetching invites');
     return response;
   } catch (error) {
     console.log('fetching invites');
-    console.log(error);
+    console.log(error.response);
   }
 }
 

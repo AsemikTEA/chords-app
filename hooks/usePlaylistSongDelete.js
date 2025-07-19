@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const deletePlaylistSong = async (value) => {
 
@@ -12,7 +13,7 @@ const deletePlaylistSong = async (value) => {
   }
 
   try {
-    const response = await axios.put(`https://rest-api-chords.onrender.com/v1/playlists/${value.playlist._id}`, playlistObject);
+    const response = await api.put(`/playlists/${value.playlist._id}`, playlistObject);
     console.log(response);
   } catch (error) {
     console.log(error);

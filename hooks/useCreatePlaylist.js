@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const createPlaylist = async (data) => {
 
@@ -13,7 +14,7 @@ const createPlaylist = async (data) => {
   }
 
   try {
-    const response = await axios.post(`http://10.0.0.87:3000/v1/playlists/create`, newPlaylistObject);
+    const response = await api.post(`/playlists/create`, newPlaylistObject);
     console.log(response);
     return response.data;
   } catch (error) {

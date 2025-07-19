@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { showMessage } from "react-native-flash-message";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import api from "../api/axiosInstance";
 
 const editVersion = async (songData) => {
 
@@ -21,7 +23,7 @@ const editVersion = async (songData) => {
   }
 
   try {
-    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/personal-version/`, versionObject);
+    const response = await api.post(`/personal-version/`, versionObject);
     console.log(response.status);
     return (response);
   } catch (error) {

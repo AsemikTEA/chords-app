@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDeletePersonalVersion } from '../../hooks/useDeletePersonalVersion';
 
 const UserEditedSongs = () => {
 
@@ -24,6 +25,7 @@ const UserEditedSongs = () => {
   const setSongJSON = useOfflineStore((state) => state.setSongJSON);
 
   const personalVersions = useSearchPersonalVersions(userData.id);
+  const deletePersonalVersion = useDeletePersonalVersion();
 
   useFocusEffect(
     useCallback(() => {
@@ -70,67 +72,70 @@ const UserEditedSongs = () => {
     }, [isConnected])
   );
 
+  const handleDeletePersonalVersion = async (item) => {
+    deletePersonalVersion.mutateAsync(item._id, {
+      onSuccess: () => {
+        showMessage({
+          message: 'Your version has been succesfully deleted.',
+          type: 'success',
+        });
+        queryClient.invalidateQueries(['personal-version']);
+      },
+      onError: () => {
+        showMessage({
+          message: 'Error retrieving stored songs',
+          description: error.message,
+          type: 'danger',
+        });
+      }
+    })
+  }
 
   const separator = () => {
     return <View style={styles.separator} />;
   };
 
   const versionListItem = ({ item }) => {
+    const hasTransposition = item.userTransposition !== undefined && item.userTransposition !== 0;
+
     return (
-      <>
-        <TouchableOpacity
-          style={[styles.listItem, { flexDirection: 'row' }]}
-          onPress={() => {
-            setVersionId(item._id);
-            if (!isConnected) {
-              setSongJSON(item);
-            }
-            router.navigate('/display');
-          }}
-        >
-          <View style={{ flex: 3 }}>
-            <Text style={styles.listItemSongName}>
-              {item.metadata?.title ?? 'Unknown title'}
-            </Text>
-            <Text style={styles.listItemAuthor}>
-              {item.metadata?.artist ?? 'Unknown artist'}
-            </Text>
-            <Text style={styles.listItemAuthor}>
-              Version: {item.version ?? 'N/A'}
-            </Text>
+      <TouchableOpacity
+        style={styles2.itemContainer}
+        onPress={() => {
+          setVersionId(item._id);
+          if (!isConnected) setSongJSON(item);
+          router.navigate('/display');
+        }}
+      >
+        <View style={styles2.leftSection}>
+          <MaterialCommunityIcons name="music-note" size={20} color="#000" style={{ marginRight: 10 }} />
+          <View>
+            <Text style={styles2.songTitle}>{item.metadata?.title ?? 'Unknown title'}</Text>
+            <Text style={styles2.songSub}>{item.metadata?.artist ?? 'Unknown artist'}</Text>
+            <Text style={styles2.songSub}>Version: {item.version ?? 'N/A'}</Text>
           </View>
-          <View style={{ flex: 1.8 }}>
-            {(item.userTransposition !== undefined && item.userTransposition !== 0) &&
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 10 }}>
-                <Text style={{ fontSize: 16 }}>Your</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <MaterialCommunityIcons
-                    name="music-accidental-flat"
-                    size={24}
-                    color="black"
-                    style={{ padding: 0, marginRight: -7 }} // zmenšíme mezeru mezi ♭ a ♯
-                  />
-                  <MaterialCommunityIcons
-                    name="music-accidental-sharp"
-                    size={24}
-                    color="black"
-                    style={{ padding: 0, marginLeft: -7, marginRight: -5 }} // zmenšíme mezeru mezi ♭ a ♯
-                  />
-                </View>
-                <Text style={{ fontSize: 16 }}>: {item.userTransposition}</Text>
-              </View>
-            }
+        </View>
+
+        <View style={styles2.rightSection}>
+          <View style={{ flex: 1 }}>
+            {hasTransposition && (
+              <Text style={styles2.transposition}>♭#: {item.userTransposition}</Text>
+            )}
           </View>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ flex: 1 }}>
             <TouchableOpacity
-              onPress={() => console.log('pressed')}
+              style={{
+                alignSelf: 'flex-end',
+                justifyContent: 'flex-end'
+              }}
+              onPress={() => handleDeletePersonalVersion(item)}
             >
-              <AntDesign name="close" size={28} color="black" />
+              <AntDesign name="close" size={22} color="black" />
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </>
-    )
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   if (!isConnected) {
@@ -207,3 +212,45 @@ const UserEditedSongs = () => {
 };
 
 export default UserEditedSongs;
+
+const styles2 = StyleSheet.create({
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+  },
+
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 3,
+  },
+
+  songTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+
+  songSub: {
+    fontSize: 15,
+    color: '#444',
+  },
+
+  rightSection: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 6,
+  },
+
+  transposition: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#111',
+    marginBottom: 4,
+  },
+})

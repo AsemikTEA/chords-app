@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchPlaylistSongs = async (searchObject) => {
   try {
-    const {data: response} = await axios.post('https://rest-api-chords.onrender.com/v1/playlists/playlist-songs', searchObject);
+    const {data: response} = await api.post('/playlists/playlist-songs', searchObject);
     console.log("playlist data: ", response);
     return response;
   } catch (error) {

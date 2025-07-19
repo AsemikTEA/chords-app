@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const logIn = async (userData) => {
 
   try {
-    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/users/login`, userData);
+    const response = await api.post(`/users/login`, userData);
     return response
   } catch (error) {
     console.log(error);

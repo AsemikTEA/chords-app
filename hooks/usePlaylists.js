@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchUserPlaylists = async (userId) => {
   try {
-    const {data: response} = await axios.get(`http://10.0.0.87:3000/v1/playlists/user-playlists/${userId}`);
+    const {data: response} = await api.get(`/playlists/user-playlists/${userId}`);
     console.log(response);
     return response;
   } catch (error) {

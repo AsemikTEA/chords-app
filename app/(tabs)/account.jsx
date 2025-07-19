@@ -1,11 +1,11 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 //import { styles } from '../../style/styles'
-import { router } from 'expo-router'
+import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
-import { useSharePlaylistInvites } from '../../hooks/useSharePlaylistInvites'
-import { useNetworkStore, useUserStore } from '../../state/store'
+import { useSharePlaylistInvites } from '../../hooks/useSharePlaylistInvites';
+import { useNetworkStore, useUserStore } from '../../state/store';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,6 +26,29 @@ const Account = () => {
       console.error('Error removing token:', error);
     }
   }
+
+  const handleDeleteJSON = async () => {
+    Alert.alert(
+      'Delete all downloaded songs and playlists',
+      'Are you sure you want to delete your downloaded songs and playlists? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear()
+            } catch (e) {
+              console.log('Error: ', e);
+              throw e;
+            }
+            console.log('Done.');
+          },
+        },
+      ]
+    );
+  };
 
   if (!isConnected) {
     return (
@@ -52,18 +75,17 @@ const Account = () => {
           </View>
         </Pressable>
 
-        <Pressable style={styles.darkButton} onPress={async () => {
-          try {
-            await AsyncStorage.clear()
-          } catch (e) {
-            console.log('Error: ', e);
-            throw e;
-          }
-          console.log('Done.');
-        }}>
+        <Pressable style={styles.darkButton} onPress={handleDeleteJSON}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialCommunityIcons name="delete-outline" size={24} color="white" />
             <Text style={styles.darkButtonText}>Delete stored songs and playlists</Text>
+          </View>
+        </Pressable>
+
+        <Pressable style={styles.darkButton} onPress={() => router.navigate('/account-info')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialCommunityIcons name="account-cog-outline" size={24} color="white" />
+            <Text style={styles.darkButtonText}>Account info</Text>
           </View>
         </Pressable>
 

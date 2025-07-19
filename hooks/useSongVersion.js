@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchSongVersion = async (searchData) => {
   try {
-    const { data: response } = await axios.post(`https://rest-api-chords.onrender.com/v1/personal-version/get-version`, searchData);
+    const { data: response } = await api.post(`/personal-version/get-version`, searchData);
     console.log(response);
     if (response) {
       response.model = 'Personal_version';
@@ -14,7 +15,7 @@ const fetchSongVersion = async (searchData) => {
     if (error?.response?.status === 404) {
 
       try {
-        const { data: fallbackResponse } = await axios.post(`https://rest-api-chords.onrender.com/v1/song-versions/get-version`, searchData);
+        const { data: fallbackResponse } = await api.post(`/song-versions/get-version`, searchData);
         
         if (fallbackResponse) {
           fallbackResponse.model = 'Song_version';

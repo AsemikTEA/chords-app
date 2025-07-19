@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FlashList } from '@shopify/flash-list';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
@@ -15,7 +15,7 @@ import { showMessage } from 'react-native-flash-message';
 
 const PlaylistSongs = () => {
 
-  const [rerenderHelper, setRerenderHelper] = useState(true);
+ const [rerenderHelper, setRerenderHelper] = useState(true);
 
   const queryClient = useQueryClient();
 

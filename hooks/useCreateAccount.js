@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const createAccount = async (userData) => {
 
@@ -10,7 +11,7 @@ const createAccount = async (userData) => {
   }
 
   try {
-    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/users/sign-up`, newAccountObject);
+    const response = await api.post(`/users/sign-up`, newAccountObject);
     //console.log(response);
     return response;
   } catch (error) {

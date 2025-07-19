@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchPersonalVersions = async (userId) => {
   try {
-    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/personal-version/get-all/${userId}`);
+    const {data: response} = await api.get(`/personal-version/get-all/${userId}`);
     console.log(response);
     return response;
   } catch (error) {

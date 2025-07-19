@@ -1,10 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const newAccessToken = async (token) => {
 
   try {
-    const response = await axios.post(`https://rest-api-chords.onrender.com/v1/users/check-refresh-token`, token);
+    const response = await api.post(`/users/check-refresh-token`, token);
     console.log('New access Token check response:', response.data);
     return response
   } catch (error) {

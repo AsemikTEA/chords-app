@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const fetchSearchSongs = async (songName) => {
   try {
     if (!songName) {
       return [];
     }
-    const {data: response} = await axios.get(`https://rest-api-chords.onrender.com/v1/songs/search/${songName}`);
+    const {data: response} = await api.get(`/songs/search/${songName}`);
     console.log(response);
     return response;
   } catch (error) {

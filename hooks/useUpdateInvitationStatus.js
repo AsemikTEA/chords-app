@@ -2,11 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useShareStore } from "../state/store";
 import { showMessage } from "react-native-flash-message";
+import api from "../api/axiosInstance";
 
 const updateStatus = async (updateObject) => {
 
   try {
-    const response = await axios.patch(`http://10.0.0.87:3000/v1/share-invites`, updateObject);
+    const response = await api.patch(`/share-invites`, updateObject);
     return response
   } catch (error) {
     console.log(error);
