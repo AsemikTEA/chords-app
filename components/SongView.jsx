@@ -104,7 +104,7 @@ const SongView = ({ songContent, songName }) => {
 
   const splitSongToBlocks = (songContent) => {
     const regex =
-      /\{(start_of_(verse|chorus|prechorus)(:\s*label='[^']*')?|end_of_(verse|chorus|prechorus))\}/g;
+      /\{(start_of_(verse|chorus|prechorus|bridge)(:\s*label='[^']*')?|end_of_(verse|chorus|prechorus|bridge))\}/g;
     const regex2 = /start_of/g;
 
     let currentText = [];

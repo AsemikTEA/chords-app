@@ -37,18 +37,21 @@ const SignIn = () => {
         email: logInData.email,
         password: logInData.password,
       },
-      { onSuccess: ({ status: status, data: data, response: error }) => logIn(status, data, error) }
+      {
+        onSuccess: ({ status: status, data: data, response: error }) => logIn(status, data, error),
+        onError: (error) => {
+          console.error('Error logging in:', error);
+          setError('FORM_ERROR', {
+            type: 'server',
+            message: 'Authentication failed. Please check your credentials.'
+          });
+        }
+      }
     )
+
   };
 
   const logIn = async (status, data, error) => {
-    if (status === 401) {
-      console.log(error.data.message);
-      setError('FORM_ERROR', {
-        type: 'server',
-        message: 'Authentication failed. Please check your credentials.'
-      });
-    }
     if (status === 200) {
       console.log(data);
       setId(data.id)
@@ -60,7 +63,7 @@ const SignIn = () => {
 
         const accessToken = await SecureStore.getItemAsync('access_token');
         setAuthToken(accessToken);
-        
+
         router.replace('/search');
       } catch (err) {
         Alert.alert('Login succeeded, but failed to save token.');

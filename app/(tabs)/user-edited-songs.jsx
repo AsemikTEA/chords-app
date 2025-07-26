@@ -165,6 +165,14 @@ const UserEditedSongs = () => {
     );
   }
 
+  if (!personalVersions.data?.length) {
+    return (
+      <View style={styles.noSongsContainer}>
+        <Text style={styles.noSongsText}>Here will be displayed your edited songs, when you have any.</Text>
+      </View>
+    )
+  }
+
   if (personalVersions.isLoading) {
     return (
       <SafeAreaView
@@ -187,8 +195,8 @@ const UserEditedSongs = () => {
       <SafeAreaView
         style={styles.container}
       >
-        <View>
-          <Text>Error: {personalVersions.error.message}</Text>
+        <View style={styles.noSongsContainer}>
+          <Text style={styles.noSongsText}>Error: {personalVersions.error.message}</Text>
         </View>
       </SafeAreaView>
     );

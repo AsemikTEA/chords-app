@@ -5,7 +5,7 @@ import api from "../api/axiosInstance";
 const checkToken = async (accessToken) => {
 
   try {
-    const response = await api.post(`/users/check-token`, accessToken);
+    const response = await api.post(`/users/check-token`, {accessToken});
     console.log('Access Token check response:', response.data);
     return response
   } catch (error) {

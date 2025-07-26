@@ -9,7 +9,7 @@ const logIn = async (userData) => {
     return response
   } catch (error) {
     console.log(error);
-    return error;
+    throw error;
   }
 }
 

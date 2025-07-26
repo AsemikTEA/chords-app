@@ -59,6 +59,8 @@ export const useTranspositionStore = create((set) => ({
 
 export const useSearchStore = create((set) => ({
   songName: '',
+  artistId: '',
+  setArtistId: (e) => set((state) => ({ artistId: e })),
   setSongName: (e) => set((state) => ({ songName: e })),
 }));
 

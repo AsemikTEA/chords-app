@@ -138,9 +138,9 @@ const OptionsModal = () => {
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <View style={modalStyles.modal}>
-            <TouchableOpacity 
-            style={modalStyles.share}
-            onPress={() => setShare()}>
+            <TouchableOpacity
+              style={modalStyles.share}
+              onPress={() => setShare()}>
               <MaterialCommunityIcons name="share-variant" size={20} color="#fff" />
               <Text style={modalStyles.optionText}>Share Playlist</Text>
             </TouchableOpacity>
@@ -163,24 +163,23 @@ const OptionsModal = () => {
                   {
                     id: playlistId,
                     userId: user.id,
+                  }, {
+                  onSuccess: () => {
+                    playlists.refetch();
+                    showMessage({
+                      message: 'Playlist deleted successfully',
+                      type: 'success',
+                    });
                   },
-                  {
-                    onSuccess: () => {
-                      playlists.refetch();
-                      showMessage({
-                        message: 'Playlist deleted successfully',
-                        type: 'success',
-                      });
-                    },
-                    onError: (error) => {
-                      console.error('Error deleting playlist:', error);
-                      showMessage({
-                        message: 'Error deleting playlist',
-                        description: error.response.data.message,
-                        type: 'danger',
-                      });
-                    },
-                  }
+                  onError: (error) => {
+                    console.error('Error deleting playlist:', error);
+                    showMessage({
+                      message: 'Error deleting playlist',
+                      description: error.response.data.message,
+                      type: 'danger',
+                    });
+                  },
+                }
                 );
                 setModalOptions();
               }}

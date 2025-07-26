@@ -22,20 +22,14 @@ export default function App() {
   const tokenAuth = useTokenAuth();
   const newAccessToken = useNewAccessToken();
 
-  const checkTokenFunctions = {
-    tokenAuth: tokenAuth,
-    newAccessToken: newAccessToken,
-    setId: setId,
-    setUsername: setUsername,
-    setEmail: setEmail
-  }
-
-
   useEffect(() => {
-    // if (isConnected === false) return;
-    // if (isConnected) {
-    //   checkToken();
-    // };
+    const checkTokenFunctions = {
+      tokenAuth: tokenAuth,
+      newAccessToken: newAccessToken,
+      setId: setId,
+      setUsername: setUsername,
+      setEmail: setEmail
+    }
 
     checkToken(checkTokenFunctions);
   }, []);
@@ -43,9 +37,9 @@ export default function App() {
   useEffect(() => {
     const check = async () => {
       const state = await Network.getNetworkStateAsync();
-      setIsConnected(true);
+      setIsConnected(state.isInternetReachable);
     };
- 
+
     check();
   }, []);
 
@@ -58,7 +52,15 @@ export default function App() {
     );
   }
 
-  if (tokenAuth.isPending || newAccessToken.isPending || tokenAuth.isIdle || newAccessToken.isIdle) {
+  if (tokenAuth.isIdle || newAccessToken.isIdle) {
+    return (
+      <View style={styles2.container}>
+        <Text style={{ fontWeight: 'bold', fontSize: 40 }}>Idle...</Text>
+      </View>
+    );
+  }
+
+  if (tokenAuth.isPending || newAccessToken.isPending) {
     return (
       <View style={styles2.container}>
         <Text style={{ fontWeight: 'bold', fontSize: 40 }}>Loading...</Text>

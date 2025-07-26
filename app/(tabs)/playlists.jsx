@@ -21,7 +21,7 @@ const Playlists = () => {
   const isConnected = useNetworkStore((state) => state.isConnected);
   const playlistId = usePlaylistStore((state) => state.playlistId);
   const user = useUserStore((state) => state.user);
-  
+
   const setPlaylistJSON = useOfflineStore((state) => state.setPlaylistJSON)
   const setPlaylistId = usePlaylistStore((state) => state.setPlaylistId);
   const setPlaylistName = usePlaylistStore((state) => state.setPlaylistName);
@@ -127,8 +127,13 @@ const Playlists = () => {
     return <Text>There has been error</Text>;
   }
 
-  if (!playlists.data) {
-    return <Text>There are no playlists for you.</Text>
+  if (!playlists.data?.length) {
+    return (
+      <View style={styles.noSongsContainer}>
+        <PlaylistNameModal />
+        <Text style={styles.noSongsText}>You have no playlists yet.</Text>
+      </View>
+    )
   }
 
   return (

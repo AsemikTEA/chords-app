@@ -10,6 +10,7 @@ import { useNetworkStore, useSearchStore, useSongContentStore, useSongVersionSto
 import { useSearchSongs } from '../../hooks/useSearchSong';
 import { useDebounce } from '../../hooks/useDebounce';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { set } from 'react-hook-form';
 
 const Search = () => {
 
@@ -21,6 +22,7 @@ const Search = () => {
   const setSongId = useSongVersionStore((state) => state.setSongId);
   const setTitle = useSongContentStore((state) => state.setTitle);
   const setArtist = useSongContentStore((state) => state.setArtist);
+  const setArtistId = useSearchStore((state) => state.setArtistId);
 
   const songs = useSearchSongs(debouncedSearch);
 
@@ -38,9 +40,14 @@ const Search = () => {
       handlePress={() => {
         console.log('data v itemu', item)
         setTitle(item.name);
-        setArtist(item.artist[0].name);
-        setSongId(item._id); 
-        router.navigate('/song-versions'); 
+        setArtist(item.artist_id[0].name);
+        setSongId(item._id);
+        router.navigate('/song-versions');
+      }}
+      handlePressArtist={() => {
+        setArtistId(item.artist_id[0]._id);
+        setArtist(item.artist_id[0].name);
+        router.navigate('/artist-songs');
       }}
     />
   };
@@ -78,6 +85,11 @@ const Search = () => {
       edges={['bottom', 'left', 'right']}
     >
       <SearchForm />
+      {(!songs.data?.length || songs.data?.length === 0) && (
+        <View style={styles.noSongsContainer}>
+          <Text style={styles.noSongsText}>Here you can search for songs.</Text>
+        </View>
+      )}
       <FlashList
         data={songs.data}
         renderItem={songListItem}

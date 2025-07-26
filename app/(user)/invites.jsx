@@ -65,7 +65,7 @@ const Invites = () => {
     )
   };
 
-  if (recievedInvites.data.length === 0) {
+  if (!recievedInvites.data.length) {
     return (
       <SafeAreaView
         style={styles.container}

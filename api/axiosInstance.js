@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { retrieveRefreshToken } from './tokenAuth';
+import { retrieveRefreshToken } from './authStorage';
 import * as SecureStore from 'expo-secure-store';
 
 const api = axios.create({
   baseURL: 'http://10.0.0.87:3000/v1',
-  timeout: 10000,
+  timeout: 5 * 10000
 });
 
 const newAccessToken = async (token) => {
@@ -43,7 +43,6 @@ api.interceptors.response.use((response) => { console.log(response.config.adapte
   return Promise.reject(error);
 })
 
-// helper: funkce, kterou zavoláš hned po loginu
 export const setAuthToken = (token) => {
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

@@ -47,13 +47,56 @@ const CreateSong = () => {
     navigation.setOptions({ header: () => <NewSongHeader onSubmit={handleSubmit(onSubmit, onError)} /> });
   }, [navigation]);
 
+  const validateData = (text) => {
+    const trimmed = text.trim();
+
+    if (text !== trimmed) {
+      return 'Text must not start or end with blank spaces.';
+    }
+
+    const blockRegex = /\{start_of_[^}]+\}([\s\S]*?)\{end_of_[^}]+\}/g;
+    const blocks = [...text.matchAll(blockRegex)];
+
+    if (blocks.length === 0) {
+      return 'The song must contain at least one valid block: {start_of_...} ... {end_of_...}.';
+    }
+
+    const chordRegex = /\[[^\]]+\]/g;
+    const hasChord = chordRegex.test(text);
+
+    if (!hasChord) {
+      return 'The song must include at least one chord inside square brackets, e.g. [Am].';
+    }
+
+    let nonBlockParts = text;
+    for (const match of blocks) {
+      nonBlockParts = nonBlockParts.replace(match[0], '');
+    }
+
+    if (nonBlockParts.trim() !== '') {
+      return 'The song contains text outside of defined blocks.';
+    }
+
+    return true;
+  };
+
   const onSubmit = (data, e) => {
     console.log(data);
-    setModalVisible(true);
     createMutation.mutate(
       { data },
       {
-        onSuccess: ({ status: status, data: data, response: error }) => setModalVisible(true),
+        onSuccess: ({ status: status, data: data, response: error }) => showMessage({
+          message: 'Song created successfully',
+          type: 'success',
+        }),
+        onError: (error) => {
+          console.error('Error creating song:', error);
+          showMessage({
+            message: 'Error creating song',
+            description: error.response.data.message,
+            type: 'danger',
+          });
+        },
       }
     );
   };
@@ -65,7 +108,7 @@ const CreateSong = () => {
       edges={['bottom', 'left', 'right']}
     >
       <ScrollView
-        //contentContainerStyle={{ paddingBottom: 100 }}
+      //contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View style={[styles.signContainer, { marginTop: 0 }]}>
           <View style={{ gap: 17, marginBottom: 20 }}>
@@ -183,6 +226,7 @@ const CreateSong = () => {
                 name="content"
                 rules={{
                   required: "Content is required",
+                  validate: (value) => validateData(value)
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <SongContentInput
@@ -201,39 +245,6 @@ const CreateSong = () => {
           </View>
         </View>
       </ScrollView>
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.container}
-          activeOpacity={1}
-          onPressOut={() => {
-            setModalVisible(false);
-          }}
-        >
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <View style={{
-              backgroundColor: 'white',
-              borderRadius: 10,
-              width: 350,
-              height: 100,
-              alignItems: 'center',
-              justifyContent: 'center',
-              shadowColor: '#000',
-              elevation: 30,
-            }}>
-
-              <Text style={{ fontSize: 17 }}>Your song has been successfully stored!</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Modal>
       <View style={{ borderWidth: 1, height: 65, width: '100%', alignSelf: 'flex-end', bottom: 0 }}>
         <View style={{ flexDirection: 'row', gap: 5, padding: 5, height: '100%', }}>
           <SongBlockTemplate title={'Verse'} handlePress={() => setValue('content', getValues('content') + verseTemplate)} />

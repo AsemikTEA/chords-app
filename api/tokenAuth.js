@@ -2,49 +2,11 @@ import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { showMessage } from 'react-native-flash-message';
 import { setAuthToken } from '../api/axiosInstance';
-
-
-export const retrieveToken = async () => {
-  try {
-    const accessToken = await SecureStore.getItemAsync('access_token');
-    if (accessToken) {
-      console.log('Access Token retrieved:', accessToken);
-      return accessToken;
-    } else {
-      console.log('No token found');
-      showMessage({
-        message: 'Error retrieving token',
-        description: error.message,
-        type: 'info',
-      });
-    }
-  } catch (error) {
-    console.error('Error retrieving token:', error);
-    showMessage({
-      message: 'Error retrieving token',
-      description: error.message,
-      type: 'danger',
-    });
-  }
-}
-
-export const retrieveRefreshToken = async () => {
-  try {
-    const refreshToken = await SecureStore.getItemAsync('refresh_token');
-    if (refreshToken) {
-      console.log('Refresh Token retrieved:', refreshToken);
-      return refreshToken;
-    } else {
-      console.log('No token found');
-    }
-  } catch (error) {
-    console.error('Error retrieving token:', error);
-  }
-}
+import { retrieveAccessToken, retrieveRefreshToken } from './authStorage';
 
 export const checkToken = async ({tokenAuth, newAccessToken, setId, setUsername, setEmail}) => {
   try {
-    const accessToken = await retrieveToken();
+    const accessToken = await retrieveAccessToken();
     if (!accessToken) {
       console.log('No token found, checking refresh token');
 
@@ -90,7 +52,7 @@ export const checkToken = async ({tokenAuth, newAccessToken, setId, setUsername,
       showMessage({
         message: 'Succesfully logged in',
         type: 'success',
-      })
+      });
     } else {
       showMessage({
         message: 'Error checking token, redirecting to sign-in page.',

@@ -18,8 +18,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditSong = () => {
 
-  //const [songVersion, setSongVersion] = useState(null);
-
   const queryClient = useQueryClient();
 
   const navigation = useNavigation();
@@ -27,19 +25,18 @@ const EditSong = () => {
   const songJSON = useOfflineStore((state) => state.songJSON);
   const isConnected = useNetworkStore((state) => state.isConnected);
   const songId = useSongVersionStore((state) => state.songId);
-  const versionId = useSongVersionStore((state) => state.versionId);
   const user = useUserStore((state) => state.user);
 
   const editMutation = useEditVersion();
 
   let songVersion;
 
-if (isConnected) {
-  const data = queryClient.getQueryData(['song-version']);
-  songVersion = {data: data};
-} else {
-  songVersion = {data: songJSON};
-}
+  if (isConnected) {
+    const data = queryClient.getQueryData(['song-version']);
+    songVersion = { data: data };
+  } else {
+    songVersion = { data: songJSON };
+  }
 
   const formMethods = useForm({
     defaultValues: {
@@ -70,6 +67,39 @@ if (isConnected) {
   const bridgeTemplate = `\n\n{start_of_bridge}\n\n{end_of_bridge}`;
   const chordTemplate = `[]`;
 
+  const validateData = (text) => {
+    const trimmed = text.trim();
+
+    if (text !== trimmed) {
+      return 'Text must not start or end with blank spaces.';
+    }
+
+    const blockRegex = /\{start_of_[^}]+\}([\s\S]*?)\{end_of_[^}]+\}/g;
+    const blocks = [...text.matchAll(blockRegex)];
+
+    if (blocks.length === 0) {
+      return 'The song must contain at least one valid block: {start_of_...} ... {end_of_...}.';
+    }
+
+    const chordRegex = /\[[^\]]+\]/g;
+    const hasChord = chordRegex.test(text);
+
+    if (!hasChord) {
+      return 'The song must include at least one chord inside square brackets, e.g. [Am].';
+    }
+
+    let nonBlockParts = text;
+    for (const match of blocks) {
+      nonBlockParts = nonBlockParts.replace(match[0], '');
+    }
+
+    if (nonBlockParts.trim() !== '') {
+      return 'The song contains text outside of defined blocks.';
+    }
+
+    return true;
+  };
+
   useEffect(() => {
     navigation.setOptions({
       header: () => <NewSongHeader onSubmit={handleSubmit(onSubmit)} />
@@ -78,7 +108,7 @@ if (isConnected) {
 
   const onSubmit = async (data, e) => {
     if (isConnected) {
-      editMutation.mutate({ data });
+      editMutation.mutate({data: data, versionId: songVersion.data._id});
     } else {
       const storeData = async (value) => {
         try {
@@ -186,6 +216,7 @@ if (isConnected) {
                 name="content"
                 rules={{
                   required: "Content is required",
+                  validate: (value) => validateData(value)
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <SongContentInput

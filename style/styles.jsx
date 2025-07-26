@@ -43,8 +43,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   listItem: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginHorizontal: 10,
     //borderWidth: 1,
     //height: 75,
     //justifyContent: 'center',
@@ -58,7 +57,9 @@ export const styles = StyleSheet.create({
     //borderWidth: 1
   },
   listItemAuthor: {
-    fontSize: 18
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    alignSelf: 'flex-start',
   },
   searchForm: {
     paddingLeft: 5,
