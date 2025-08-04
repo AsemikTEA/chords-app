@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import api from "../api/axiosInstance";
+import { router } from "expo-router";
 
 const createAccount = async (userData) => {
 
@@ -15,13 +16,17 @@ const createAccount = async (userData) => {
     //console.log(response);
     return response;
   } catch (error) {
-    console.log(error.response.data.message);
-    return error;
+    //console.log(error.response.data.message);
+    throw error;
   }
 }
 
 export const useCreateAccount = () => {
   return useMutation({
     mutationFn: (value) => createAccount(value),
+    onSuccess: ({ status: status, data: data, response: error }) => {
+      console.log(data);
+      router.replace('/sign-in');
+    },
   });
 }

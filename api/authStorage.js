@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { showMessage } from 'react-native-flash-message';
 
 export const retrieveAccessToken = async () => {
   try {
@@ -10,7 +11,7 @@ export const retrieveAccessToken = async () => {
       console.log('No token found');
       showMessage({
         message: 'Error retrieving token',
-        description: error.message,
+        description: 'No access token found',
         type: 'info',
       });
     }

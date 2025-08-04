@@ -13,6 +13,7 @@ const SignUp = () => {
     handleSubmit,
     clearErrors,
     getValues,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -34,23 +35,17 @@ const SignUp = () => {
       email: registerData.email,
       password: registerData.password,
     },
-      { onSuccess: ({ status: status, data: data, response: error }) => register(status, data, error) }
+      {
+        onError: (error) => {
+          console.log(error.response.data.message);
+          setError('FORM_ERROR', {
+            type: 'server',
+            message: error.response.data.message,
+          });
+        }
+      }
     );
   };
-
-  const register = (status, data, error) => {
-    if (status === 409) {
-      console.log(error.data.message);
-      setError('FORM_ERROR', {
-        type: 'server',
-        message: error.data.message,
-      });
-    }
-    if (status === 201) {
-      console.log(data);
-      router.replace('/sign-in');
-    }
-  }
 
   return (
     <SafeAreaView style={styles.container}>
