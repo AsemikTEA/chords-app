@@ -3,7 +3,7 @@ import { retrieveRefreshToken } from './authStorage';
 import * as SecureStore from 'expo-secure-store';
 
 const api = axios.create({
-  baseURL: 'http://10.0.0.87:3000/v1',
+  baseURL: 'https://rest-api-chords.onrender.com/v1',
   timeout: 5 * 10000
 });
 

@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     marginBottom: 10,
-    marginTop: 40
+    marginTop: 10
   },
   separator: {
     width: 350,
@@ -112,7 +112,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 70,
     //borderWidth: 2,
-    marginTop: 20
+    //marginTop: 20
   },
   backButton: {
     flex: 1.5,

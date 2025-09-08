@@ -203,11 +203,8 @@ const UserEditedSongs = () => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
-      <View style={{ marginTop: 40 }} />
+    <>
+      <View style={{ marginTop: 10 }} />
       <FlashList
         data={personalVersions.data}
         renderItem={versionListItem}
@@ -215,7 +212,7 @@ const UserEditedSongs = () => {
         ItemSeparatorComponent={separator}
         contentContainerStyle={{ paddingBottom: 85 }}
       />
-    </SafeAreaView>
+    </>
   );
 };
 

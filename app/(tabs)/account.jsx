@@ -59,7 +59,7 @@ const Account = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <View style={{ paddingLeft: 16, paddingRight: 16 }}>
         <Pressable style={styles.darkButton} onPress={() => router.navigate('/create')}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -96,7 +96,7 @@ const Account = () => {
           </View>
         </Pressable>
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 

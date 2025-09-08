@@ -137,10 +137,7 @@ const Playlists = () => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <OptionsModal />
       <PlaylistNameModal />
       <FlashList
@@ -151,7 +148,7 @@ const Playlists = () => {
         contentContainerStyle={{ paddingBottom: 85 }}
       />
       <SharePlaylistModal userId={user.id} playlistId={playlistId} />
-    </SafeAreaView>
+    </>
   );
 };
 

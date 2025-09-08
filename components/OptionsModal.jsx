@@ -111,7 +111,6 @@ const OptionsModal = () => {
 
   const handleShare = () => {
     setModalOptions();
-    // Můžeš otevřít další modal nebo spustit logiku share
     showMessage({
       message: 'Share functionality not implemented yet.',
       type: 'info',

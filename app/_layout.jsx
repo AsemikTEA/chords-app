@@ -1,13 +1,16 @@
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { styles } from '../style/styles';
 
 const HomeLayout = () => {
 
   const queryClient = new QueryClient();
 
   return (
-    <>
+    
+    <SafeAreaView style={[styles.container, {paddingTop: 10}]} edges={['bottom', 'left', 'right']}>
       <QueryClientProvider client={queryClient}>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -19,7 +22,7 @@ const HomeLayout = () => {
           </Stack>
           <FlashMessage position="top" duration={3000} floating={true} icon="auto" />
       </QueryClientProvider >
-    </>
+      </SafeAreaView>
   )
 }
 

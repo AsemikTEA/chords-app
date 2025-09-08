@@ -10,7 +10,6 @@ import { useNetworkStore, useSearchStore, useSongContentStore, useSongVersionSto
 import { useSearchSongs } from '../../hooks/useSearchSong';
 import { useDebounce } from '../../hooks/useDebounce';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { set } from 'react-hook-form';
 
 const Search = () => {
 
@@ -47,43 +46,36 @@ const Search = () => {
       handlePressArtist={() => {
         setArtistId(item.artist_id[0]._id);
         setArtist(item.artist_id[0].name);
-        router.navigate('/artist-songs');
       }}
     />
   };
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={[styles.container, { paddingTop: 40 }]} edges={['bottom', 'left', 'right']}>
+      <>
         <View style={styles.offlineContainer}>
           <MaterialCommunityIcons name="cloud-off-outline" size={24} color="#D32F2F" />
           <Text style={styles.offlineText}>
             You are offline. Please connect back to internet to search songs.
           </Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
   if (songs.isLoading) {
     return (
-      <SafeAreaView
-        style={styles.container}
-        edges={['bottom', 'left', 'right']}
-      >
+      <>
         <SearchForm />
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <SearchForm />
       {(!songs.data?.length || songs.data?.length === 0) && (
         <View style={styles.noSongsContainer}>
@@ -97,7 +89,7 @@ const Search = () => {
         ItemSeparatorComponent={separator}
         contentContainerStyle={{ paddingBottom: 85 }}
       />
-    </SafeAreaView>
+    </>
   );
 };
 

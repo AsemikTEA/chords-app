@@ -25,8 +25,10 @@ const TabsLayout = () => {
           tabBarLabelStyle: {
             fontSize: 12,
             fontWeight: "bold",
-            marginBottom: 10,
           },
+          tabBarIconStyle: {
+            marginTop: 5
+          }
         }}
       >
         <Tabs.Screen
