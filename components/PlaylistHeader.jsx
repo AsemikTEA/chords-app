@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Modal } from 'react-native';
 import React from 'react';
 import { styles } from '../style/styles';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -27,6 +27,14 @@ const PlaylistsHeader = () => {
     if (value === 'Transpose') {
       setTransposition();
     };
+  }
+
+  const plusModal = () => {
+    return (
+      <Modal style={styles.modal} transparent={false} visible={true}>
+        <Text style={{color: '#000000ff'}}>Add song to playlist. This has not been implemented yet.</Text>
+      </Modal>
+    )
   }
 
   return (
@@ -67,12 +75,7 @@ const PlaylistsHeader = () => {
         <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
           <Pressable
             style={styles.backButton}
-            onPress={() => {
-              createMutation.mutate({
-                metadata: metadata,
-                content: content
-              });
-            }}
+            onPress={() => plusModal}
           >
             <AntDesign name="plus" size={28} color="black" />
           </Pressable>
