@@ -94,6 +94,7 @@ import { useDeletePlaylist } from '../hooks/useDeletePlaylist';
 import { showMessage } from 'react-native-flash-message';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useSharePlaylist } from '../hooks/useSharePlaylist';
+import { Platform } from 'react-native';
 
 const OptionsModal = () => {
 
@@ -139,7 +140,12 @@ const OptionsModal = () => {
           <View style={modalStyles.modal}>
             <TouchableOpacity
               style={modalStyles.share}
-              onPress={() => setShare()}>
+              onPress={() => {
+                setShare();
+                if (Platform.OS === 'android') {
+                  setModalOptions();
+                }
+              }}>
               <MaterialCommunityIcons name="share-variant" size={20} color="#fff" />
               <Text style={modalStyles.optionText}>Share Playlist</Text>
             </TouchableOpacity>
@@ -147,8 +153,10 @@ const OptionsModal = () => {
             <TouchableOpacity
               style={modalStyles.rename}
               onPress={() => {
-                setModalOptions();
                 setModalVisible();
+                if (Platform.OS === 'android') {
+                  setModalOptions();
+                }
               }}
             >
               <MaterialCommunityIcons name="pencil" size={20} color="#fff" />

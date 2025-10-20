@@ -193,7 +193,7 @@ const DisplayPlaylistHeader = () => {
           }}
           adjustFrame={(style) => ({
             ...style,
-            top: style.top - 60,
+            top: style.top - 5,
             right: style.right + 10,
             height: 'auto',
           })}

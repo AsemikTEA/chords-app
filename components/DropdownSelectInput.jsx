@@ -1,7 +1,3 @@
-import { View, Text, TextInput } from 'react-native';
-import { styles } from '../style/styles';
-import React, { useState } from 'react';
-import { useSongContentStore } from '../state/store';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 const DropdownSelectInput = ({ title, value, placeholder, style, handleSelectChange, ...props }) => {

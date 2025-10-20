@@ -9,12 +9,12 @@ export const useTranspositionNumberStore = create((set) => ({
   setTranspositionArray: (array) => set((state) => ({ transpositionArray: array })),
   transposeUpArray: (index) => set((state) => {
     const newArray = [...state.transpositionArray];
-    newArray[index] += 1;
+    newArray[index] = newArray[index] === 11 ? 0 : newArray[index] + 1;
     return { transpositionArray: newArray };
   }),
   transposeDownArray: (index) => set((state) => {
     const newArray = [...state.transpositionArray];
-    newArray[index] -= 1;
+    newArray[index] = newArray[index] === -11 ? 0 : newArray[index] - 1;
     return { transpositionArray: newArray };
   }),
   transposeUp: () => set((state) => {

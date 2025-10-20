@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import api from "../api/axiosInstance";
 import { router } from "expo-router";
+import { showMessage } from "react-native-flash-message";
 
 const createAccount = async (userData) => {
 
@@ -26,6 +27,10 @@ export const useCreateAccount = () => {
     mutationFn: (value) => createAccount(value),
     onSuccess: ({ status: status, data: data, response: error }) => {
       console.log(data);
+      showMessage({
+        message: 'Account created successfully',
+        type: 'success',
+      });
       router.replace('/sign-in');
     },
   });

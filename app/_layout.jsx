@@ -10,7 +10,7 @@ const HomeLayout = () => {
 
   return (
     
-    <SafeAreaView style={[styles.container, {paddingTop: 10}]} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, {paddingTop: 0}]}>
       <QueryClientProvider client={queryClient}>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />

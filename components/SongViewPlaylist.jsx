@@ -42,28 +42,12 @@ const SongViewPlaylist = ({ song, index }) => {
   ]);
 
   useEffect(() => {
-    //console.log('prvni useEffect jde!');
-    console.log(transpositionArray);
     chordsArray.current = [];
     blockIndex.current = -1;
     chordIndex.current = 0;
 
     const parsed = splitSongToBlocks(song.content);
     parsedSongData.current = parsed;
-
-    // const transposed = chordsArray.current.map((block) => {
-    //   const c = [];
-    //   //console.log("block name: " + block.block);
-
-    //   block.chords.map((item) => {
-    //     c.push(item.name);
-    //   });
-
-    //   return {
-    //     block: block.block,
-    //     chords: c,
-    //   };
-    // });
 
     transposeChord(chordsArray.current, transpositionArray[index] || 0);
   }, []);
@@ -74,7 +58,6 @@ const SongViewPlaylist = ({ song, index }) => {
       hasMounted.current = true;
       return;
     }
-    console.log('TRANSPOSITION ARRAY CHANGED: ', transpositionArray);
 
     transposeChord(chordsArray.current, transpositionArray[index]);
   }, [transpositionArray[index]]);
@@ -91,7 +74,6 @@ const SongViewPlaylist = ({ song, index }) => {
 
     const transposed = chordsArray.map((block) => {
       const transChords = [];
-      console.log("block name in transposeChord: " + block.block);
 
       block.chords.map((item) => {
         const transposedChord = item.interval(getIntervalCoord(transpositionNumber));
@@ -108,6 +90,7 @@ const SongViewPlaylist = ({ song, index }) => {
   }
 
   const splitSongToBlocks = (songContent) => {
+    // Regular expression to match block delimiters
     const regex =
       /\{(start_of_(verse|chorus|prechorus)(:\s*label='[^']*')?|end_of_(verse|chorus|prechorus))\}/g;
     const regex2 = /start_of/g;
@@ -117,16 +100,17 @@ const SongViewPlaylist = ({ song, index }) => {
     let currentIndex = 0;
     let blockName;
 
+    // Iterate over all matches of the regex in the song content
     while ((regexMatchArray = regex.exec(songContent)) !== null) {
 
+      // Determine the block name based on the match
       if (regex2.test(regexMatchArray[1])) {
         blockName = regexMatchArray[2];
-        //console.log('block name: ' + blockName);
       }
 
       const firstBlockIndex = regexMatchArray.index;
-      //console.log(firstBlockIndex);
 
+      // 
       if (firstBlockIndex > currentIndex) {
         const text = songContent.substring(currentIndex, firstBlockIndex).trim();
         const { chords, lyrics } = parseChordsAndLyrics(text);
@@ -140,7 +124,6 @@ const SongViewPlaylist = ({ song, index }) => {
             chords: chords,
           });
         }
-        //console.log(chordsArray.current);
       };
 
       currentIndex = regex.lastIndex;
@@ -158,7 +141,6 @@ const SongViewPlaylist = ({ song, index }) => {
     let lastLyricIndex = null;
 
     while ((match = regex.exec(text)) !== null) {
-      //console.log(match);
       const chord = teoria.chord(match[1], match[2]);
       const chordIndex = match.index;
 
@@ -202,7 +184,6 @@ const SongViewPlaylist = ({ song, index }) => {
     return { chords, lyrics };
   };
 
-  //parsedSongData = splitSongToBlocks(song.content);
   if (!parsedSongData.current.length) return <Text>Loading...</Text>
 
   if (!transposedChords || transposedChords.length === 0) {
@@ -276,6 +257,7 @@ const SongViewPlaylist = ({ song, index }) => {
             <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{blockName}</Text>
           </View>
           <View style={styles2.lyricLine}>
+
             {/* Render starting chords if they exist */}
             {transposedChords[0].chords.length && !block.lyrics[0]?.isFollowedByChord && (
               () => {
@@ -295,7 +277,6 @@ const SongViewPlaylist = ({ song, index }) => {
               }
             )}
 
-            {/* Render lyrics and chordsArray */}
             {block.lyrics.map((item, index) => {
               if (item.isFollowedByChord && chordIndex.current < transposedChords[blockIndex.current].chords.length) {
                 const chord = transposedChords[blockIndex.current].chords[chordIndex.current];
@@ -363,7 +344,6 @@ const SongViewPlaylist = ({ song, index }) => {
               minWidth: 260,
             }}
           >
-            {/* Křížek v pravém horním rohu */}
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{
@@ -391,18 +371,14 @@ export default SongViewPlaylist;
 const styles2 = StyleSheet.create({
   container: {
     padding: 10,
-    //borderWidth: 1
   },
   lyricLine: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    //borderWidth: 1,
     padding: 3
   },
   relativeContainer: {
     position: 'relative',
-    //marginRight: 5,
-    //borderWidth: 1,
     marginTop: 20,
   },
   chord: {
@@ -431,6 +407,5 @@ const styles2 = StyleSheet.create({
   },
   lyrics: {
     fontSize: 16,
-    //borderWidth: 1,
   },
 });

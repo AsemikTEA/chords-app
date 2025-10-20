@@ -126,10 +126,7 @@ const PlaylistSongs = () => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       {console.log('playlistSongs', playlistSongs.data)}
       <FlashList
         data={playlistSongs.data.songs}
@@ -139,7 +136,7 @@ const PlaylistSongs = () => {
         contentContainerStyle={{ paddingBottom: 85 }}
       />
       <TabPlaylistPlayButton />
-    </SafeAreaView>
+    </>
   );
 };
 

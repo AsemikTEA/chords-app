@@ -136,10 +136,7 @@ const EditSong = () => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <ScrollView
       //contentContainerStyle={{ paddingBottom: 100 }}
       >
@@ -246,7 +243,7 @@ const EditSong = () => {
           <SongBlockTemplate title={'Chord'} handlePress={() => setValue('content', getValues('content') + chordTemplate)} />
         </View>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 

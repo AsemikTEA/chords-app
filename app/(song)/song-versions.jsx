@@ -62,17 +62,14 @@ const SongVersions = () => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <FlashList
         data={versions.data}
         renderItem={versionListItem}
         estimatedItemSize={20}
         ItemSeparatorComponent={separator}
       />
-    </SafeAreaView>
+    </>
   );
 }
 

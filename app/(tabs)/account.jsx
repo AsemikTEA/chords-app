@@ -59,7 +59,7 @@ const Account = () => {
   }
 
   return (
-    <>
+    <View style={{paddingTop: 20, flex: 1}}>
       <View style={{ paddingLeft: 16, paddingRight: 16 }}>
         <Pressable style={styles.darkButton} onPress={() => router.navigate('/create')}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -96,7 +96,7 @@ const Account = () => {
           </View>
         </Pressable>
       </View>
-    </>
+    </View>
   );
 }
 

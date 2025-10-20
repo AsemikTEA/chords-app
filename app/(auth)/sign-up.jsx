@@ -48,7 +48,7 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <ScrollView>
         <View style={styles.signContainer}>
           <Text style={styles.welcomeText}>Sign Up to Chords</Text>
@@ -181,11 +181,11 @@ const SignUp = () => {
             <Text style={{ marginBottom: 5, fontSize: 18 }}>
               Already have an account?
             </Text>
-            <Link style={{ fontWeight: 'bold', fontSize: 20 }} href="/sign-in">Sing In</Link>
+            <Link style={{ fontWeight: 'bold', fontSize: 20 }} href="/sign-in">Sign In</Link>
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </>
   )
 }
 

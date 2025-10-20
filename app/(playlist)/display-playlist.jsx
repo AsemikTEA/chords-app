@@ -1,9 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity, Modal, Pressable, StyleSheet, TextInput } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity,} from 'react-native'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlaylistDisplay } from '../../hooks/usePlaylistDisplay'
 import { useAutoscrollStore, useDisplayModeStore, useNetworkStore, useOfflineStore, usePlaylistStore, useShareStore, useSongContentStore, useTranspositionNumberStore, useTranspositionStore, useUserStore } from '../../state/store'
-import { styles } from '../../style/styles'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import SongViewPlaylist from '../../components/SongViewPlaylist'
 import { useFocusEffect, useNavigation } from 'expo-router'
 import { useQueryClient } from '@tanstack/react-query'
@@ -53,41 +51,6 @@ const PlaylistDisplay = () => {
     }
   }
   const saveTransposition = useSaveTransposition();
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const queryData = data;
-
-  //     return () => {
-  //       queryClient.invalidateQueries({ queryKey: ['playlist-songs-display'] });
-  //       stopAutoScroll();
-  //       setDisableOnlyChords();
-  //       setDisableShare();
-  //       hideTranspositionTab();
-  //       hidePanel();
-
-  //       // const transNumber = useTranspositionNumberStore.getState().transpositionNumber;
-  //       // const userTransposition = version.data?.userTransposition ?? 0;
-
-  //       // console.log('Transposition number on blur:', transNumber);
-  //       // console.log('User transposition from version:', userTransposition);
-
-  //       const transpositionArray = useTranspositionNumberStore.getState().transpositionArray;
-
-  //       for (let i = 0; i < queryData.songs.length; i++) {
-  //         const versionId = song.version._id;
-  //         const transpositionNumber = transpositionArray[song.i] || 0;
-
-  //         const transData = {
-  //           versionId: versionId,
-  //           userId: useUserStore.getState().user.id,
-  //           transposition: transpositionNumber,
-  //         };
-  //         saveTransposition.mutate(transData);
-  //       }
-  //     };
-  //   }, [])
-  // );
 
   useEffect(() => {
     if (!playlistSongs.data || !playlistSongs.data.songs || playlistSongs.data.songs.length === 0) {
@@ -286,10 +249,7 @@ const PlaylistDisplay = () => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <ScrollView
         ref={scrollRef}
         onScroll={handleScroll}
@@ -340,7 +300,7 @@ const PlaylistDisplay = () => {
         <TranspositionTab title={songMeta.title} />
       </View>
       <SharePlaylistModal userId={user.id} playlistId={playlistId} />
-    </SafeAreaView>
+    </>
   );
 }
 

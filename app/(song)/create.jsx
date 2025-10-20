@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, TextInput, Modal, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongContentInput from '../../components/SongContentInput';
 import { Controller, useForm, } from 'react-hook-form';
@@ -82,31 +81,12 @@ const CreateSong = () => {
 
   const onSubmit = (data, e) => {
     console.log(data);
-    createMutation.mutate(
-      { data },
-      {
-        onSuccess: ({ status: status, data: data, response: error }) => showMessage({
-          message: 'Song created successfully',
-          type: 'success',
-        }),
-        onError: (error) => {
-          console.error('Error creating song:', error);
-          showMessage({
-            message: 'Error creating song',
-            description: error.response.data.message,
-            type: 'danger',
-          });
-        },
-      }
-    );
+    createMutation.mutate({ data });
   };
   const onError = (errors, e) => console.log('errors', errors);
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <ScrollView
       //contentContainerStyle={{ paddingBottom: 100 }}
       >
@@ -254,7 +234,7 @@ const CreateSong = () => {
           <SongBlockTemplate title={'Chord'} handlePress={() => setValue('content', getValues('content') + chordTemplate)} />
         </View>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 

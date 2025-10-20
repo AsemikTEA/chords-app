@@ -178,7 +178,7 @@ const Header = ({ song, artist }) => {
         </View>
       )}
 
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
         {pathname === '/display' && (
           <ModalDropdown
             ref={dropdownRef} // připojení referencí
@@ -209,7 +209,7 @@ const Header = ({ song, artist }) => {
             }}
             adjustFrame={(style) => ({
               ...style,
-              top: style.top - 60,
+              top: style.top - 5,
               right: style.right + 10,
               height: 'auto',
             })}

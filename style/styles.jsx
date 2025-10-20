@@ -4,6 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     //borderWidth:3
+    //backgroundColor: '#ffffff',
   },
   signContainer: {
     margin: 20
@@ -115,7 +116,7 @@ export const styles = StyleSheet.create({
     //marginTop: 20
   },
   backButton: {
-    flex: 1.5,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -123,7 +124,7 @@ export const styles = StyleSheet.create({
     flex: 8,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingLeft: 20,
+    paddingLeft: 10,
   },
   headerMainTitle: {
     fontWeight: 'bold',

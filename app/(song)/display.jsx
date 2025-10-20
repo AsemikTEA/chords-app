@@ -11,111 +11,10 @@ import { useFocusEffect, useNavigation } from 'expo-router';
 import Header from '../../components/Header';
 import AutoscrollSpeed from '../../components/AutoscrollSpeed';
 import { showMessage } from 'react-native-flash-message';
-import { ChordProParser, HtmlDivFormatter, HtmlFormatter, HtmlTableFormatter } from 'chordsheetjs';
-import parse from 'html-react-parser';
-import WebView from 'react-native-webview';
-import { set } from 'react-hook-form';
 import { useSaveTransposition } from '../../hooks/useSaveTransposition';
-import { QueryClient } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DisplaySong = () => {
-
-  //   const SongWebView = ({ html }) => {
-
-  //     const baseHtml = `
-  //       <!DOCTYPE html>
-  //       <html>
-  //         <head>
-  //           <meta charset="UTF-8">
-  //           <style>
-  //   body {
-  //     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen;
-  //     font-size: 100px;
-  //     padding: 16px;
-  //     background-color: #ffffff;
-  //     color: #000000;
-  //   }
-
-  //   .chord-sheet {
-  //     display: flex;
-  //     flex-direction: column;
-  //     gap: 24px;
-  //   }
-
-  //   .paragraph {
-  //     display: flex;
-  //     flex-direction: column;
-  //     gap: 4px;
-  //   }
-
-  //   .row {
-  //     display: flex;
-  //     flex-direction: column;
-  //   }
-
-  //   .row table {
-  //     border-collapse: collapse;
-  //     width: 100%;
-  //   }
-
-  //   .row tr {
-  //     display: flex;
-  //   }
-
-  //   .row td {
-  //     padding: 0 4px;
-  //     white-space: pre;
-  //     font-family: monospace;
-  //     font-size: 16px;
-  //     border: none;
-  //   }
-
-  //   .row td.chord {
-  //     font-weight: bold;
-  //     color: #003399;
-  //     text-align: center;
-  //     height: 20px;
-  //   }
-
-  //   .row td.lyrics {
-  //     text-align: center;
-  //   }
-
-  //   /* Volitelně: Odstranění tabulkového vzhledu */
-  //   table {
-  //     display: block;
-  //   }
-
-  //   tr {
-  //     display: flex;
-  //     flex-direction: row;
-  //     justify-content: flex-start;
-  //   }
-
-  //   td {
-  //     display: inline-block;
-  //     min-width: 20px;
-  //   }
-  // </style>
-  //         </head>
-  //         <body>
-  //           ${html}
-  //         </body>
-  //       </html>
-  //     `;
-
-  //     return (
-  //       <View style={{ flex: 1 }}>
-  //         <WebView
-  //           originWhitelist={['*']}
-  //           source={{ html: baseHtml }}
-  //           style={{ flex: 1 }}
-  //         />
-  //       </View>
-  //     );
-  //   };
-
 
   const scrollRef = useRef(null);
   const scrollInterval = useRef(null);
@@ -154,11 +53,6 @@ const DisplaySong = () => {
 
   const saveTransposition = useSaveTransposition();
 
-  // const parser = new ChordProParser();
-  // const formatter = new HtmlTableFormatter({});
-  // const song = parser.parse(version.data?.content || '');
-  // const html = formatter.format(song);
-
   useEffect(() => {
     navigation.setOptions({
       header: () => <Header
@@ -170,19 +64,12 @@ const DisplaySong = () => {
 
   useFocusEffect(
     useCallback(() => {
-      //queryClient.invalidateQueries({ queryKey: ['song-version', versionId, useUserStore.getState().user.id] });
 
       return () => {
         console.log('Uživatel opustil display-song (z `SongView`)');
         stopAutoScroll();
         setDisableOnlyChords();
         setDisableTransposition();
-
-        // const transNumber = useTranspositionNumberStore.getState().transpositionNumber;
-        // const userTransposition = version.data?.userTransposition ?? 0;
-
-        // console.log('Transposition number on blur:', transNumber);
-        // console.log('User transposition from version:', userTransposition);
 
         if (isConnected) {
           const transData = {
@@ -212,33 +99,6 @@ const DisplaySong = () => {
       };
     }, [])
   );
-
-  // useEffect(() => {
-  //   const unsubscribe = () => navigation.addListener('blur', () => {
-  //     console.log('Uživatel opustil display-song (z `SongView`)');
-  //     stopAutoScroll();
-  //     setDisableOnlyChords();
-  //     setDisableTransposition();
-
-  //     const transNumber = useTranspositionNumberStore.getState().transpositionNumber;
-  //     const userTransposition = version.data?.userTransposition ?? 0;
-  //     console.log('Transposition number on blur:', transNumber);
-  //     console.log('User transposition from version:', version.data?.userTransposition);
-
-  //     if (transNumber !== userTransposition) {
-  //       const transData = {
-  //         versionId: versionId,
-  //         userId: useUserStore.getState().user.id,
-  //         transposition: useTranspositionNumberStore.getState().transpositionNumber
-  //       }
-
-  //       saveTransposition.mutate(transData);
-  //     }
-  //     setTranspositionNumber(0);
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
 
   useEffect(() => {
     const unsub = useAutoscrollStore.subscribe((state) => {
@@ -354,10 +214,7 @@ const DisplaySong = () => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       {/* <SongWebView html={html} /> */}
       {isConnected &&
         <AddToPlaylistModal version={{ version: versionId, versionModel: version.data.model }} />
@@ -399,7 +256,7 @@ const DisplaySong = () => {
       >
         <AutoscrollSpeed />
       </View>
-    </SafeAreaView >
+    </>
   );
 }
 
