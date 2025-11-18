@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, Alert, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUserStore } from '../../state/store';
 import { useDeleteUser } from '../../hooks/useDeleteUser';
 
@@ -32,14 +31,14 @@ const AccountInfo = () => {
 
   if (!user) {
     return (
-      <SafeAreaView style={styles.container}>
+      <>
         <Text style={styles.error}>User not logged in.</Text>
-      </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+    <>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Username:</Text>
         <Text style={styles.value}>{user.username}</Text>
@@ -51,7 +50,7 @@ const AccountInfo = () => {
           <Text style={styles.deleteText}>Delete Account</Text>
         </Pressable>
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchForm from '../../components/SearchForm';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';

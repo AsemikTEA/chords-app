@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import SongView from '../../components/SongView';
 import Transpose from '../../components/Transpose';

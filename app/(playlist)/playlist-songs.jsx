@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { FlashList } from '@shopify/flash-list';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { router, useFocusEffect } from 'expo-router';
 import { useNetworkStore, useOfflineStore, usePlaylistStore, useUserStore } from '../../state/store';

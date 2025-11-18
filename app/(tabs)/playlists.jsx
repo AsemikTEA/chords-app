@@ -1,7 +1,6 @@
 import { View, Text, } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import { router, useFocusEffect } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import { useNetworkStore, useModalStore, usePlaylistStore, useUserStore, useOfflineStore } from '../../state/store';
@@ -90,7 +89,7 @@ const Playlists = () => {
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={[styles.container]} edges={['bottom', 'left', 'right']}>
+      <>
         <View style={styles.offlineContainer}>
           <MaterialCommunityIcons name="cloud-off-outline" size={24} color="#D32F2F" />
           <Text style={styles.offlineText}>
@@ -110,7 +109,7 @@ const Playlists = () => {
             <Text style={styles.noSongsText}>No playlists downloaded for offline use.</Text>
           </View>
         )}
-      </SafeAreaView>
+      </>
     );
   }
 

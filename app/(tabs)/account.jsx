@@ -1,6 +1,5 @@
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 //import { styles } from '../../style/styles'
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -52,9 +51,9 @@ const Account = () => {
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 16, color: 'red' }}>You are offline. Please connect to the internet to access your account.</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 

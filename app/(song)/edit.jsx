@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, Pressable, Modal, TouchableOpacity, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../../style/styles'
 import { useNetworkStore, useOfflineStore, useSongContentStore, useUserStore } from '../../state/store'
 import SongContentInput from '../../components/SongContentInput'

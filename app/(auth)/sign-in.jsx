@@ -1,5 +1,4 @@
 import { View, Text, ScrollView, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, router } from 'expo-router';
 import { styles } from '../../style/styles';
 import SubmitButton from '../../components/SubmitButton';

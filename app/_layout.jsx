@@ -1,8 +1,8 @@
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import FlashMessage from 'react-native-flash-message';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../style/styles';
+import { SafeAreaView } from 'react-native';
 
 const HomeLayout = () => {
 

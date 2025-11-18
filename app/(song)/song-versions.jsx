@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import { FlashList } from '@shopify/flash-list';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import VersionListItem from '../../components/VersionListItem';
 import { router, useNavigation } from 'expo-router';

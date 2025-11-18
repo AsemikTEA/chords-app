@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import { useNetworkStore, useOfflineStore, useSongVersionStore, useUserStore } from '../../state/store';
@@ -140,7 +139,7 @@ const UserEditedSongs = () => {
 
   if (!isConnected) {
     return (
-      <SafeAreaView style={[styles.container, { paddingTop: 40 }]} edges={['bottom', 'left', 'right']}>
+      <>
         <View style={styles.offlineContainer}>
           <MaterialCommunityIcons name="cloud-off-outline" size={24} color="#D32F2F" />
           <Text style={styles.offlineText}>
@@ -161,7 +160,7 @@ const UserEditedSongs = () => {
             <Text style={styles.noSongsText}>No songs downloaded for offline use.</Text>
           </View>
         )}
-      </SafeAreaView>
+      </>
     );
   }
 
@@ -175,13 +174,11 @@ const UserEditedSongs = () => {
 
   if (personalVersions.isLoading) {
     return (
-      <SafeAreaView
-        style={styles.container}
-      >
+      <>
         <View>
           <Text>Loading...</Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
@@ -192,13 +189,11 @@ const UserEditedSongs = () => {
       type: 'danger',
     });
     return (
-      <SafeAreaView
-        style={styles.container}
-      >
+      <>
         <View style={styles.noSongsContainer}>
           <Text style={styles.noSongsText}>Error: {personalVersions.error.message}</Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 

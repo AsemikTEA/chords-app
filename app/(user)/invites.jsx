@@ -1,5 +1,4 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../style/styles';
 import { FlashList } from '@shopify/flash-list';
 import { useQueryClient } from '@tanstack/react-query';
@@ -67,28 +66,22 @@ const Invites = () => {
 
   if (!recievedInvites.data.length) {
     return (
-      <SafeAreaView
-        style={styles.container}
-        edges={['bottom', 'left', 'right']}
-      >
+      <>
         <View style={{marginBottom: 100, alignItems: 'center', justifyContent: 'center', flex: 1 }}>
         <Text>No invites available.</Text>
         </View>
-      </SafeAreaView>
+      </>
     );
   }
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['bottom', 'left', 'right']}
-    >
+    <>
       <FlashList
         data={recievedInvites.data}
         renderItem={inviteItem}
         estimatedItemSize={20}
       />
-    </SafeAreaView>
+    </>
   );
 };
 
