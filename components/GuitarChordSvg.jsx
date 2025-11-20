@@ -1,8 +1,11 @@
-import React from 'react';
+
+import React, { use } from 'react';
 import chords from '@tombatossals/chords-db/lib/guitar.json';
 import Chord from '@tombatossals/react-chords/lib/Chord';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SvgCss } from 'react-native-svg/css';
+import Svg, { Circle, Rect, Line } from 'react-native-svg';
+import { Text, View } from 'react-native';
 
 const getChordSvgXml = (chordName) => {
   const chordParts = chordName.match(/([A-G][#b]?)(.*)/).slice(1);
@@ -62,14 +65,71 @@ const getChordSvgXml = (chordName) => {
     }
   };
 
+  console.log('Generating SVG for chord:', chordName, chordInfo);
+
+  const chord = <Chord
+    chord={chordInfo}
+    instrument={instrument}
+    lite={true}
+  />;
+
+  const testSVG = () =>
+    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+    <rect
+      x="10"
+      y="10"
+      width="180"
+      height="180"
+      stroke="black"
+      stroke-width="2"
+      fill="none"
+    />
+    <circle
+      cx="100"
+      cy="100"
+      r="50"
+      fill="green"
+    />
+    <line
+      x1="0"
+      y1="0"
+      x2="200"
+      y2="200"
+      stroke="blue"
+      stroke-width="3"
+    />
+  </svg>
+  
+
+  console.log('Chord component created:', chord);
+
+  try {
+    const svgString = renderToStaticMarkup(
+
+      chord
+    );
+    console.log('Chord component created:', svgString);
+    return svgString
+      .replaceAll('0.7rem', '11px')
+      .replaceAll('0.3rem', '5px')
+      .replaceAll('0.25rem', '4px');
+  } catch (error) {
+    console.error('Error generating chord SVG:', error);
+    return null;
+  }
+
+  console.log('Chord component created:', chord);
   const svgString = renderToStaticMarkup(
-    Chord({
-      chord: chordInfo,
-      instrument: instrument,
-    })
+    chord
+    // <Chord
+    //   chord={chordInfo}
+    //   instrument={instrument}
+    //   lite={true}
+    // />
   );
 
-  // Replace rem values for compatibility with React Native SVG
+  console.log('Generated SVG String:', svgString);
+
   return svgString
     .replaceAll('0.7rem', '11px')
     .replaceAll('0.3rem', '5px')
@@ -77,10 +137,15 @@ const getChordSvgXml = (chordName) => {
 };
 
 const GuitarChordSvg = ({ chordName, width = 300, height = 300 }) => {
+  console.log('Rendering GuitarChordSvg for:', chordName);
   const svgXml = getChordSvgXml(chordName);
 
   if (!svgXml) {
-    return <></>; // optionally return fallback (e.g. "Akord nenalezen")
+    return <>
+      <View style={{ flex: 1 }}>
+        <Text>Chord not found: {chordName}</Text>
+      </View>
+    </>;
   }
 
   return <SvgCss xml={svgXml} width={width} height={height} />;
