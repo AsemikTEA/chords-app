@@ -5,7 +5,7 @@ import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import GuitarChordSvg from './GuitarChordSvg';
-import ExperimentalGuitarChordSvg from './ExperimentalGuitarChordSvg';
+//import ExperimentalGuitarChordSvg from './ExperimentalGuitarChordSvg';
 
 const SongView = ({ songContent, songName }) => {
 
@@ -350,7 +350,7 @@ const SongView = ({ songContent, songName }) => {
               <Text style={{ fontSize: 20, fontWeight: 'bold' }}>✕</Text>
             </TouchableOpacity>
 
-            {selectedChord && <ExperimentalGuitarChordSvg chordName={selectedChord} />}
+            {selectedChord && <GuitarChordSvg chordName={selectedChord} />}
             <Text style={{ fontSize: 25, marginTop: 10, fontWeight: 'bold' }}>{selectedChord}</Text>
           </TouchableOpacity>
         </TouchableOpacity>

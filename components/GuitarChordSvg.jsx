@@ -1,4 +1,3 @@
-
 import React, { use } from 'react';
 import chords from '@tombatossals/chords-db/lib/guitar.json';
 import Chord from '@tombatossals/react-chords/lib/Chord';
@@ -67,11 +66,11 @@ const getChordSvgXml = (chordName) => {
 
   console.log('Generating SVG for chord:', chordName, chordInfo);
 
-  const chord = <Chord
-    chord={chordInfo}
-    instrument={instrument}
-    lite={true}
-  />;
+  // const chord = <Chord
+  //   chord={chordInfo}
+  //   instrument={instrument}
+  //   lite={true}
+  // />;
 
   const testSVG = () =>
     <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
@@ -101,39 +100,36 @@ const getChordSvgXml = (chordName) => {
   </svg>
   
 
-  console.log('Chord component created:', chord);
+  // console.log('Chord component created:', chord);
 
-  try {
+  // try {
+  //   const svgString = renderToStaticMarkup(
+
+  //     chord
+  //   );
+  //   console.log('Chord component created:', svgString);
+  //   return svgString
+  //     .replaceAll('0.7rem', '11px')
+  //     .replaceAll('0.3rem', '5px')
+  //     .replaceAll('0.25rem', '4px');
+  // } catch (error) {
+  //   console.error('Error generating chord SVG:', error);
+  //   return null;
+  // }
+
+    try {
     const svgString = renderToStaticMarkup(
 
-      chord
+      testSVG()
     );
     console.log('Chord component created:', svgString);
     return svgString
-      .replaceAll('0.7rem', '11px')
-      .replaceAll('0.3rem', '5px')
-      .replaceAll('0.25rem', '4px');
   } catch (error) {
     console.error('Error generating chord SVG:', error);
     return null;
   }
 
-  console.log('Chord component created:', chord);
-  const svgString = renderToStaticMarkup(
-    chord
-    // <Chord
-    //   chord={chordInfo}
-    //   instrument={instrument}
-    //   lite={true}
-    // />
-  );
-
-  console.log('Generated SVG String:', svgString);
-
-  return svgString
-    .replaceAll('0.7rem', '11px')
-    .replaceAll('0.3rem', '5px')
-    .replaceAll('0.25rem', '4px');
+  //return testSVG;
 };
 
 const GuitarChordSvg = ({ chordName, width = 300, height = 300 }) => {
