@@ -5,7 +5,6 @@ import Interval from 'teoria/lib/interval';
 import { styles } from '../style/styles'
 import { useDisplayModeStore, useTranspositionNumberStore } from '../state/store';
 import GuitarChordSvg from './GuitarChordSvg';
-//import ExperimentalGuitarChordSvg from './ExperimentalGuitarChordSvg';
 
 const SongView = ({ songContent, songName }) => {
 

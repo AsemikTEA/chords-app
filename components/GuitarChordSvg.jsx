@@ -1,16 +1,29 @@
-import React, { use } from 'react';
 import chords from '@tombatossals/chords-db/lib/guitar.json';
-import Chord from '@tombatossals/react-chords/lib/Chord';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { SvgCss } from 'react-native-svg/css';
-import Svg, { Circle, Rect, Line } from 'react-native-svg';
-import { Text, View } from 'react-native';
+import ChordDiagram from './ChordDiagram';
 
 const getChordSvgXml = (chordName) => {
   const chordParts = chordName.match(/([A-G][#b]?)(.*)/).slice(1);
   let [key, suffix] = chordParts;
 
   switch (key) {
+    case 'C#':
+      key = 'Csharp'; // Normalize C# to Csharp
+      break;
+    case 'F#':
+      key = 'Fsharp'; // Normalize F# to Fsharp
+      break;
+    case 'E#':
+      key = 'F'; // Normalize E# to F
+      break;
+    case 'B#':
+      key = 'C'; // Normalize B# to C
+      break;
+    case 'Cb':
+      key = 'B'; // Normalize Cb to B
+      break;
+      case 'Fb':
+      key = 'E'; // Normalize Fb to E
+      break;
     case 'Db':
       key = 'C#'; // Normalize Db to C#
       break;
@@ -66,85 +79,19 @@ const getChordSvgXml = (chordName) => {
 
   console.log('Generating SVG for chord:', chordName, chordInfo);
 
-  // const chord = <Chord
-  //   chord={chordInfo}
-  //   instrument={instrument}
-  //   lite={true}
-  // />;
+  const chord = <ChordDiagram
+    chord={chordInfo}
+    instrument={instrument}
+    />;
 
-  const testSVG = () =>
-    <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-    <rect
-      x="10"
-      y="10"
-      width="180"
-      height="180"
-      stroke="black"
-      stroke-width="2"
-      fill="none"
-    />
-    <circle
-      cx="100"
-      cy="100"
-      r="50"
-      fill="green"
-    />
-    <line
-      x1="0"
-      y1="0"
-      x2="200"
-      y2="200"
-      stroke="blue"
-      stroke-width="3"
-    />
-  </svg>
-  
-
-  // console.log('Chord component created:', chord);
-
-  // try {
-  //   const svgString = renderToStaticMarkup(
-
-  //     chord
-  //   );
-  //   console.log('Chord component created:', svgString);
-  //   return svgString
-  //     .replaceAll('0.7rem', '11px')
-  //     .replaceAll('0.3rem', '5px')
-  //     .replaceAll('0.25rem', '4px');
-  // } catch (error) {
-  //   console.error('Error generating chord SVG:', error);
-  //   return null;
-  // }
-
-    try {
-    const svgString = renderToStaticMarkup(
-
-      testSVG()
-    );
-    console.log('Chord component created:', svgString);
-    return svgString
-  } catch (error) {
-    console.error('Error generating chord SVG:', error);
-    return null;
-  }
-
-  //return testSVG;
+  return chord;
 };
 
 const GuitarChordSvg = ({ chordName, width = 300, height = 300 }) => {
   console.log('Rendering GuitarChordSvg for:', chordName);
-  const svgXml = getChordSvgXml(chordName);
-
-  if (!svgXml) {
-    return <>
-      <View style={{ flex: 1 }}>
-        <Text>Chord not found: {chordName}</Text>
-      </View>
-    </>;
-  }
-
-  return <SvgCss xml={svgXml} width={width} height={height} />;
+  const svg = getChordSvgXml(chordName);
+  
+  return svg;
 };
 
 export default GuitarChordSvg;
